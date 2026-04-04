@@ -33,7 +33,7 @@
                 {{ app()->getLocale() == 'ar' ? 'الأرقام تتحدث' : 'The Numbers Speak' }}
             </h3>
 
-            <div class="grid grid-cols-2 lg:grid-cols-5 gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 special_font_nasser">
                 {{-- إحصائية 1 --}}
                 <div class="flex flex-col items-center">
                     <div class="flex items-baseline gap-1 mb-2">

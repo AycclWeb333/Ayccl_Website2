@@ -55,6 +55,9 @@
     .special_font_nasser {
         font-family: 'Changa', sans-serif !important;
     }
+    body {
+        font-family: 'Changa', sans-serif !important;
+    }
     </style>
     @yield('css')
 </head>

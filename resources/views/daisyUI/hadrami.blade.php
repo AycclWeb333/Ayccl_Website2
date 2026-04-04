@@ -85,9 +85,9 @@
     {{-- زر عرض المزيد --}}
     <div class="mt-12 text-center">
         <a href="{{ localizedRoute('hadrami') }}" 
-           class="inline-flex items-center bg-brand-green text-white px-12 rounded-none text-xl hover:bg-black transition-all duration-500 shadow-xl hover:shadow-2xl hover:-translate-y-1 group pr-2.5" style="margin-top: 20px;">
+           class="inline-flex items-center bg-brand-green text-white rtl:pr-12 rtl:pl-2.5 ltr:pl-12 ltr:pr-2.5 rounded-none text-xl hover:bg-black transition-all duration-500 shadow-xl hover:shadow-2xl hover:-translate-y-1 group special_font_nasser" style="margin-top: 20px;">
             <span>{{ app()->getLocale() == 'ar' ? 'عرض المزيد' : 'View More' }}</span>
-            <div class="bg-white/20 p-2 rounded-full group-hover:bg-white/30 transition-colors mr-4 ml-4">
+            <div class="bg-white/20 p-2 rounded-full group-hover:bg-white/30 transition-colors ms-4 me-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 {{ app()->getLocale() == 'ar' ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
