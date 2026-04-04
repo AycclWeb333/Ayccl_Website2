@@ -5,8 +5,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="الشركة العربية اليمنية للأسمنت - رائدة في صناعة أجود أنواع الإسمنت في اليمن، صرح صناعي في قلب حضرموت بتكنولوجيا عالمية.">
+    <meta name="keywords" content="اسمنت حضرموت، الشركة العربية للاسمنت، بناء، تشييد، اليمن، حضرموت، اسمنت عالي الجودة">
+    <meta name="author" content="AYCCL">
+    <meta name="robots" content="index, follow">
 
-    <title>AYCCL</title>
+    <title>الشركة العربية اليمنية للأسمنت - AYCCL</title>
     <link rel="icon" type="image/ico" href="{{ asset('favicon.ico') }}">
 
 

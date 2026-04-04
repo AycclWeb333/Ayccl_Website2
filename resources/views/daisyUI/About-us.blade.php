@@ -28,7 +28,7 @@
         <hr class="border-gray-100 mb-8">
 
         {{-- الجزء السفلي: الإحصائيات --}}
-        <div class="text-center mb-12" data-aos="fade-up">
+        <div class="text-center" data-aos="fade-up">
             <h3 class="text-2xl md:text-3xl font-bold text-brand-green mb-12 special_font_nasser" style="margin-bottom: 17px; font-size: 1.7rem;  text-transform: uppercase; letter-spacing: 2px;">
                 {{ app()->getLocale() == 'ar' ? 'الأرقام تتحدث' : 'The Numbers Speak' }}
             </h3>
