@@ -109,13 +109,14 @@
                         <ul class="border-s-4 border-s-emerald-800">
                             <li> <a href={{ localizedRoute('employees') }}
                             class="nav-child">{{ __('adminlte::landingpage.employees') }}</a> </li>
-                            <li> <a href={{ localizedRoute('ess') }}
-                                    class="nav-child">{{ __('adminlte::landingpage.ess') }}</a> </li>
-                            <li> <a href={{ localizedRoute('ourGuests') }}
-                                    class="nav-child">{{ __('adminlte::landingpage.ourguests') }}</a> </li>
                             <li> <a href={{ localizedRoute('employeesAdvantages') }}
                             class="nav-child">{{ __('adminlte::landingpage.employeesAdvantages') }}</a> </li>
 
+                            <li> <a href={{ localizedRoute('ourGuests') }}
+                                    class="nav-child">{{ __('adminlte::landingpage.ourguests') }}</a> </li>
+                            <li> <a href={{ localizedRoute('ess') }}
+                                    class="nav-child">{{ __('adminlte::landingpage.ess') }}</a> </li>
+                            
                         </ul>
                     </details>
                 </li>

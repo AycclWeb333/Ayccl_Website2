@@ -204,6 +204,7 @@ class FormSubmissionController extends Controller
 
         return back()->with('status', __('adminlte::landingpage.emailSentSuccessfully'));
     }
-}
+
+    }
 
 

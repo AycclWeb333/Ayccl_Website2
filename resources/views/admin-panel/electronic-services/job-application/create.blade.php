@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @php
-    $route = 'customer-service';
+    $route = 'job-application';
 @endphp
 
 @section('title', __('adminlte::menu.customerService') .' - '. __('adminlte::adminlte.createNewPost'))
@@ -106,7 +106,7 @@
 
 
 
-                        {{-- <div class="form-group">
+                        <div class="form-group">
                             <x-adminlte-select2 name="category_id" :config="['minimumResultsForSearch' => 'Infinity']"
                                 label="{{ __('adminlte::adminlte.postType') }}" label-class="text-olive">
                                 @foreach ($categories as $category )
@@ -115,7 +115,7 @@
                                     
                                 @endforeach
                             </x-adminlte-select2>
-                        </div> --}}
+                        </div> 
 
                         {{-- <x-adminlte-modal tabindex="-1" id="modalMin" title="{{ __('adminlte::adminlte.slug') }}" theme="olive"
                             icon="fas fa-question" size='lg'>
@@ -187,6 +187,12 @@
                             label="{{ __('adminlte::adminlte.attachmentsUpload') . ' (' . __('adminlte::adminlte.image') . ')' }}"
                             data-msg-placeholder="Choose a text, office or pdf file..." label-class="text-olive"
                             :config="$config" />
+                    </div>
+                    <div class="form-group col-12 col-md-6">
+                        <x-adminlte-input-file-krajee name="files_pdf"
+                            label="{{ __('adminlte::adminlte.attachmentsUpload') . ' (' . __('adminlte::adminlte.pdf') . ')' }}"
+                            data-msg-placeholder="Choose a pdf file..." label-class="text-olive"
+                             />
                     </div>
                 </div>
                 <div class="text-center">

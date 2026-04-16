@@ -1,8 +1,8 @@
 @extends('adminlte::page')
 
 @php
-    $route = 'customer-service';
-    $id = 'customer_service';
+    $route = 'job-application';
+    $id = 'job_application';
 @endphp
 
 @section('title', __('adminlte::menu.customerService') . ' - ' . __('adminlte::adminlte.editNews'))

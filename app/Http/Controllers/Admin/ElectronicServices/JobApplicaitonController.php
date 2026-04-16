@@ -83,7 +83,7 @@ class JobApplicaitonController extends Controller
                 'content_ar'    => 'required',
                 'content_en' => 'required',
                 'files'      => 'required',
-                'link'      => 'required',
+                'link'      => 'nullable',
             ],
             [
                 'title.required'      => __('adminlte::adminlte.title_required'),
@@ -91,7 +91,6 @@ class JobApplicaitonController extends Controller
                 'content_ar.required'    => __('adminlte::adminlte.content_required'),
                 'content_en.required' => __('adminlte::adminlte.content_en_required'),
                 'files.required'      => __('adminlte::adminlte.files_required'),
-                'link.required'      => __('adminlte::adminlte.link_required'),
             ]
         );
 
@@ -100,7 +99,7 @@ class JobApplicaitonController extends Controller
             DB::beginTransaction();
             // 1. Create Post
             $post = new Post();
-            $post->category_id = 1;
+            $post->category_id = $request->category_id;
             $post->page_id = $this->pageId; // default page
             if (isset($request->order))
                 $post->order     = $request->order;
@@ -223,6 +222,25 @@ class JobApplicaitonController extends Controller
                         imagedestroy($src);
                     }
                 }
+
+            }
+            if ($request->hasFile('files_pdf')) {
+                $filearr = $request->file('files_pdf');
+                $file = $filearr[0];
+                // 1) Get the original file name from the UploadedFile object
+                $originalFileName = Media::getAlt($file->getClientOriginalName());
+
+                // 2) Define paths based on your requirements
+                $pdfPath = "files/$this->route/{$post->id}/{$originalFileName}";
+                $destinationPath = public_path("files/$this->route/{$post->id}");
+
+                // 3) Create the directory if it doesn't exist
+                File::makeDirectory($destinationPath, 0755, true, true);
+
+                // 4) Move the file to the correct location using its original name
+                $file->move($destinationPath, $originalFileName);
+
+                $media->link           = $pdfPath ;
 
             }
 

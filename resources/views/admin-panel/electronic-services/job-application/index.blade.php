@@ -1,10 +1,10 @@
 @extends('adminlte::page')
 
 @php
-    $route = 'customer-service';
-    $id = 'customer_service';
+    $route = 'job-application';
+    $id = 'job_application';
     $pageName = 'menu.jobApplication'
-    @endphp
+@endphp
 
 @section('title', __("adminlte::$pageName"))
 @section('content_header')

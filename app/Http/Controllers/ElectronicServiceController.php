@@ -33,7 +33,7 @@ class ElectronicServiceController extends Controller
         try{
             $pageId = 101;
             $page = Page::findOrFail($pageId);
-            $posts = Post::where("page_id", $page->id)->where('active',true)->with(['postDetail', 'mediaOne'])->get();
+            $posts = Post::where("page_id", $page->id)->where('active',true)->with(['postDetailOne', 'mediaOne'])->get();
         }catch(Exception $e){
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
