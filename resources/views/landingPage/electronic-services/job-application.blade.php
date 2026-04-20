@@ -13,18 +13,6 @@
                         @php $detail = $post->postDetailOne; @endphp
                         <div class="card bg-white shadow-xl hover:shadow-2xl transition-all duration-300 border-t-4 border-green-700 overflow-hidden group">
                             <div class="flex flex-col h-full">
-                                {{-- الوجه البصري للوظيفة --}}
-                                @if(isset($post->mediaOne))
-                                <div class="h-48 overflow-hidden relative">
-                                    <img src="{{ asset($post->mediaOne->filepath) }}" 
-                                         alt="{{ $detail?->title }}" 
-                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
-                                    <div class="absolute top-4 right-4 bg-green-700 text-white px-3 py-1 text-sm font-bold rounded-full">
-                                        {{ app()->getLocale() == 'ar' ? 'وظيفة متاحة' : 'Job Opening' }}
-                                    </div>
-                                </div>
-                                @endif
 
                                 <div class="card-body p-6 flex-grow">
                                     <h2 class="card-title text-2xl font-bold text-green-900 mb-4 group-hover:text-green-700 transition-colors">

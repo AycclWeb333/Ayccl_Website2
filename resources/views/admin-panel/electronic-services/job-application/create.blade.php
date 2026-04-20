@@ -106,16 +106,6 @@
 
 
 
-                        <div class="form-group">
-                            <x-adminlte-select2 name="category_id" :config="['minimumResultsForSearch' => 'Infinity']"
-                                label="{{ __('adminlte::adminlte.postType') }}" label-class="text-olive">
-                                @foreach ($categories as $category )
-                                
-                                <option {{ $loop->iteration==1?'selected':'' }} value="{{ $category->id }}">{{ $category->name }}</option>
-                                    
-                                @endforeach
-                            </x-adminlte-select2>
-                        </div> 
 
                         {{-- <x-adminlte-modal tabindex="-1" id="modalMin" title="{{ __('adminlte::adminlte.slug') }}" theme="olive"
                             icon="fas fa-question" size='lg'>
@@ -156,44 +146,6 @@
                             enable-old-support />
                     </div>
                 </div>
-                {{-- Attachments images upload --}}
-                <div class="row">
-                    <!-- File Upload -->
-                    @php
-                        $config = [
-                            'allowedFileTypes' => ['image'],
-                            'browseOnZoneClick' => true,
-                            'theme' => 'fa5',
-                            'overwriteInitial' => true,
-                            'initialPreviewAsData' => true,
-                            'uploadUrl' => '#',
-                            'uploadAsync' => false,
-                            'deleteUrl' => '#',
-                            'showRemove' => true,
-                            'showUpload' => false,
-                            'showClose' => false,
-                            'fileActionSettings' => [
-                                'showRemove' => true,
-                                'showZoom' => true,
-                                'showUpload' => false,
-                                'showRotate'=> false,
-                            ],
-                            'showCancel' => false,
-                            // 'maxFileCount' => 5,
-                        ];
-                    @endphp
-                    <div class="form-group col-12 col-md-6">
-                        <x-adminlte-input-file-krajee name="files"
-                            label="{{ __('adminlte::adminlte.attachmentsUpload') . ' (' . __('adminlte::adminlte.image') . ')' }}"
-                            data-msg-placeholder="Choose a text, office or pdf file..." label-class="text-olive"
-                            :config="$config" />
-                    </div>
-                    <div class="form-group col-12 col-md-6">
-                        <x-adminlte-input-file-krajee name="files_pdf"
-                            label="{{ __('adminlte::adminlte.attachmentsUpload') . ' (' . __('adminlte::adminlte.pdf') . ')' }}"
-                            data-msg-placeholder="Choose a pdf file..." label-class="text-olive"
-                             />
-                    </div>
                 </div>
                 <div class="text-center">
                     <button class="btn btn-success p-2 col-12 col-md-6 " type="submit">

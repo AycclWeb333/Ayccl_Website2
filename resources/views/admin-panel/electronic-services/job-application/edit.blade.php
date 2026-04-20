@@ -108,15 +108,6 @@
                         </div> --}}
 
 
-                        {{-- 
-                        <div class="form-group">
-                            <x-adminlte-select2 name="category_id" :config="['minimumResultsForSearch' => 'Infinity']"
-                                label="{{ __('adminlte::adminlte.postType') }}" label-class="text-olive">
-                                @foreach ($categories as $category)
-                                <option {{ $post->postDetailOne->category_id==$category->id?'selected':'' }} value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                            </x-adminlte-select2>
-                        </div> --}}
 
                         {{-- <x-adminlte-modal tabindex="-1" id="modalMin" title="{{ __('adminlte::adminlte.slug') }}" theme="olive"
                             icon="fas fa-question" size='lg'>
@@ -176,64 +167,6 @@
                             placeholder="Write some text..." :config="$config" enable-old-support>
                             {{ $post->postDetailOne->content_en }}
                         </x-adminlte-text-editor>
-                    </div>
-                </div>
-                {{-- Attachments images upload --}}
-                <div class="row">
-                    <!-- File Upload -->
-                    @php
-                        $initialPreview = [];
-                        $initialPreviewConfig = [];
-                        $deleteUrl = [];
-                        foreach ($post->media as $media) {
-                            // Build the URL to the image using Laravel's asset() helper
-                            // 'storage/' is the correct path prefix for files on the public disk.
-                            $previewUrl = asset($media->filepath);
-                            // $deleteUrl = route('media.destroy', ['media' => $media->id]);
-                            // dd($previewUrl);
-                            // Add the image URL to the preview array
-                            $initialPreview[] = $previewUrl . '';
-                            $deleteUrl = localizedRoute('media.destroy', ['id' => $media->id]);
-                            // Add the configuration for this specific image
-                            // dd($deleteUrl);
-                            $initialPreviewConfig[] = [
-                                'caption' => basename($media->filepath), // The filename for display
-                                'size' => Storage::disk('images')->size($media->filepath), // File size in bytes
-                                'key' => $media->id, // A unique key for deletion
-                                'url' => $deleteUrl, // The URL to send the delete request to
-                                'extra' => ['_token' => csrf_token(), '_method' => 'DELETE'],
-                            ];
-                            }
-                            $config = [
-                                'allowedFileTypes' => ['image'],
-                                'browseOnZoneClick' => true,
-                                'theme' => 'fa5',
-                                'overwriteInitial' => true,
-                                'initialPreviewAsData' => true,
-                                'initialPreview' => $initialPreview, // -- Here is the initial value
-                                'initialPreviewConfig' => $initialPreviewConfig,
-                                'uploadUrl' => '#',
-                                'uploadAsync' => false,
-                                'deleteUrl' => '#',
-                                'showRemove' => false,
-                                'showUpload' => false,
-                                'showClose' => false,
-                                'fileActionSettings' => [
-                                    'showRemove' => true,
-                                    'showZoom' => true,
-                                    'showUpload' => false,
-                                    'showDrag' => false,
-                                    'showRotate' => false,
-                                ],
-                                'showCancel' => false,
-                                // 'maxFileCount' => 5,
-                            ];
-                    @endphp
-                    <div class="form-group col-12 col-md-6">
-                        <x-adminlte-input-file-krajee name="files"
-                            label="{{ __('adminlte::adminlte.attachmentsUpload') . ' (' . __('adminlte::adminlte.image') . ')' }}"
-                            data-msg-placeholder="Choose a text, office or pdf file..." label-class="text-olive"
-                            :config="$config" />
                     </div>
                 </div>
                 <div class="text-center">
