@@ -86,7 +86,7 @@
                 <x-click-icon :icon="$socialLink->mediaOne->thumbnailpath" :url="$socialLink->mediaOne->link" :label="$socialLink->mediaOne->alt" :class="$socialLink->postDetailOne->color" />
             @endforeach
             {{-- for tiktok --}}
-            {{-- <x-click-icon icon="images/footer/TikTok-تيك توك.svg" url="https://www.tiktok.com/@aycclyemen?_r=1&_t=ZS-93pxA8snfy4" label="Tiktok" class="" /> --}}
+            <!-- {{-- <x-click-icon icon="images/footer/TikTok-تيك توك.svg" url="https://www.tiktok.com/@aycclyemen?_r=1&_t=ZS-93pxA8snfy4" label="Tiktok" class="" /> --}} -->
         </div>
     </nav>
     <aside class="flex flex-col items-center justify-center text-center">

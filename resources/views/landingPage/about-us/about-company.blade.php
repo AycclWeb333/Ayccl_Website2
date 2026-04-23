@@ -93,7 +93,7 @@
             }
 
             .info-card.active .card-content {
-                max-height: 1166px;
+                max-height: 5000px;
                 padding: 0 22px 20px;
             }
 

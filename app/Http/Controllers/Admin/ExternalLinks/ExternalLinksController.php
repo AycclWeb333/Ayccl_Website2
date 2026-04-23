@@ -16,7 +16,7 @@ use Spatie\Image\Drivers\GdDriver;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File; // This is the new import
-use PhpParser\Node\Expr\Throw_;
+use Illuminate\Support\Str;
 use Spatie\Image\Drivers\ImageDriver;
 class ExternalLinksController extends Controller
 {
@@ -111,7 +111,8 @@ class ExternalLinksController extends Controller
  
                 foreach ($files as $file) {
                     // 1) Names & paths
-                    $fileName      = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $originalName  = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $fileName      = Str::slug($originalName) ?: time(); 
                     $ext           = strtolower($file->getClientOriginalExtension());
                     $uniqueName    = "{$fileName}-" . time() . ".{$ext}";
  
@@ -321,7 +322,8 @@ class ExternalLinksController extends Controller
  
                 foreach ($files as $file) {
                     // 1) Names & paths
-                    $fileName      = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $originalName  = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $fileName      = Str::slug($originalName) ?: time(); 
                     $ext           = strtolower($file->getClientOriginalExtension());
                     $uniqueName    = "{$fileName}-" . time() . ".{$ext}";
  
