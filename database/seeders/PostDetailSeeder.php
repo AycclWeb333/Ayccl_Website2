@@ -44,7 +44,7 @@ class PostDetailSeeder extends Seeder
                                     Project Cost = $250 Million
 
                                     Capital = $142 Million
-
+d
                                     Production Capacity = 1,500,000 Tons Annually",
                     "content" =>" الشركة العربية اليمنية للأسمنت هي شركة يمنية محدودة برأس مال معلن وقدرة 142,500,000 دولار وبتكلفة إجمالية قدرها 250 مليون دولار أمريكي.
 

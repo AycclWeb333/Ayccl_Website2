@@ -24,14 +24,16 @@
                 <div
                     class="mix {{ str_replace(' ', '_', $post->postDetailOne->category->name) }} relative size-fit space-y-3 shadow-md hover:shadow-2xl transition-all duration-300 rounded-4xl">
                     <div class="relative ">
-                        <img src="{{ asset($post->mediaOne->thumbnailpath) }}" alt="{{ $post->mediaOne->alt }}"
-                            class="size-fit rounded-xl shadow-lg " />
+                        @if($post->mediaOne)
+                            <img src="{{ asset($post->mediaOne->thumbnailpath) }}" alt="{{ $post->mediaOne->alt }}"
+                                class="size-fit rounded-xl shadow-lg " />
+                        @endif
 
                         {{-- Play button --}}
                         <button id="open-video-modal" type="button"
                             class="open-video-modal btn absolute top-0 h-full w-full flex items-center justify-center text-white text-2xl bg-transparent 
                         hover:bg-black/50 transition-all duration-300 group"
-                            data-videoid="{{ $post->mediaOne->filepath }}">
+                            data-videoid="{{ $post->mediaOne->filepath ?? '' }}">
                             <x-heroicon-m-play class="w-10 h-10 opacity-0 group-hover:opacity-100" />
                         </button>
                     </div>

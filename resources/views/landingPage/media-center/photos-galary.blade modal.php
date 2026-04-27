@@ -114,10 +114,11 @@
                                     <h3 class="text-xl font-bold text-emerald-700 mb-4">{{ $firstDetail->title }}</h3>
 
                                     
-                                    <!-- Album Photos -->
                                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                                        <img src="{{ asset($post->mediaOne->filepath) }}" alt="{{ $img->alt ?? '' }}"
-                                            class="w-full h-40 object-cover rounded-md">
+                                        @if($post->mediaOne)
+                                            <img src="{{ asset($post->mediaOne->filepath) }}" alt="{{ $post->mediaOne->alt ?? '' }}"
+                                                class="w-full h-40 object-cover rounded-md">
+                                        @endif
                                     </div>
 
                                 </div>

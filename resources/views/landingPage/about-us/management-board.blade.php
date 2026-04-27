@@ -38,7 +38,7 @@
         <div
             class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center px-4">
             @foreach ($posts->skip(1) as $post)
-                <x-management-card :id="$post->id" :name="$post->postDetailOne->title" :work="$post->postDetailOne->content" :image="asset($post->mediaOne->filepath)" />
+                <x-management-card :id="$post->id" :name="$post->postDetailOne->title" :work="$post->postDetailOne->content" :image="$post->mediaOne ? asset($post->mediaOne->filepath) : asset('images/default-avatar.png')" />
             @endforeach
         </div>
     </div>

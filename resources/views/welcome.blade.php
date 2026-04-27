@@ -27,8 +27,8 @@
         <div class="w-fit mx-auto">
             <div class="flex flex-col sm:flex-row justify-center px-4">
                 @foreach ($products as $product)
-                    <x-product-card :id="$product->id" :image="asset($product->mediaOne->filepath)" :name="$product->postDetailOne->title" detailsUrl="" />
-                    {{-- <img class="h-52 m-0" src="{{ asset($product->mediaOne->filepath) }}" alt="{{ $product->mediaOne->alt }}"> --}}
+                    <x-product-card :id="$product->id" :image="$product->mediaOne ? asset($product->mediaOne->filepath) : asset('images/default-product.png')" :name="$product->postDetailOne->title" detailsUrl="" />
+                    {{-- <img class="h-52 m-0" src="{{ $product->mediaOne ? asset($product->mediaOne->filepath) : asset('images/default-product.png') }}" alt="{{ $product->mediaOne->alt ?? '' }}"> --}}
                 @endforeach
             </div>
 
