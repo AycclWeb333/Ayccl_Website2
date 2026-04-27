@@ -336,7 +336,8 @@ class ProductsController extends Controller
             $postDetail->save();
 
             // Force Spatie/Image to use GD instead of Imagick
-            $media   = Media::findOrNew($post->mediaOne->id ?? null);
+            $oldMediaId = $post->mediaOne->id ?? null;
+            $media = Media::findOrNew($oldMediaId);
 
             // Initialize variables with existing values to avoid "undefined variable" if no new files are uploaded
             $thumbRel    = $media->thumbnailpath;
@@ -441,11 +442,11 @@ class ProductsController extends Controller
                     }
 
                     // 6) Delete old files if replacing
-                    if($post->mediaOne != null){
-                        if (Storage::disk('images')->exists($media->filepath)) {
+                    if($oldMediaId){
+                        if ($media->filepath && Storage::disk('images')->exists($media->filepath)) {
                             Storage::disk('images')->delete($media->filepath);
                         }
-                        if (Storage::disk('images')->exists($media->thumbnailpath)) {
+                        if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
                             Storage::disk('images')->delete($media->thumbnailpath);
                         }
                     }
@@ -460,8 +461,8 @@ class ProductsController extends Controller
                 $pdfPath = "files/$this->route/{$post->id}/{$originalFileName}";
                 $destinationPath = public_path("files/$this->route/{$post->id}");
 
-                if($post->mediaOne != null){
-                    if (Storage::disk('images')->exists($media->link)) {
+                if($oldMediaId){
+                    if ($media->link && Storage::disk('images')->exists($media->link)) {
                         Storage::disk('images')->delete($media->link);
                     }
                 }
@@ -509,11 +510,11 @@ class ProductsController extends Controller
             // 2. Delete all related Media records and their files
             $post->media->each(function (Media $media) {
                 // Delete the image file from files
-                if (Storage::disk('images')->exists($media->filepath)) {
+                if ($media->filepath && Storage::disk('images')->exists($media->filepath)) {
                     Storage::disk('images')->delete($media->filepath);
                 }
                 // Delete the thumbnail file from storage
-                if (Storage::disk('images')->exists($media->thumbnailpath)) {
+                if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
                     Storage::disk('images')->delete($media->thumbnailpath);
                 }
                 // Delete the PDF file from storage (stored in 'link' field)

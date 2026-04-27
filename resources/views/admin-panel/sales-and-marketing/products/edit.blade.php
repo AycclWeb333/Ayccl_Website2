@@ -226,7 +226,7 @@
                             // dd($deleteUrl);
                             $initialPreviewConfig[] = [
                                 'caption' => basename($media->filepath), // The filename for display
-                                'size' => Storage::disk('images')->size($media->filepath), // File size in bytes
+                                'size' => Storage::disk('images')->exists($media->filepath) ? Storage::disk('images')->size($media->filepath) : 0, // File size in bytes
                                 'key' => $media->id, // A unique key for deletion
                                 'url' => $deleteUrl, // The URL to send the delete request to
                                 'extra' => ['_token' => csrf_token(), '_method' => 'DELETE'],
@@ -282,7 +282,7 @@
                             $initialPreviewConfig[] = [
                                 'type' => 'pdf',
                                 'caption' => basename($media->link), // The filename for display
-                                'size' => Storage::disk('images')->size($media->link), // File size in bytes
+                                'size' => Storage::disk('images')->exists($media->link) ? Storage::disk('images')->size($media->link) : 0, // File size in bytes
                                 'key' => $media->id, // A unique key for deletion
                                 'url' => $deleteUrl, // The URL to send the delete request to
                                 'extra' => ['_token' => csrf_token(), '_method' => 'DELETE'],

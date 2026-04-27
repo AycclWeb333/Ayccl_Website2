@@ -231,7 +231,7 @@
                         // dd($deleteUrl);
                         $initialPreviewConfig[] = [
                             'caption' => basename($media->filepath), // The filename for display
-                            'size' => Storage::disk('images')->size($media->filepath), // File size in bytes
+                            'size' => Storage::disk('images')->exists($media->filepath) ? Storage::disk('images')->size($media->filepath) : 0, // File size in bytes
                         ];
                         }
                         $config = [

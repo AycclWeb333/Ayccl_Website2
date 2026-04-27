@@ -328,7 +328,8 @@ class StartUpController extends Controller
             $postDetail->save();
 
             // Force Spatie/Image to use GD instead of Imagick
-            $media                 = Media::findOrNew($post->mediaOne->id ?? null);
+            $oldMediaId = $post->mediaOne->id ?? null;
+            $media = Media::findOrNew($oldMediaId);
             // 3) Upload Media (if provided)
 
             if ($request->hasFile('files')) 
@@ -428,12 +429,11 @@ class StartUpController extends Controller
                     }
 
                     // 6) Save DB record
-                    if($post->mediaOne != null){
-                        if (Storage::disk('images')->exists($media->filepath)) {
+                    if($oldMediaId){
+                        if ($media->filepath && Storage::disk('images')->exists($media->filepath)) {
                             Storage::disk('images')->delete($media->filepath);
                         }
-                        // Delete the thumbnail file from storage
-                        if (Storage::disk('images')->exists($media->thumbnailpath)) {
+                        if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
                             Storage::disk('images')->delete($media->thumbnailpath);
                         }
                     }

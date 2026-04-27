@@ -37,7 +37,7 @@
                     $initialPreview[] = $previewUrl . '';
                     $initialPreviewConfig[] = [
                         'caption' => basename($image), // The filename for display
-                        'size' => Storage::disk('images')->size($image), // File size in bytes
+                        'size' => Storage::disk('images')->exists($image) ? Storage::disk('images')->size($image) : 0, // File size in bytes
                     ];
                     $config = [
                         'allowedFileTypes' => ['image'],

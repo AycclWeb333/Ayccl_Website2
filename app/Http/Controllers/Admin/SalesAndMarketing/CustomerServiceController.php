@@ -328,7 +328,8 @@ class CustomerServiceController extends Controller
             $postDetail->save();
 
             // Force Spatie/Image to use GD instead of Imagick
-            $media                 = Media::findOrNew($post->mediaOne->id ?? null);
+            $oldMediaId = $post->mediaOne->id ?? null;
+            $media = Media::findOrNew($oldMediaId);
             // 3) Upload Media (if provided)
             if ($request->hasFile('files')) 
             {
@@ -427,15 +428,14 @@ class CustomerServiceController extends Controller
                     }
 
                     // 6) Save DB record
-                    if($post->mediaOne != null){
-                        if (Storage::disk('images')->exists($media->filepath)) {
-                                Storage::disk('images')->delete($media->filepath);
-                            }
-                        // Delete the thumbnail file from storage
-                        if (Storage::disk('images')->exists($media->thumbnailpath)) {
-                                Storage::disk('images')->delete($media->thumbnailpath);
-                            }
+                    if($oldMediaId){
+                        if ($media->filepath && Storage::disk('images')->exists($media->filepath)) {
+                            Storage::disk('images')->delete($media->filepath);
                         }
+                        if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
+                            Storage::disk('images')->delete($media->thumbnailpath);
+                        }
+                    }
                     }
                 $media->media_type_id  = 1;
                 $media->thumbnailpath  = $thumbRel;      // store relative path
@@ -474,14 +474,14 @@ class CustomerServiceController extends Controller
 
             // 1. Delete all related PostDetail records first
             $post->postDetail()->delete();
-            // 2. Delete all related Media records and their files
+            // 2. Delete all related Media records
             $post->media->each(function (Media $media) {
                 // Delete the image file from files
-                if (Storage::disk('images')->exists($media->filepath)) {
+                if ($media->filepath && Storage::disk('images')->exists($media->filepath)) {
                     Storage::disk('images')->delete($media->filepath);
                 }
                 // Delete the thumbnail file from storage
-                if (Storage::disk('images')->exists($media->thumbnailpath)) {
+                if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
                     Storage::disk('images')->delete($media->thumbnailpath);
                 }
                 // Delete the record from the database

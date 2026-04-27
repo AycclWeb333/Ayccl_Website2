@@ -338,7 +338,8 @@ class CertificatesController extends Controller
             $postDetail->save();
 
             // Force Spatie/Image to use GD instead of Imagick
-            $media                 = Media::findOrNew($post->mediaOne->id ?? null);
+            $oldMediaId = $post->mediaOne->id ?? null;
+            $media = Media::findOrNew($oldMediaId);
             // 3) Upload Media (if provided)
             if ($request->hasFile('files'))
             {
@@ -431,12 +432,11 @@ class CertificatesController extends Controller
                     }
 
                     // 6) Save DB record
-                    if($post->mediaOne != null){
-                        if (Storage::disk('images')->exists($media->filepath)) {
+                    if($oldMediaId){
+                        if ($media->filepath && Storage::disk('images')->exists($media->filepath)) {
                             Storage::disk('images')->delete($media->filepath);
                         }
-                        // Delete the thumbnail file from storage
-                        if (Storage::disk('images')->exists($media->thumbnailpath)) {
+                        if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
                             Storage::disk('images')->delete($media->thumbnailpath);
                         }
                     }
@@ -454,8 +454,8 @@ class CertificatesController extends Controller
                 $pdfPath = "files/$this->route/{$post->id}/{$originalFileName}";
                 $destinationPath = public_path("files/$this->route/{$post->id}");
 
-                if($post->mediaOne != null){
-                    if (Storage::disk('images')->exists($media->link)) {
+                if($oldMediaId){
+                    if ($media->link && Storage::disk('images')->exists($media->link)) {
                         Storage::disk('images')->delete($media->link);
                     }
                 }

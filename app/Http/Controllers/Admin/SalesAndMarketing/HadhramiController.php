@@ -407,16 +407,18 @@ class HadhramiController extends Controller
                    }
 
                    // 6) Save DB record
-                   $media                 = Media::findOrNew($post->mediaOne->id ?? null);
-                   if($post->mediaOne != null){
-                       if (Storage::disk('images')->exists($media->filepath)) {
-                           Storage::disk('images')->delete($media->filepath);
-                       }
-                       // Delete the thumbnail file from storage
-                       if (Storage::disk('images')->exists($media->thumbnailpath)) {
-                           Storage::disk('images')->delete($media->thumbnailpath);
-                       }
-                   }
+                    $oldMediaId = $post->mediaOne->id ?? null;
+                    $media = Media::findOrNew($oldMediaId);
+                    
+                    if($oldMediaId){
+                        if ($media->filepath && Storage::disk('images')->exists($media->filepath)) {
+                            Storage::disk('images')->delete($media->filepath);
+                        }
+                        // Delete the thumbnail file from storage
+                        if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
+                            Storage::disk('images')->delete($media->thumbnailpath);
+                        }
+                    }
                    $media->media_type_id  = 1;
                    $media->thumbnailpath  = $thumbRel;      // store relative path
                    $media->filepath       = $originalRel;   // store relative path

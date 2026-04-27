@@ -302,7 +302,8 @@ class JobApplicaitonController extends Controller
 
             // 3. Handle Media Update (Only if files or PDF are provided)
             if ($request->hasFile('files') || $request->hasFile('files_pdf')) {
-                $media = Media::findOrNew($post->mediaOne->id ?? null);
+                $oldMediaId = $post->mediaOne->id ?? null;
+                $media = Media::findOrNew($oldMediaId);
                 $media->media_type_id  = 1;
                 $media->media_able_id  = $post->id;
                 $media->media_able_type = Post::class;
@@ -369,9 +370,9 @@ class JobApplicaitonController extends Controller
                         }
 
                         // Delete old files
-                        if($post->mediaOne != null) {
-                            if (Storage::disk('images')->exists($media->filepath)) Storage::disk('images')->delete($media->filepath);
-                            if (Storage::disk('images')->exists($media->thumbnailpath)) Storage::disk('images')->delete($media->thumbnailpath);
+                        if($oldMediaId) {
+                            if ($media->filepath && Storage::disk('images')->exists($media->filepath)) Storage::disk('images')->delete($media->filepath);
+                            if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) Storage::disk('images')->delete($media->thumbnailpath);
                         }
 
                         $media->thumbnailpath  = $thumbRel;
@@ -389,7 +390,7 @@ class JobApplicaitonController extends Controller
                     $pdfPath = "files/$this->route/{$post->id}/{$originalFileName}";
                     $destinationPath = public_path("files/$this->route/{$post->id}");
 
-                    if($post->mediaOne != null && $media->link){
+                    if($oldMediaId && $media->link){
                         if (Storage::disk('images')->exists($media->link)) Storage::disk('images')->delete($media->link);
                     }
                     File::makeDirectory($destinationPath, 0755, true, true);
