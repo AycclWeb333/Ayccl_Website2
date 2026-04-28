@@ -28,12 +28,14 @@ class SpecificationController extends Controller
     public function index()
     {
         try{
-            $posts = Post::where('page_id', $this->pageId)->get();
+            
+            $page = Page::findOrFail($this->pageId);
+            $page = Page::findOrFail($this->pageId);
         }
         catch(\Exception $e){
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view("$this->view.index", compact('posts'));
+        return view("$this->view.index", compact('posts', 'page'));
     }
     public function create()
     {
@@ -77,6 +79,7 @@ class SpecificationController extends Controller
 
 
         try {
+            $posts = Post::where('page_id', $this->pageId)->get();
             DB::beginTransaction();
             // 1. Create Post
             $post = new Post();
@@ -132,6 +135,7 @@ class SpecificationController extends Controller
 
                     // 4) (Optional) Optimize original with spatie/image-optimizer
                     try {
+            $posts = Post::where('page_id', $this->pageId)->get();
                         if (class_exists(\Spatie\ImageOptimizer\OptimizerChainFactory::class)) {
                             $optimizerChain = OptimizerChainFactory::create();
                             $optimizerChain->optimize($absoluteOriginal);
@@ -275,6 +279,7 @@ class SpecificationController extends Controller
 
 
         try {
+            $posts = Post::where('page_id', $this->pageId)->get();
             $post = Post::findOrFail($id);
             DB::beginTransaction();
             // dd($post);
@@ -335,6 +340,7 @@ class SpecificationController extends Controller
 
                     // 4) (Optional) Optimize original with spatie/image-optimizer
                     try {
+            $posts = Post::where('page_id', $this->pageId)->get();
                         if (class_exists(\Spatie\ImageOptimizer\OptimizerChainFactory::class)) {
                             $optimizerChain = OptimizerChainFactory::create();
                             $optimizerChain->optimize($absoluteOriginal);
@@ -450,6 +456,7 @@ class SpecificationController extends Controller
     public function destroy($locale ,string $id)
     {
         try {
+            $posts = Post::where('page_id', $this->pageId)->get();
             DB::beginTransaction();
             $post = Post::findOrFail($id);
 

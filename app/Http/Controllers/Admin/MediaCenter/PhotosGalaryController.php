@@ -34,22 +34,25 @@ class PhotosGalaryController extends Controller
     {
         // $posts = Post::where('page_id', 52)->latest()->paginate(10);
         try{
-            $posts = Post::where('page_id', 52)->get();
+            
+            $page = Page::findOrFail($this->pageId);
+            $page = Page::findOrFail($this->pageId);
         }
         catch(\Exception $e){
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view("$this->view.index", compact('posts'));
+        return view("$this->view.index", compact('posts', 'page'));
     }
     public function show(string $id)
     {
         try{
-            $posts = Post::where('page_id', 52)->get();
+            
+            $page = Page::findOrFail($this->pageId);
         }
         catch(\Exception $e){
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view("$this->view.index", compact('posts'));
+        return view("$this->view.index", compact('posts', 'page'));
     }
     public function create()
     {

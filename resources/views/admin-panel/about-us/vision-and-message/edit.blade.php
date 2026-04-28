@@ -166,8 +166,8 @@
                                 'initialPreviewConfig' => $initialPreviewConfig??'',
                                 'uploadUrl' => '#',
                                 'uploadAsync' => false,
-                                'deleteUrl' => '#',
-                                'showRemove' => false,
+                                'deleteUrl' => localizedRoute('media.destroy', ['id' => 0]), 'initialPreviewShowDelete' => true,
+                                'showRemove' => true,
                                 'showUpload' => false,
                                 'showClose' => false,
                                 'fileActionSettings' => [

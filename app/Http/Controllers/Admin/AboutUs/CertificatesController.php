@@ -24,6 +24,7 @@ class CertificatesController extends Controller
     {
         try{
             $posts = Post::where('page_id', $this->pageId)->get();
+            $page = Page::findOrFail($this->pageId);
         }
         catch(\Exception $e){
             Log::error('CertificatesController index error: ' . $e->getMessage(), [
@@ -33,7 +34,7 @@ class CertificatesController extends Controller
             ]);
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view("$this->view.index", compact('posts'));
+        return view("$this->view.index", compact('posts', 'page'));
     }
 
     public function show($locale, $id)

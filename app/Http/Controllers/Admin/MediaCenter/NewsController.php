@@ -27,20 +27,22 @@ class NewsController extends Controller
     {
         // $posts = Post::where('page_id', 51)->latest()->paginate(10);
         try {
-            $posts = Post::where('page_id', 51)->get();
+            
+            $page = Page::findOrFail($this->pageId);
         } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view('admin-panel.media-center.news.index', compact('posts'));
+        return view('admin-panel.media-center.news.index', compact('posts', 'page'));
     }
     public function show(string $id)
     {
         try {
-            $posts = Post::where('page_id', 51)->get();
+            
+            $page = Page::findOrFail($this->pageId);
         } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view('admin-panel.media-center.news.index', compact('posts'));
+        return view('admin-panel.media-center.news.index', compact('posts', 'page'));
     }
     public function create()
     {

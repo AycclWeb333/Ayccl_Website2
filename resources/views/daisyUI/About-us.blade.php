@@ -34,60 +34,17 @@
             </h3>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 special_font_nasser">
-                {{-- إحصائية 1 --}}
-                <div class="flex flex-col items-center">
-                    <div class="flex items-baseline gap-1 mb-2">
-                        <span class="stat-counter text-3xl md:text-4xl font-extrabold text-brand-green" data-value="1.5">0</span>
-                        <span class="text-lg md:text-xl font-bold text-gray-900">{{ app()->getLocale() == 'ar' ? 'مليون طن' : 'M Tons' }}</span>
+                @foreach($statistics as $stat)
+                    <div class="flex flex-col items-center">
+                        <div class="flex items-baseline gap-1 mb-2">
+                            <span class="stat-counter text-3xl md:text-4xl font-extrabold text-brand-green" data-value="{{ $stat->number }}">0</span>
+                            <span class="text-lg md:text-xl font-bold text-gray-900">{{ app()->getLocale() == 'ar' ? $stat->unit_ar : $stat->unit_en }}</span>
+                        </div>
+                        <p class="text-base md:text-lg text-gray-700 font-medium">
+                            {!! nl2br(e(app()->getLocale() == 'ar' ? $stat->description_ar : $stat->description_en)) !!}
+                        </p>
                     </div>
-                    <p class="text-base md:text-lg text-gray-700 font-medium">
-                        {{ app()->getLocale() == 'ar' ? 'طاقة إنتاجية سنوياً' : 'Annual Capacity' }}
-                    </p>
-                </div>
-
-                {{-- إحصائية 2 --}}
-                <div class="flex flex-col items-center">
-                    <div class="flex items-baseline gap-1 mb-2">
-                        <span class="stat-counter text-3xl md:text-4xl font-extrabold text-brand-green" data-value="250">0</span>
-                        <span class="text-lg md:text-xl font-bold text-gray-900">{{ app()->getLocale() == 'ar' ? 'مليون دولار' : 'M Dollars' }}</span>
-                    </div>
-                    <p class="text-base md:text-lg text-gray-700 font-medium">
-                        {{ app()->getLocale() == 'ar' ? 'حجم الاستثمار' : 'Investment Size' }}
-                    </p>
-                </div>
-
-                {{-- إحصائية 3 --}}
-                <div class="flex flex-col items-center">
-                    <div class="flex items-baseline gap-1 mb-2">
-                        <span class="stat-counter text-3xl md:text-4xl font-extrabold text-brand-green" data-value="100">0</span>
-                        <span class="text-lg md:text-xl font-bold text-gray-900">%</span>
-                    </div>
-                    <p class="text-sm md:text-base text-gray-700 font-medium leading-tight">
-                        {!! app()->getLocale() == 'ar' ? 'تكنولوجيا ألمانية <br> (نظام الروبوت)' : 'German Tech <br> (Robot System)' !!}
-                    </p>
-                </div>
-
-                {{-- إحصائية 4 --}}
-                <div class="flex flex-col items-center">
-                    <div class="flex items-baseline gap-1 mb-2">
-                         <span class="stat-counter text-3xl md:text-4xl font-extrabold text-brand-green" data-value="7">0</span>
-                         <span class="text-lg md:text-xl font-bold text-gray-900">{{ app()->getLocale() == 'ar' ? 'أنواع من الأسمنت' : 'Cement Types' }}</span>
-                    </div>
-                    <p class="text-base md:text-lg text-gray-700 font-medium">
-                        {{ app()->getLocale() == 'ar' ? 'المتخصص' : 'Specialized' }}
-                    </p>
-                </div>
-
-                {{-- إحصائية 5 --}}
-                <div class="flex flex-col items-center">
-                    <div class="flex items-baseline gap-1 mb-2">
-                        <span class="stat-counter text-3xl md:text-4xl font-extrabold text-brand-green" data-value="7">0</span>
-                        <span class="text-lg md:text-xl font-bold text-gray-900">{{ app()->getLocale() == 'ar' ? 'شهادات عالمية' : 'Global Cert.' }}</span>
-                    </div>
-                    <p class="text-base md:text-lg text-gray-700 font-medium">
-                        &nbsp;
-                    </p>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>

@@ -29,11 +29,12 @@ class HadhramiController extends Controller
    {
        try{
            $posts = Post::where('page_id', $this->pageId)->get();
+            $page = Page::findOrFail($this->pageId);
        }
        catch(\Exception $e){
            return redirect()->back()->with(['error' => $e->getMessage()]);
        }
-       return view("$this->view.index", compact('posts'));
+       return view("$this->view.index", compact('posts', 'page'));
    }
    public function create()
    {
@@ -479,7 +480,7 @@ class HadhramiController extends Controller
            return redirect()->route("$this->route.index", app()->getLocale())->with(['success' => __('adminlte::adminlte.succDelete')]);
        } catch (\Exception $e) {
            DB::rollBack();
-           return redirect()->back()->with(['error' => $e->getMessage()]);
+           return redirect()->back()->with(['error' => $e->getMessage()])->withInput();
        }
    }
 }

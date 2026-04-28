@@ -99,7 +99,8 @@
 
                         <div class="form-group">
                             <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive"
-                                label="{{ __('adminlte::adminlte.title(EN)') }}" enable-old-support />
+                                label="{{ __('adminlte::adminlte.title(EN)') }}" enable-old-support
+                                required />
                         </div>
 
 
@@ -208,6 +209,7 @@
                                 'showRotate'=> false,
                             ],
                             'showCancel' => false,
+                            'maxFileSize' => 5120,
                             // 'maxFileCount' => 5,
                         ];
                     @endphp
@@ -237,6 +239,7 @@
                                 'showRotate'=> false,
                             ],
                             'showCancel' => false,
+                            'maxFileSize' => 10240,
                             // 'maxFileCount' => 5,
                         ];
                     @endphp
@@ -267,4 +270,42 @@
 @section('plugins.Select2', true)
 
 @section('adminlte_js')
+    <script>
+        $(document).ready(function() {
+            // Client-side validation to prevent losing newly selected files on server-side redirect
+            $('form').on('submit', function(e) {
+                let isValid = true;
+                let errorMessage = "";
+
+                // Check Title (AR)
+                if ($('#title').val().trim() === "") {
+                    isValid = false;
+                    errorMessage += "• {{ __('adminlte::adminlte.title_required') }}\n";
+                }
+
+                // Check Title (EN)
+                if ($('#title_en').val().trim() === "") {
+                    isValid = false;
+                    errorMessage += "• {{ __('adminlte::adminlte.title_en_required') }}\n";
+                }
+
+                // Check Summernote Content (AR)
+                if ($('textarea[name="content_ar"]').summernote('isEmpty')) {
+                    isValid = false;
+                    errorMessage += "• {{ __('adminlte::adminlte.content_required') }}\n";
+                }
+
+                // Check Summernote Content (EN)
+                if ($('textarea[name="content_en"]').summernote('isEmpty')) {
+                    isValid = false;
+                    errorMessage += "• {{ __('adminlte::adminlte.content_en_required') }}\n";
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    toastr.error(errorMessage);
+                }
+            });
+        });
+    </script>
 @stop

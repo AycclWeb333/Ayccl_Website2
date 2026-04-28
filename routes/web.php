@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\Home\StartUpController;
 use App\Http\Controllers\Admin\ContactUs\ContactUsAdminController;
 use App\Http\Controllers\Admin\ExternalLinks\ExternalLinksController;
 use App\Http\Controllers\Admin\Users\UsersManagementtController;
+use App\Http\Controllers\Admin\General\StatisticsController;
 use App\Http\Controllers\ContentManagementController;
 use App\Http\Controllers\StartPage;
 use App\Http\Controllers\LanguageController;
@@ -145,6 +146,10 @@ Route::group([
                     Route::resource('prizes-and-certificates', CertificatesController::class);
                     Route::resource('our-projects', OurProjectController::class);
                     Route::resource('environments', EnvironmentController::class);
+                });
+                Route::prefix('/General')->middleware(['auth'])->group(function () {
+                    Route::resource('statistics', StatisticsController::class);
+                    Route::put('statistics/{id}/toggle-active', [StatisticsController::class, 'toggleActive'])->name('statistics.toggleActive');
                 });
                 Route::prefix('/Sales-And-Marketing')->middleware(['auth'])->group(function () {
                     Route::resource('hadhrami', HadhramiController::class);

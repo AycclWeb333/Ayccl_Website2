@@ -32,6 +32,8 @@ class StartPage extends Controller
 
         $hadramiProjects = Post::where('page_id', 31)->where('active', true)->with(['postDetailOne', 'media'])->orderBy('created_at', 'desc')->take(6)->get();
 
-        return view('welcome', compact('contactDetails','map', 'slideshows', 'isoCertificates', 'products', 'hadramiProjects', 'page'));
+        $statistics = \App\Models\Statistic::where('active', true)->orderBy('order')->get();
+
+        return view('welcome', compact('contactDetails','map', 'slideshows', 'isoCertificates', 'products', 'hadramiProjects', 'page', 'statistics'));
     }
 }

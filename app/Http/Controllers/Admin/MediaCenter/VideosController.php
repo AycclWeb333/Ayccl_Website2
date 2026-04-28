@@ -28,7 +28,8 @@ class VideosController extends Controller
     {
         // $posts = Post::where('page_id', 53)->latest()->paginate(10);
         try {
-            $posts = Post::where('page_id', 53)->get();
+            
+            $page = Page::findOrFail($this->pageId);
             $categories = Category::where('type',53 )->get();
             // dd($posts);
         } catch (\Exception $e) {
@@ -39,11 +40,12 @@ class VideosController extends Controller
     public function show(string $id)
     {
         try {
-            $posts = Post::where('page_id', 53)->get();
+            
+            $page = Page::findOrFail($this->pageId);
         } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view('admin-panel.media-center.videos.index', compact('posts'));
+        return view('admin-panel.media-center.videos.index', compact('posts', 'page'));
     }
     public function create()
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\AboutUs;
 
+use App\Models\Page;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\PostDetail;
@@ -28,10 +29,11 @@ class ManagementController extends Controller
     {
         try {
             $posts = Post::where('page_id', $this->pageId)->orderby('order')->get();
+            $page = Page::findOrFail($this->pageId);
         } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view("$this->view.index", compact('posts'));
+        return view("$this->view.index", compact('posts', 'page'));
     }
 
     /**

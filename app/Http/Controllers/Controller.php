@@ -20,7 +20,7 @@ class Controller extends BaseController
         return [
             'rules' => [
                 'files'       => 'nullable', // Individual controllers can add 'required' if needed
-                'files.*'     => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048', // 2MB
+                'files.*'     => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB
                 'files_pdf'   => 'nullable',
                 'files_pdf.*' => 'mimes:pdf|max:10240', // 10MB
             ],

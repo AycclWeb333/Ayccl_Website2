@@ -1,4 +1,4 @@
-@isset($posts[0])
+@isset($page)
     <button type="button" class="btn btn-outline-warning btn-lg mb-10" data-toggle="modal" data-target="#categoryEdit">
         <i class="fas fa-edit"></i>
         {{ __('adminlte::adminlte.editPageBackgroundAndDesc') }}
@@ -8,7 +8,7 @@
     <x-adminlte-modal id="categoryEdit" title="{{ __('adminlte::adminlte.editPageBackground') }}" theme="warning"
         icon="fas fa-edit" size="xl" v-centered scrollable>
         <form id="formEditCategory"
-            action="{{ route('pages.update', ['locale' => app()->getLocale(), 'id' => $posts[0]->page_id]) }}" method="POST">
+            action="{{ route('pages.update', ['locale' => app()->getLocale(), 'id' => $page->id]) }}" method="POST">
             @csrf
             @method('PUT')
             
@@ -16,14 +16,14 @@
                 <div class="col-12 col-md-6">
                     <x-adminlte-textarea id="content_ar" name="content_ar" label-class="text-olive" igroup-size="md" rows=6
                         label="{{ __('adminlte::adminlte.contentAR') }}" enable-old-support>
-                        {{ $posts[0]->page->content }}
+                        {{ $page->content }}
                         </x-adminlte.form.textarea>
                 </div>
 
                 <div class="col-12 col-md-6"style="direction: ltr;">
                     <x-adminlte-textarea id="content_en" name="content_en" label-class="text-olive" igroup-size="md" rows=6
                         label="{{ __('adminlte::adminlte.contentEN') }}" enable-old-support>
-                        {{ $posts[0]->page->content_en }}
+                        {{ $page->content_en }}
                         </x-adminlte.form.textarea>
                 </div>
             </div>
@@ -32,7 +32,7 @@
                 @php
                     $initialPreview = [];
                     $initialPreviewConfig = [];
-                    $image = $posts[0]->page->background;
+                    $image = $page->background;
                     $previewUrl = asset($image);
                     $initialPreview[] = $previewUrl . '';
                     $initialPreviewConfig[] = [
@@ -49,14 +49,14 @@
                         'initialPreviewConfig' => $initialPreviewConfig,
                         'uploadUrl' => '#',
                         'uploadAsync' => false,
-                        'deleteUrl' => '#',
-                        'showRemove' => false,
+                        'deleteUrl' => localizedRoute('media.destroy', ['id' => 0]), 'initialPreviewShowDelete' => true,
+                        'showRemove' => true,
                         'showUpload' => false,
                         'intialRemove'=>false,
                         'showClose' => false,
                         'initialPreviewShowDelete' => false,
                         'fileActionSettings' => [
-                            'showRemove' => false,
+                            'showRemove' => true,
                             'showZoom' => true,
                             'showUpload' => false,
                             'showDrag' => false,

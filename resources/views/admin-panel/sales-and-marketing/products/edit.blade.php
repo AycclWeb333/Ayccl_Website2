@@ -68,7 +68,7 @@
                     <!-- title Column -->
                     <div class="col-12 col-md-6">
                         <div class="form-group">
-                            <x-adminlte.form.input id="title" name="title" value="{{ $post->postDetailOne->title }}"
+                            <x-adminlte.form.input id="title" name="title" value="{{ old('title', $post->postDetailOne->title) }}"
                                 label="{{ __('adminlte::adminlte.title(AR)') }}" label-class="text-olive" enable-old-support
                                 required />
                         </div>
@@ -98,7 +98,7 @@
 
                         <div class="form-group">
                             <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive"
-                                value="{{ $post->postDetailOne->title_en }}"
+                                value="{{ old('title_en', $post->postDetailOne->title_en) }}"
                                 label="{{ __('adminlte::adminlte.title(EN)') }}" enable-old-support />
                         </div>
 
@@ -193,16 +193,16 @@
                         <x-adminlte-text-editor name="content_ar" label="{{ __('adminlte::adminlte.contentAR') }}"
                             label-class="text-olive" igroup-size="sm" placeholder="اكتب النص هنا ..." :config="$config"
                             enable-old-support>
-                            {{ $post->postDetailOne->content }}
+                            {{ old('content_ar', $post->postDetailOne->content) }}
                         </x-adminlte-text-editor>
                     </div>
                     {{-- content EN --}}
 
                     <div class="form-group col-12 col-md-6">
                         <x-adminlte-text-editor name="content_en" label="{{ __('adminlte::adminlte.contentEN') }}"
-                            value="{{ $post->postDetailOne->content_en }}" label-class="text-olive" igroup-size="sm"
+                            value="{{ old('content_en', $post->postDetailOne->content_en) }}" label-class="text-olive" igroup-size="sm"
                             placeholder="Write some text..." :config="$config" enable-old-support>
-                            {{ $post->postDetailOne->content_en }}
+                            {{ old('content_en', $post->postDetailOne->content_en) }}
                         </x-adminlte-text-editor>
                     </div>
                 </div>
@@ -214,25 +214,34 @@
                         $initialPreviewConfig = [];
                         $deleteUrl = [];
                         foreach ($post->media as $media) {
-                            // Build the URL to the image using Laravel's asset() helper
-                            // 'storage/' is the correct path prefix for files on the public disk.
-                            $previewUrl = asset($media->filepath);
-                            // $deleteUrl = route('media.destroy', ['media' => $media->id]);
-                            // dd($previewUrl);
-                            // Add the image URL to the preview array
-                            $initialPreview[] = $previewUrl . '';
-                            $deleteUrl = localizedRoute('media.destroy', ['id' => $media->id]);
-                            // Add the configuration for this specific image
-                            // dd($deleteUrl);
-                            $initialPreviewConfig[] = [
-                                'caption' => basename($media->filepath), // The filename for display
-                                'size' => Storage::disk('images')->exists($media->filepath) ? Storage::disk('images')->size($media->filepath) : 0, // File size in bytes
-                                'key' => $media->id, // A unique key for deletion
-                                'url' => $deleteUrl, // The URL to send the delete request to
-                                'extra' => ['_token' => csrf_token(), '_method' => 'DELETE'],
-                            ];
+                            // Check if filepath is actually an image
+                            $isImage = $media->filepath && in_array(strtolower(pathinfo($media->filepath, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                            
+                            if ($media->filepath && $isImage) {
+                                // Build the URL to the image using Laravel's asset() helper
+                                // 'storage/' is the correct path prefix for files on the public disk.
+                                $previewUrl = asset($media->filepath);
+                                // $deleteUrl = route('media.destroy', ['media' => $media->id]);
+                                // dd($previewUrl);
+                                // Add the image URL to the preview array
+                                $initialPreview[] = $previewUrl . '';
+                                $deleteUrl = localizedRoute('media.destroy', ['id' => $media->id]);
+                                // Add the configuration for this specific image
+                                // dd($deleteUrl);
+                                $initialPreviewConfig[] = [
+                                    'caption' => basename($media->filepath), // The filename for display
+                                    'size' => Storage::disk('images')->exists($media->filepath) ? Storage::disk('images')->size($media->filepath) : 0, // File size in bytes
+                                    'key' => $media->id, // A unique key for deletion
+                                    'url' => localizedRoute('media.destroy', ['id' => $media->id]),
+                                    'extra' => [
+                                        '_token' => csrf_token(),
+                                        '_method' => 'DELETE',
+                                        'field' => 'filepath'
+                                    ]
+                                ];
                             }
-                            $config = [
+                        }
+                        $config = [
                                 'allowedFileTypes' => ['image'],
                                 'browseOnZoneClick' => true,
                                 'theme' => 'fa5',
@@ -242,7 +251,8 @@
                                 'initialPreviewConfig' => $initialPreviewConfig,
                                 'uploadUrl' => '#',
                                 'uploadAsync' => false,
-                                'deleteUrl' => '#',
+                                'deleteUrl' => localizedRoute('media.destroy', ['id' => 0]), // Placeholder
+                                'initialPreviewShowDelete' => true,
                                 'showRemove' => false,
                                 'showUpload' => false,
                                 'showClose' => false,
@@ -254,6 +264,7 @@
                                     'showRotate' => false,
                                 ],
                                 'showCancel' => false,
+                                'maxFileSize' => 5120,
                                 // 'maxFileCount' => 5,
                             ];
                     @endphp
@@ -269,26 +280,37 @@
                         $initialPreviewConfig = [];
                         $deleteUrl = [];
                         foreach ($post->media as $media) {
-                            // Build the URL to the image using Laravel's asset() helper
-                            // 'storage/' is the correct path prefix for files on the public disk.
-                            $previewUrl = asset($media->link);
-                            // $deleteUrl = route('media.destroy', ['media' => $media->id]);
-                            // dd($previewUrl);
-                            // Add the image URL to the preview array
-                            $initialPreview[] = $previewUrl . '';
-                            $deleteUrl = localizedRoute('media.destroy', ['id' => $media->id]);
-                            // Add the configuration for this specific image
-                            // dd($deleteUrl);
-                            $initialPreviewConfig[] = [
-                                'type' => 'pdf',
-                                'caption' => basename($media->link), // The filename for display
-                                'size' => Storage::disk('images')->exists($media->link) ? Storage::disk('images')->size($media->link) : 0, // File size in bytes
-                                'key' => $media->id, // A unique key for deletion
-                                'url' => $deleteUrl, // The URL to send the delete request to
-                                'extra' => ['_token' => csrf_token(), '_method' => 'DELETE'],
-                            ];
+                            $pdfFile = null;
+                            $field = null;
+                            
+                            if ($media->link) {
+                                $pdfFile = $media->link;
+                                $field = 'link';
+                            } elseif ($media->filepath && strtolower(pathinfo($media->filepath, PATHINFO_EXTENSION)) == 'pdf') {
+                                $pdfFile = $media->filepath;
+                                $field = 'filepath';
                             }
-                            $config = [
+
+                            if ($pdfFile) {
+                                $previewUrl = asset($pdfFile);
+                                $initialPreview[] = $previewUrl . '';
+                                $deleteUrl = localizedRoute('media.destroy', ['id' => $media->id]);
+                                
+                                $initialPreviewConfig[] = [
+                                    'type' => 'pdf',
+                                    'caption' => basename($pdfFile), // The filename for display
+                                    'size' => Storage::disk('images')->exists($pdfFile) ? Storage::disk('images')->size($pdfFile) : 0, // File size in bytes
+                                    'key' => $media->id, // A unique key for deletion
+                                    'url' => localizedRoute('media.destroy', ['id' => $media->id]),
+                                    'extra' => [
+                                        '_token' => csrf_token(),
+                                        '_method' => 'DELETE',
+                                        'field' => 'link'
+                                    ]
+                                ];
+                            }
+                        }
+                        $config = [
                             'allowedFileTypes' => ['pdf'],
                             'browseOnZoneClick' => true,
                             'theme' => 'fa5',
@@ -299,7 +321,8 @@
                             'uploadUrl' => '#',
                             'uploadAsync' => false,
                             'preferIconicPreview' => true,
-                            'deleteUrl' => '#',
+                            'deleteUrl' => localizedRoute('media.destroy', ['id' => 0]),
+                            'initialPreviewShowDelete' => true,
                             'showRemove' => false,
                             'showUpload' => false,
                             'showClose' => false,
@@ -312,6 +335,7 @@
                                 'showRotate'=> false,
                             ],
                             'showCancel' => false,
+                            'maxFileSize' => 10240,
                             'maxFileCount' => 1,
                         ];
                     @endphp
@@ -340,4 +364,42 @@
 @section('plugins.Select2', true)
 
 @section('adminlte_js')
+    <script>
+        $(document).ready(function() {
+            // Client-side validation to prevent losing newly selected files on server-side redirect
+            $('form').on('submit', function(e) {
+                let isValid = true;
+                let errorMessage = "";
+
+                // Check Title (AR)
+                if ($('#title').val().trim() === "") {
+                    isValid = false;
+                    errorMessage += "• {{ __('adminlte::adminlte.title_required') }}\n";
+                }
+
+                // Check Title (EN)
+                if ($('#title_en').val().trim() === "") {
+                    isValid = false;
+                    errorMessage += "• {{ __('adminlte::adminlte.title_en_required') }}\n";
+                }
+
+                // Check Summernote Content (AR)
+                if ($('textarea[name="content_ar"]').summernote('isEmpty')) {
+                    isValid = false;
+                    errorMessage += "• {{ __('adminlte::adminlte.content_required') }}\n";
+                }
+
+                // Check Summernote Content (EN)
+                if ($('textarea[name="content_en"]').summernote('isEmpty')) {
+                    isValid = false;
+                    errorMessage += "• {{ __('adminlte::adminlte.content_en_required') }}\n";
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    toastr.error(errorMessage);
+                }
+            });
+        });
+    </script>
 @stop

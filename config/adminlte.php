@@ -646,6 +646,12 @@ return [
             'active' => ['*external-links*'],
         ],
         [
+            'icon' => 'fas fa-chart-bar',
+            'text' => 'statistics',
+            'route' => 'statistics.index',
+            'active' => ['*statistics*'],
+        ],
+        [
             'text' => 'settings',
             'icon' => 'fas fa-cog',
             'active' => ['admin/settings*'],

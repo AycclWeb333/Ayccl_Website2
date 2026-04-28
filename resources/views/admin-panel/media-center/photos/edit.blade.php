@@ -209,23 +209,25 @@
                         $initialPreviewConfig = [];
                         $deleteUrl = [];
                         foreach ($post->media as $media) {
-                            // Build the URL to the image using Laravel's asset() helper
-                            // 'storage/' is the correct path prefix for files on the public disk.
-                            $previewUrl = asset( $media->filepath);
-                            // $deleteUrl = route('media.destroy', ['media' => $media->id]);
-                            // dd($previewUrl);
-                            // Add the image URL to the preview array
-                            $initialPreview[] = $previewUrl .'';
-                            $deleteUrl = localizedRoute('media.destroy', ['id' => $media->id]);
-                            // Add the configuration for this specific image
-                            // dd($deleteUrl);
-                            $initialPreviewConfig[] = [
-                                'caption' => basename($media->filepath), // The filename for display
-                                'size' => Storage::disk('images')->exists($media->filepath) ? Storage::disk('images')->size($media->filepath) : 0, // File size in bytes
-                                'key' => $media->id, // A unique key for deletion
-                                'url' => $deleteUrl, // The URL to send the delete request to
-                                'extra' => ['_token' => csrf_token(), '_method' => 'DELETE'],
-                            ];
+                            if ($media->filepath) {
+                                // Build the URL to the image using Laravel's asset() helper
+                                // 'storage/' is the correct path prefix for files on the public disk.
+                                $previewUrl = asset($media->filepath);
+                                // $deleteUrl = route('media.destroy', ['media' => $media->id]);
+                                // dd($previewUrl);
+                                // Add the image URL to the preview array
+                                $initialPreview[] = $previewUrl . '';
+                                $deleteUrl = localizedRoute('media.destroy', ['id' => $media->id]);
+                                // Add the configuration for this specific image
+                                // dd($deleteUrl);
+                                $initialPreviewConfig[] = [
+                                    'caption' => basename($media->filepath), // The filename for display
+                                    'size' => Storage::disk('images')->exists($media->filepath) ? Storage::disk('images')->size($media->filepath) : 0, // File size in bytes
+                                    'key' => $media->id, // A unique key for deletion
+                                    'url' => $deleteUrl, // The URL to send the delete request to
+                                    'extra' => ['_token' => csrf_token(), '_method' => 'DELETE'],
+                                ];
+                            }
                         }
                         $config = [
                             'allowedFileTypes' => ['image'],
@@ -237,8 +239,8 @@
                             'initialPreviewConfig' => $initialPreviewConfig,
                             'uploadUrl' => '#',
                             'uploadAsync' => false,
-                            'deleteUrl' => '#',
-                            'showRemove' => false,
+                            'deleteUrl' => localizedRoute('media.destroy', ['id' => 0]), 'initialPreviewShowDelete' => true,
+                            'showRemove' => true,
                             'showUpload' => false,
                             'showClose' => false,
                             'fileActionSettings' => [

@@ -37,30 +37,58 @@ class PostController extends Controller
     {
         try {
             $media = Media::findOrFail($id);
-            // Use a transaction closure for automatic commit and rollback
-            // dd($media);
-            DB::transaction(function () use ($media) {
-                // 1. Find the post by its ID
-                // 2. Explicitly set the 'active' status to true
-                // Delete the image file from files
-                if (Storage::disk('images')->exists($media->filepath)) {
-                    Storage::disk('images')->delete($media->filepath);
-                }
-                // Delete the thumbnail file from storage
-                if (Storage::disk('images')->exists($media->thumbnailpath) ) {
-                    $path =  $media->thumbnailpath .'';
-                    
-                    if(! Str::contains($path , '/thumbnails'))
+            $field = request()->input('field');
+
+            DB::transaction(function () use ($media, $field) {
+                if ($field == 'filepath') {
+                    // Delete the image/file from filepath
+                    if ($media->filepath && Storage::disk('images')->exists($media->filepath)) {
+                        Storage::disk('images')->delete($media->filepath);
+                    }
+                    if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
                         Storage::disk('images')->delete($media->thumbnailpath);
+                    }
+                    
+                    // If we have a link (PDF), move it to filepath to satisfy the NOT NULL constraint
+                    if ($media->link) {
+                        $media->filepath = $media->link;
+                        $media->thumbnailpath = null;
+                        $media->link = null;
+                        $media->save();
+                    } else {
+                        $media->delete();
+                    }
+                } elseif ($field == 'link') {
+                    // Delete the file from link
+                    if ($media->link && Storage::disk('images')->exists($media->link)) {
+                        Storage::disk('images')->delete($media->link);
+                    }
+                    $media->link = null;
+                    
+                    // Since filepath is NOT NULL, we don't need to worry about it being null here 
+                    // unless it was already empty (which shouldn't happen).
+                    if (empty($media->filepath)) {
+                        $media->delete();
+                    } else {
+                        $media->save();
+                    }
+                } else {
+                    // Default behavior (delete everything)
+                    if ($media->filepath && Storage::disk('images')->exists($media->filepath)) {
+                        Storage::disk('images')->delete($media->filepath);
+                    }
+                    if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
+                        Storage::disk('images')->delete($media->thumbnailpath);
+                    }
+                    if ($media->link && Storage::disk('images')->exists($media->link)) {
+                        Storage::disk('images')->delete($media->link);
+                    }
+                    $media->delete();
                 }
-                // Delete the record from the database
-                $media->delete();
             });
-                DB::commit();
-            // 3. Redirect back with a success message
+
             return response()->json(['success' => true], 200);
         } catch (\Exception $e) {
-            // If anything goes wrong, the transaction is automatically rolled back
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }

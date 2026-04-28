@@ -75,4 +75,5 @@ return [
 'electronicServices' => 'Electronic Services',
 'settings' => 'Settings',
 'mailSettings' => 'Mail Settings',
+'statistics' => 'Statistics',
 ];

@@ -12,8 +12,9 @@
     <div class="container mx-0  mb-5">
         <a href="{{ route('future-plans.create', ['locale'=> app()->getLocale()]) }}">
             <x-adminlte-button class="btn-lg mb-10" type="reset" label="{{ __('adminlte::adminlte.createNewPost') }}" theme="outline-success" icon="fas fa-file-far fa-plus-square	"/>
-
         </a>
+    @include('admin-panel.general.pages.edit')
+
     </div>
     <!-- Alert for success messages -->
 

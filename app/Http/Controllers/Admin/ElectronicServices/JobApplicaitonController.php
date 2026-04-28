@@ -28,11 +28,12 @@ class JobApplicaitonController extends Controller
     {
         try{
             $posts = Post::where('page_id', $this->pageId)->get();
+            $page = Page::findOrFail($this->pageId);
         }
         catch(\Exception $e){
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view("$this->view.index", compact('posts'));
+        return view("$this->view.index", compact('posts', 'page'));
     }
 
     public function show($locale, $id)

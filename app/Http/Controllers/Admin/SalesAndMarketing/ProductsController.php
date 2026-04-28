@@ -28,11 +28,12 @@ class ProductsController extends Controller
     {
         try{
             $posts = Post::where('page_id', $this->pageId)->get();
+            $page = Page::findOrFail($this->pageId);
         }
         catch(\Exception $e){
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view("$this->view.index", compact('posts'));
+        return view("$this->view.index", compact('posts', 'page'));
     }
 
     public function show($locale, $id)
@@ -262,7 +263,7 @@ class ProductsController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             // return redirect()->back()->withErrors(['error' => $e->getMessage()]);
-            return redirect()->back()->with(['error' => $e->getMessage()]);
+            return redirect()->back()->with(['error' => $e->getMessage()])->withInput();
         }
     }
 
@@ -287,6 +288,14 @@ class ProductsController extends Controller
     {
         // dd($request);
         $fileVal = $this->getFileValidation();
+        
+        // Custom logic: If no image exists in DB, make 'files' required
+        $post = Post::find($id);
+        if ($post && !$post->media()->where('media_type_id', 1)->exists()) {
+            $fileVal['rules']['files'] = 'required';
+            $fileVal['messages']['files.required'] = __('adminlte::adminlte.files_required');
+        }
+
         $request->validate(
             array_merge([
                 'title'      => 'required',
@@ -344,6 +353,13 @@ class ProductsController extends Controller
             $originalRel = $media->filepath;
             $fileName    = $media->alt;
             $pdfPath     = $media->link;
+
+            // Handle fallback where PDF is in filepath (due to granular deletion)
+            if (!$pdfPath && $originalRel && strtolower(pathinfo($originalRel, PATHINFO_EXTENSION)) == 'pdf') {
+                $pdfPath = $originalRel;
+                $originalRel = null;
+                $thumbRel = null;
+            }
 
             // 3) Upload Media (if provided)
             if ($request->hasFile('files'))
@@ -443,7 +459,8 @@ class ProductsController extends Controller
 
                     // 6) Delete old files if replacing
                     if($oldMediaId){
-                        if ($media->filepath && Storage::disk('images')->exists($media->filepath)) {
+                        // Only delete if it's actually an image (don't delete PDF that was moved here)
+                        if ($media->filepath && $media->filepath != $pdfPath && Storage::disk('images')->exists($media->filepath)) {
                             Storage::disk('images')->delete($media->filepath);
                         }
                         if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
@@ -470,9 +487,9 @@ class ProductsController extends Controller
                 $file->move($destinationPath, $originalFileName);
             }
 
-            $mediaCount = Media::where('media_able_id', $post->id)->count();
-            if ($mediaCount == 0 && !$request->hasFile('files') && !$request->hasFile('files_pdf')) {
-                throw new \Exception(__('adminlte::adminlte.files_required'));
+            $hasImage = $post->media()->where('media_type_id', 1)->exists() || $request->hasFile('files');
+            if (!$hasImage) {
+                throw new \Exception(__('adminlte::adminlte.files_required') . ' (' . __('adminlte::adminlte.image') . ')');
             }
 
             $media->media_type_id  = 1;
@@ -492,7 +509,7 @@ class ProductsController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             // return redirect()->back()->withErrors(['error' => $e->getMessage()]);
-            return redirect()->back()->with(['error' => $e->getMessage()]);
+            return redirect()->back()->with(['error' => $e->getMessage()])->withInput();
         }
     }
 
@@ -543,7 +560,7 @@ class ProductsController extends Controller
             return redirect()->route("$this->route.index", app()->getLocale())->with(['success' => __('adminlte::adminlte.succDelete')]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(['error' => $e->getMessage()]);
+            return redirect()->back()->with(['error' => $e->getMessage()])->withInput();
         }
     }
 }

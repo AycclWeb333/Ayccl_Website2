@@ -70,5 +70,6 @@ return [
 'inspectionCertificates' => 'شهادات الفحص',
 'electronicServices' => 'الخدمات الإلكترونية',
 'settings' => 'الإعدادات',
-'mailSettings' => 'إعدادات البريد',
+    'mailSettings' => 'إعدادات البريد',
+    'statistics' => 'الإحصائيات',
 ];

@@ -32,11 +32,12 @@ class DocumentsController extends Controller
     {
         // $posts = Post::where('page_id', 54)->latest()->paginate(10);
         try {
-            $posts = Post::where('page_id', 54)->get();
+            
+            $page = Page::findOrFail($this->pageId);
         } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view('admin-panel.media-center.documents.index', compact('posts'));
+        return view('admin-panel.media-center.documents.index', compact('posts', 'page'));
     }
     public function show($locale, $id)
 {
@@ -57,7 +58,8 @@ class DocumentsController extends Controller
     public function create()
     {
     //     try {
-    //         $posts = Post::where('page_id', 54)->get();
+    //         
+            $page = Page::findOrFail($this->pageId);
     //     } catch (\Exception $e) {
     //         return redirect()->back()->with(['error' => $e->getMessage()]);
     //     }
