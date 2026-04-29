@@ -78,22 +78,20 @@ class ProductsController extends Controller
     {
         $fileVal = $this->getFileValidation();
         $request->validate(
-            array_merge([
+            array_merge($fileVal['rules'], [
                 'title'      => 'required',
                 'title_en'   => 'required',
                 'content_ar' => 'required',
                 'content_en' => 'required',
                 'files'      => 'required', // Specific requirement for store
-                'files_pdf'  => 'required', // Specific requirement for store
-            ], $fileVal['rules']),
-            array_merge([
+            ]),
+            array_merge($fileVal['messages'], [
                 'title.required'      => __('adminlte::adminlte.title_required'),
                 'title_en.required'   => __('adminlte::adminlte.title_en_required'),
                 'content_ar.required' => __('adminlte::adminlte.content_required'),
                 'content_en.required' => __('adminlte::adminlte.content_en_required'),
                 'files.required'      => __('adminlte::adminlte.files_required'),
-                'files_pdf.required'  => __('adminlte::adminlte.files_required'),
-            ], $fileVal['messages'])
+            ])
         );
 
 
@@ -126,7 +124,14 @@ class ProductsController extends Controller
             $postDetail->save();
 
             // Force Spatie/Image to use GD instead of Imagick
+            $thumbRel    = null;
+            $originalRel = null;
+            $fileName    = null;
+            $pdfPath     = null;
 
+            if (!$request->hasFile('files')) {
+               throw new \Exception(__('adminlte::adminlte.files_required'));
+           }
             // 3) Upload Media (if provided)
             if ($request->hasFile('files')) {
                 $files = is_array($request->file('files')) ? $request->file('files') : [$request->file('files')];
@@ -291,7 +296,17 @@ class ProductsController extends Controller
         
         // Custom logic: If no image exists in DB, make 'files' required
         $post = Post::find($id);
-        if ($post && !$post->media()->where('media_type_id', 1)->exists()) {
+        $hasImageInDb = false;
+        if ($post) {
+            foreach ($post->media as $m) {
+                if ($m->filepath && in_array(strtolower(pathinfo($m->filepath, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                    $hasImageInDb = true;
+                    break;
+                }
+            }
+        }
+
+        if (!$hasImageInDb) {
             $fileVal['rules']['files'] = 'required';
             $fileVal['messages']['files.required'] = __('adminlte::adminlte.files_required');
         }
@@ -487,9 +502,19 @@ class ProductsController extends Controller
                 $file->move($destinationPath, $originalFileName);
             }
 
-            $hasImage = $post->media()->where('media_type_id', 1)->exists() || $request->hasFile('files');
+            $hasImage = false;
+            foreach ($post->media as $m) {
+                if ($m->filepath && in_array(strtolower(pathinfo($m->filepath, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                    $hasImage = true;
+                    break;
+                }
+            }
+            if ($request->hasFile('files')) {
+                $hasImage = true;
+            }
+
             if (!$hasImage) {
-                throw new \Exception(__('adminlte::adminlte.files_required') . ' (' . __('adminlte::adminlte.image') . ')');
+                throw new \Exception(__('adminlte::adminlte.files_required'));
             }
 
             $media->media_type_id  = 1;

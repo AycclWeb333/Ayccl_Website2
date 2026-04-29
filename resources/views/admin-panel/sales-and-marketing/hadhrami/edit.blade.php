@@ -248,7 +248,7 @@
                         'uploadAsync' => false,
                         'deleteUrl' => localizedRoute('media.destroy', ['id' => 0]),
                         'initialPreviewShowDelete' => true,
-                        'showRemove' => false,
+                        'showRemove' => true,
                         'showUpload' => false,
                         'showClose' => false,
                         'fileActionSettings' => [

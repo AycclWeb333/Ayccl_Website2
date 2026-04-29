@@ -253,7 +253,7 @@
                                 'uploadAsync' => false,
                                 'deleteUrl' => localizedRoute('media.destroy', ['id' => 0]), // Placeholder
                                 'initialPreviewShowDelete' => true,
-                                'showRemove' => false,
+                                'showRemove' => true,
                                 'showUpload' => false,
                                 'showClose' => false,
                                 'fileActionSettings' => [
@@ -323,7 +323,7 @@
                             'preferIconicPreview' => true,
                             'deleteUrl' => localizedRoute('media.destroy', ['id' => 0]),
                             'initialPreviewShowDelete' => true,
-                            'showRemove' => false,
+                            'showRemove' => true,
                             'showUpload' => false,
                             'showClose' => false,
                             'previewFileIconSettings' =>[ 'pdf' => '<i class="fas fa-file-pdf text-danger"></i>',],

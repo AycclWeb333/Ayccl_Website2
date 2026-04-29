@@ -65,14 +65,12 @@ class HadhramiController extends Controller
                'title_en'   => 'required',
                'content_ar'    => 'required',
                'content_en' => 'required',
-               'files'      => 'required',
            ],
            [
                'title.required'      => __('adminlte::adminlte.title_required'),
                'title_en.required'   => __('adminlte::adminlte.title_en_required'),
                'content_ar.required'    => __('adminlte::adminlte.content_required'),
                'content_en.required' => __('adminlte::adminlte.content_en_required'),
-               'files.required'      => __('adminlte::adminlte.files_required'),
            ]
        );
 
@@ -108,6 +106,10 @@ class HadhramiController extends Controller
            // Force Spatie/Image to use GD instead of Imagick
 
            // 3) Upload Media (if provided)
+           if (!$request->hasFile('files')) {
+               throw new \Exception(__('adminlte::adminlte.files_required'));
+           }
+
            if ($request->hasFile('files')) {
                $files = is_array($request->file('files')) ? $request->file('files') : [$request->file('files')];
 
@@ -408,27 +410,16 @@ class HadhramiController extends Controller
                    }
 
                    // 6) Save DB record
-                    $oldMediaId = $post->mediaOne->id ?? null;
-                    $media = Media::findOrNew($oldMediaId);
-                    
-                    if($oldMediaId){
-                        if ($media->filepath && Storage::disk('images')->exists($media->filepath)) {
-                            Storage::disk('images')->delete($media->filepath);
-                        }
-                        // Delete the thumbnail file from storage
-                        if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
-                            Storage::disk('images')->delete($media->thumbnailpath);
-                        }
-                    }
-                   $media->media_type_id  = 1;
-                   $media->thumbnailpath  = $thumbRel;      // store relative path
-                   $media->filepath       = $originalRel;   // store relative path
-                   $media->alt            = $fileName;
-                   $media->setAltEnAttribute($fileName);
-                   $media->link           = $request->link ?? null;
-                   $media->media_able_id  = $post->id;
-                   $media->media_able_type = Post::class;
-                   $media->save();
+                    $media                 = new Media();
+                    $media->media_type_id  = 1;
+                    $media->thumbnailpath  = $thumbRel;      // store relative path
+                    $media->filepath       = $originalRel;   // store relative path
+                    $media->alt            = $fileName;
+                    $media->setAltEnAttribute($fileName);
+                    $media->link           = $request->link ?? null;
+                    $media->media_able_id  = $post->id;
+                    $media->media_able_type = Post::class;
+                    $media->save();
                }
 
                // Commit after processing all files (do NOT commit inside the loop)
