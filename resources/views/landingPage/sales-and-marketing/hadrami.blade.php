@@ -43,7 +43,7 @@
                             @if (count($post->media) === 1)
                                 <div class="relative w-full h-fit overflow-hidden rounded-t-lg group">
                                     <img src="{{ asset($post->media[0]->filepath) }}" alt="{{ $post->media[0]->alt ?? '' }}"
-                                        class="h-60 sm:h-60 object-cover w-full" loading="lazy" />
+                                        class="h-60 sm:h-60 object-cover w-full" />
                                     <div class="w-fit gallery-trigger-container absolute -bottom-5 sm:-bottom-5 
                                             {{ app()->getLocale() =='en' ? 'start-7 sm:start-7' : 'start-0 sm:start-0'   }}
                                                 -translate-x-1/2 -translate-y-1/2 text-white rounded-4xl
@@ -60,7 +60,7 @@
                                         <div class="item relative w-full overflow-hidden cursor-grabbing group">
                                             <!-- Image -->
                                             <img src="{{ asset($img->filepath) }}" alt="{{ $img->alt ?? '' }}"
-                                                class="h-60 sm:h-60 object-cover w-full" loading="lazy" />
+                                                class="h-60 sm:h-60 object-cover w-full" />
 
                                             <!-- Resize Icon -->
                                             <div class="w-fit gallery-trigger-container absolute -bottom-5  sm:-bottom-5 
@@ -118,32 +118,27 @@
 
 @section('jsafter')
 <script>
-    function waitForImages($imgs, timeoutMs = 10000) {
+    function waitForImages($imgs, timeoutMs = 5000) {
         return new Promise((resolve) => {
-            if (!$imgs || !$imgs.length) return resolve({ loaded: 0, total: 0 });
+            if (!$imgs || !$imgs.length) return resolve();
 
             let total = $imgs.length;
             let loaded = 0;
             let resolved = false;
+            let timer;
 
             const done = () => {
                 if (!resolved && loaded >= total) {
                     resolved = true;
-                    clearTimeout(timer);
-                    resolve({ loaded, total });
+                    if (timer) clearTimeout(timer);
+                    resolve();
                 }
             };
 
             $imgs.each(function () {
                 const img = this;
-
-                // Force eager loading so browser loads now
-                img.loading = 'eager';
-                img.decoding = 'sync';
-
                 if (img.complete && img.naturalWidth > 0) {
                     loaded++;
-                    done();
                 } else {
                     $(img).one('load error', function () {
                         loaded++;
@@ -152,11 +147,13 @@
                 }
             });
 
-            const timer = setTimeout(() => {
+            // تفقد الحالة فوراً للصور المخزنة
+            done();
+
+            timer = setTimeout(() => {
                 if (!resolved) {
                     resolved = true;
-                    console.warn('Timeout, loaded', loaded, 'of', total);
-                    resolve({ loaded, total, timeout: true });
+                    resolve();
                 }
             }, timeoutMs);
         });
@@ -168,6 +165,15 @@
                 (function() {
                     const $owl = $('#post-carousel-{{ $post->id }}');
                     const $loader = $('#loader-{{ $post->id }}');
+
+                    // ربط الأحداث قبل التهيئة لضمان عدم ضياعها
+                    $owl.on('initialized.owl.carousel refreshed.owl.carousel', function () {
+                        setTimeout(() => {
+                            waitForImages($owl.find('img'), 5000).then(() => {
+                                $loader.fadeOut(300);
+                            });
+                        }, 100);
+                    });
 
                     // Initialize Owl
                     $owl.owlCarousel({
@@ -184,25 +190,13 @@
                             '<button class="btn absolute top-1/3 ltr:right-0 rtl:left-0 h-2/6 btn-square btn-lg shadow-2xl bg-black/30 hover:bg-black/50 text-white border-0">❯</button>'
                         ]
                     });
-
-                    // Wait for Owl to finish creating clones
-                    $owl.on('initialized.owl.carousel', function () {
-                        const $images = $owl.find('.owl-item img');
-                        waitForImages($images, 10000).then(() => {
-                            $loader.fadeOut(300);
-                        });
-                    });
-
-                    // Trigger manually if Owl already initialized
-                    $owl.trigger('initialized.owl.carousel');
                 })();
             @elseif(isset($post->media) && count($post->media) === 1)
                 (function() {
                     const $loader = $('#loader-{{ $post->id }}');
-                    const $img = $('img[src="{{ asset($post->media[0]->filepath) }}"]');
-                    $img.attr('loading', 'eager').attr('decoding', 'sync');
+                    const $img = $loader.closest('.card').find('img');
 
-                    waitForImages($img, 5000).then(() => {
+                    waitForImages($img, 3000).then(() => {
                         $loader.fadeOut(300);
                     });
                 })();

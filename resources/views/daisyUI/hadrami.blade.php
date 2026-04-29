@@ -26,7 +26,7 @@
                         @if (count($post->media) === 1)
                             <div class="relative w-full h-fit overflow-hidden rounded-t-lg group">
                                 <img src="{{ asset($post->media[0]->filepath) }}" alt="{{ $post->media[0]->alt ?? '' }}"
-                                    class="h-60 sm:h-60 object-cover w-full" loading="lazy" />
+                                    class="h-60 sm:h-60 object-cover w-full" />
                                 <div class="w-fit gallery-trigger-container-home absolute -bottom-5 sm:-bottom-5 
                                         {{ app()->getLocale() =='en' ? 'start-7 sm:start-7' : 'start-0 sm:start-0'   }}
                                             -translate-x-1/2 -translate-y-1/2 text-white rounded-4xl
@@ -43,7 +43,7 @@
                                     <div class="item relative w-full overflow-hidden cursor-grabbing group">
                                         <!-- Image -->
                                         <img src="{{ asset($img->filepath) }}" alt="{{ $img->alt ?? '' }}"
-                                            class="h-60 sm:h-60 object-cover w-full" loading="lazy" />
+                                            class="h-60 sm:h-60 object-cover w-full" />
 
                                         <!-- Resize Icon -->
                                         <div class="w-fit gallery-trigger-container-home absolute -bottom-5  sm:-bottom-5 
@@ -111,23 +111,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
 
 <script>
-    function waitForImagesHome($imgs, timeoutMs = 10000) {
+    function waitForImagesHome($imgs, timeoutMs = 5000) {
         return new Promise((resolve) => {
             if (!$imgs || !$imgs.length) return resolve({ loaded: 0, total: 0 });
             let total = $imgs.length;
             let loaded = 0;
             let resolved = false;
+
+            const checkDone = () => {
+                if (!resolved && loaded >= total) {
+                    resolved = true;
+                    resolve();
+                }
+            };
+
             $imgs.each(function () {
                 const img = this;
                 if (img.complete && img.naturalWidth > 0) {
-                    loaded++; if (loaded >= total) { resolved = true; resolve(); }
+                    loaded++;
                 } else {
                     $(img).one('load error', function () {
-                        loaded++; if (!resolved && loaded >= total) { resolved = true; resolve(); }
+                        loaded++;
+                        checkDone();
                     });
                 }
             });
-            setTimeout(() => { if (!resolved) resolve(); }, timeoutMs);
+            
+            checkDone();
+            setTimeout(() => { if (!resolved) { resolved = true; resolve(); } }, timeoutMs);
         });
     }
 
@@ -192,6 +203,15 @@
             $owl.find('.owl-item').children().unwrap();
         }
 
+        // ربط الأحداث قبل التهيئة لضمان عدم ضياعها
+        $owl.on('initialized.owl.carousel refreshed.owl.carousel', function () {
+            setTimeout(() => {
+                waitForImagesHome($owl.find('img'), 5000).then(() => {
+                    $loader.fadeOut(300);
+                });
+            }, 100);
+        });
+
         $owl.owlCarousel({
             items: 1,
             loop: true,
@@ -208,12 +228,6 @@
                 '<button class="btn absolute top-1/3 ltr:left-0 rtl:right-0 h-2/6 btn-square btn-lg shadow-2xl bg-black/30 hover:bg-black/50 text-white border-0">❮</button>',
                 '<button class="btn absolute top-1/3 ltr:right-0 rtl:left-0 h-2/6 btn-square btn-lg shadow-2xl bg-black/30 hover:bg-black/50 text-white border-0">❯</button>'
             ]
-        });
-
-        $owl.on('initialized.owl.carousel refreshed.owl.carousel', function () {
-            waitForImagesHome($owl.find('img'), 10000).then(() => {
-                $loader.fadeOut(300);
-            });
         });
     }
 
@@ -238,9 +252,9 @@
         @elseif(isset($post->media) && count($post->media) === 1)
             (function () {
                 const $loader = $('#home-loader-{{ $post->id }}');
-                const $img = $('img[src="{{ asset($post->media[0]->filepath) }}"]');
+                const $img = $loader.closest('.card').find('img');
 
-                waitForImagesHome($img, 5000).then(() => {
+                waitForImagesHome($img, 3000).then(() => {
                     $loader.fadeOut(300);
                 });
             })();
