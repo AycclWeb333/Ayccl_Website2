@@ -46,7 +46,10 @@ class MailSettingController extends Controller
             'mail_password',
             'mail_encryption',
             'mail_from_address',
-            'mail_from_name'
+            'mail_from_name',
+            'mail_receive_visit',
+            'mail_receive_training',
+            'mail_receive_job'
         ])->get()->keyBy('para');
 
         return view('admin-panel.settings.edit', compact('settings'));
@@ -65,7 +68,10 @@ class MailSettingController extends Controller
             'mail_password',
             'mail_encryption',
             'mail_from_address',
-            'mail_from_name'
+            'mail_from_name',
+            'mail_receive_visit',
+            'mail_receive_training',
+            'mail_receive_job'
         ];
 
         foreach ($keys as $key) {

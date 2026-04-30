@@ -31,7 +31,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="text-olive">{{ __('adminlte::adminlte.email') }} (Recipient & From Address)</label>
+                                        <label class="text-olive">{{ __('adminlte::adminlte.recipientAndFrom') }}</label>
                                         <x-adminlte-input name="mail_from_address" value="{{ $settings['mail_from_address']->value ?? '' }}" placeholder="example@gmail.com" enable-old-support required>
                                             <x-slot name="prependSlot">
                                                 <div class="input-group-text text-olive"><i class="fas fa-envelope"></i></div>
@@ -51,41 +51,57 @@
                                 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="text-olive">Mailer</label>
+                                        <label class="text-olive">{{ __('adminlte::adminlte.mailer') }}</label>
                                         <x-adminlte-input name="mail_mailer" value="{{ $settings['mail_mailer']->value ?? 'smtp' }}" enable-old-support />
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="text-olive">Host</label>
+                                        <label class="text-olive">{{ __('adminlte::adminlte.host') }}</label>
                                         <x-adminlte-input name="mail_host" value="{{ $settings['mail_host']->value ?? 'smtp.gmail.com' }}" enable-old-support />
                                     </div>
                                 </div>
                             </div>
 
                             <hr>
-                            <h5 class="text-olive mb-3"><i class="fas fa-key mr-2"></i> SMTP Authentication</h5>
+                            <h5 class="text-olive mb-3"><i class="fas fa-key mr-2"></i> {{ __('adminlte::adminlte.smtpAuth') }}</h5>
                             
                             <div class="row">
                                 <div class="col-md-4">
-                                    <x-adminlte-input name="mail_port" label="Port" value="{{ $settings['mail_port']->value ?? '587' }}" label-class="text-olive" enable-old-support />
+                                    <x-adminlte-input name="mail_port" label="{{ __('adminlte::adminlte.port') }}" value="{{ $settings['mail_port']->value ?? '587' }}" label-class="text-olive" enable-old-support />
                                 </div>
                                 <div class="col-md-4">
-                                    <x-adminlte-input name="mail_encryption" label="Encryption" value="{{ $settings['mail_encryption']->value ?? 'tls' }}" label-class="text-olive" enable-old-support />
+                                    <x-adminlte-input name="mail_encryption" label="{{ __('adminlte::adminlte.encryption') }}" value="{{ $settings['mail_encryption']->value ?? 'tls' }}" label-class="text-olive" enable-old-support />
                                 </div>
                             </div>
                             
                             <div class="row">
                                 <div class="col-md-6">
-                                    <x-adminlte-input name="mail_username" label="Username" value="{{ $settings['mail_username']->value ?? '' }}" label-class="text-olive" enable-old-support />
+                                    <x-adminlte-input name="mail_username" label="{{ __('adminlte::adminlte.email') }}" value="{{ $settings['mail_username']->value ?? '' }}" label-class="text-olive" enable-old-support />
                                 </div>
                                 <div class="col-md-6">
-                                    <x-adminlte-input id="mail_password" name="mail_password" type="password" label="Password" value="{{ $settings['mail_password']->value ?? '' }}" label-class="text-olive" enable-old-support>
+                                    <x-adminlte-input id="mail_password" name="mail_password" type="password" label="{{ __('adminlte::adminlte.password') }}" value="{{ $settings['mail_password']->value ?? '' }}" label-class="text-olive" enable-old-support>
                                         <x-slot name="appendSlot">
                                             <div class="input-group-text text-olive">
                                                 <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
                                             </div>
                                         </x-slot>
                                     </x-adminlte-input>
+                                </div>
+                            </div>
+
+                            <hr>
+                            <h5 class="text-olive mb-3"><i class="fas fa-envelope-open-text mr-2"></i> {{ __('adminlte::adminlte.specificRecipients') }}</h5>
+                            <p class="text-muted small">{{ __('adminlte::adminlte.specificRecipientsDesc') }}</p>
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <x-adminlte-input name="mail_receive_visit" label="{{ __('adminlte::adminlte.visitRecipient') }}" value="{{ $settings['mail_receive_visit']->value ?? '' }}" placeholder="dept.visit@example.com" label-class="text-olive" enable-old-support />
+                                </div>
+                                <div class="col-md-4">
+                                    <x-adminlte-input name="mail_receive_training" label="{{ __('adminlte::adminlte.trainingRecipient') }}" value="{{ $settings['mail_receive_training']->value ?? '' }}" placeholder="dept.training@example.com" label-class="text-olive" enable-old-support />
+                                </div>
+                                <div class="col-md-4">
+                                    <x-adminlte-input name="mail_receive_job" label="{{ __('adminlte::adminlte.jobRecipient') }}" value="{{ $settings['mail_receive_job']->value ?? '' }}" placeholder="hr@example.com" label-class="text-olive" enable-old-support />
                                 </div>
                             </div>
                         </div>

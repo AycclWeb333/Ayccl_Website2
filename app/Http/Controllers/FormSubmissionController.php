@@ -49,8 +49,8 @@ class FormSubmissionController extends Controller
             ],
         ]);
 
-        // Verify reCAPTCHA
-        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+        // Verify reCAPTCHA (withoutVerifying() added to bypass local SSL certificate issues)
+        $response = Http::withoutVerifying()->asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
             'secret' => config('services.recaptcha.secret'),
             'response' => $request->input('g-recaptcha-response'),
             'remoteip' => $request->ip(),
@@ -83,7 +83,8 @@ class FormSubmissionController extends Controller
             __('adminlte::landingpage.visitingReasonMessage')  => $request->input('Reason'),
         ];
         
-        $officialTo = $this->getSetting('mail_from_address');
+        // Get specific recipient for visits, fallback to general address
+        $officialTo = $this->getSetting('mail_receive_visit') ?: $this->getSetting('mail_from_address');
         
         // Send confirmation to visitor
         Mail::to($data['email'])->send(new ContactMail(
@@ -150,7 +151,7 @@ class FormSubmissionController extends Controller
         ]);
 
         // Verify reCAPTCHA
-        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+        $response = Http::withoutVerifying()->asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
             'secret' => config('services.recaptcha.secret'),
             'response' => $request->input('g-recaptcha-response'),
             'remoteip' => $request->ip(),
@@ -172,7 +173,8 @@ class FormSubmissionController extends Controller
             unset($data['attachment']);
         }
 
-        $officialTo = $this->getSetting('mail_from_address');
+        // Get specific recipient for training, fallback to general address
+        $officialTo = $this->getSetting('mail_receive_training') ?: $this->getSetting('mail_from_address');
 
         // Send confirmation to visitor
         Mail::to($data['email'])->send(new ContactMail(
@@ -204,7 +206,4 @@ class FormSubmissionController extends Controller
 
         return back()->with('status', __('adminlte::landingpage.emailSentSuccessfully'));
     }
-
-    }
-
-
+}

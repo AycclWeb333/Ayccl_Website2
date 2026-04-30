@@ -15,16 +15,20 @@ class SettingsTableSeeder extends Seeder
     {
         $settings = [
 
-            // --- Email---
-            ['para' => 'mail_mailer', 'para_en' =>       'mail_mailer', 'value' => 'smtp'],           //  3
-            ['para' => 'mail_host', 'para_en' =>         'mail_host', 'value' => 'smtp.gmail.com'],     //  4
-            ['para' => 'mail_port', 'para_en' =>         'mail_port', 'value' => '587'],                    //  5
-            ['para' => 'mail_username', 'para_en' =>     'mail_username', 'value' => 'ayccl.notifications@gmail.com'],     //  6
-            ['para' => 'mail_password', 'para_en' =>     'mail_password', 'value' => 'kqevkehgvpptinhw'],       //  7
-            ['para' => 'mail_encryption', 'para_en' =>   'mail_encryption', 'value' => 'tls'],      //  8
-            ['para' => 'mail_from_address', 'para_en' => 'mail_from_address', 'value' => 'ayccl.notifications@gmail.com'],     //  9
-            ['para' => 'mail_from_name', 'para_en' =>    'mail_from_name', 'value' => 'AYCCL Website'],    //  10
-            
+            // --- Email (User Credentials) ---
+            ['para' => 'mail_mailer', 'para_en' =>       'mail_mailer', 'value' => 'smtp'],
+            ['para' => 'mail_host', 'para_en' =>         'mail_host', 'value' => 'smtp.gmail.com'],
+            ['para' => 'mail_port', 'para_en' =>         'mail_port', 'value' => '587'],
+            ['para' => 'mail_username', 'para_en' =>     'mail_username', 'value' => 'n7122@gmail.com'],
+            ['para' => 'mail_password', 'para_en' =>     'mail_password', 'value' => '777nnkk11#'],
+            ['para' => 'mail_encryption', 'para_en' =>   'mail_encryption', 'value' => 'tls'],
+            ['para' => 'mail_from_address', 'para_en' => 'mail_from_address', 'value' => 'n7122@gmail.com'],
+            ['para' => 'mail_from_name', 'para_en' =>    'mail_from_name', 'value' => 'AYCCL Website Notification'],
+
+            // --- Specific Recipients (Leave empty to use default above) ---
+            ['para' => 'mail_receive_visit', 'para_en' => 'mail_receive_visit', 'value' => ''], 
+            ['para' => 'mail_receive_training', 'para_en' => 'mail_receive_training', 'value' => ''],
+            ['para' => 'mail_receive_job', 'para_en' => 'mail_receive_job', 'value' => ''],
         ];
 
         DB::table('settings')->insert($settings);
