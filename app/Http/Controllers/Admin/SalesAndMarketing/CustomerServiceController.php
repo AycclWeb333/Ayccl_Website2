@@ -76,23 +76,22 @@ class CustomerServiceController extends Controller
      */
     public function store(Request $request)
     {
+        $fileVal = $this->getFileValidation();
         $request->validate(
-            [
+            array_merge($fileVal['rules'], [
                 'title'      => 'required',
                 'title_en'   => 'required',
-                'content_ar'    => 'required',
+                'content_ar' => 'required',
                 'content_en' => 'required',
                 'files'      => 'required', 
-                // 'link'      => 'required', 
-            ],
-            [
+            ]),
+            array_merge($fileVal['messages'], [
                 'title.required'      => __('adminlte::adminlte.title_required'),
                 'title_en.required'   => __('adminlte::adminlte.title_en_required'),
-                'content_ar.required'    => __('adminlte::adminlte.content_required'),
+                'content_ar.required' => __('adminlte::adminlte.content_required'),
                 'content_en.required' => __('adminlte::adminlte.content_en_required'),
                 'files.required'      => __('adminlte::adminlte.files_required'),
-                // 'link.required'      => __('adminlte::adminlte.link_required'),
-            ]
+            ])
         );
 
         
@@ -125,7 +124,9 @@ class CustomerServiceController extends Controller
             $postDetail->save();
 
             // Force Spatie/Image to use GD instead of Imagick
-
+            if (!$request->hasFile('files')) {
+                throw new \Exception(__('adminlte::adminlte.files_required'));
+            }
             // 3) Upload Media (if provided)
             if ($request->hasFile('files')) {
                 $files = is_array($request->file('files')) ? $request->file('files') : [$request->file('files')];
@@ -269,30 +270,20 @@ class CustomerServiceController extends Controller
      */
     public function update(Request $request, $locale, int $id)
     {
-        // dd($request);
+        $fileVal = $this->getFileValidation();
         $request->validate(
-            [
+            array_merge($fileVal['rules'], [
                 'title'      => 'required',
                 'title_en'   => 'required',
-                // 'slug'       => 'required|string',
-                // 'slug_en'    => 'required|string',
-                // 'date'       => 'required|date',
-                'content_ar'    => 'required',
+                'content_ar' => 'required',
                 'content_en' => 'required',
-                // 'link'      => 'required',
-            ],
-            [
+            ]),
+            array_merge($fileVal['messages'], [
                 'title.required'      => __('adminlte::adminlte.title_required'),
                 'title_en.required'   => __('adminlte::adminlte.title_en_required'),
-                // 'slug.required'       => __('adminlte::adminlte.slug_required'),
-                // 'slug.unique'         => __('adminlte::adminlte.slug_unique'),
-                // 'slug_en.required'    => __('adminlte::adminlte.slug_en_required'),
-                // 'slug_en.unique'      => __('adminlte::adminlte.slug_en_unique'),
-                // 'date.required'       => __('adminlte::adminlte.date_required'),
-                'content_ar.required'    => __('adminlte::adminlte.content_required'),
+                'content_ar.required' => __('adminlte::adminlte.content_required'),
                 'content_en.required' => __('adminlte::adminlte.content_en_required'),
-                // 'link.required'      => __('adminlte::adminlte.link_required'),
-                ]
+            ])
         );
 
         

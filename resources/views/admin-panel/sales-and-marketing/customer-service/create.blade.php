@@ -30,6 +30,20 @@
     </div>
     @endif
 
+    @if ($errors->any())
+    <div class="container">
+        <div class="alert alert-danger alert-dismissible shadow-sm">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h5><i class="icon fas fa-ban"></i> {{ __('adminlte::adminlte.error!') }}</h5>
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+    @endif
+
     <form action="{{ localizedRoute("$route.store") }}" method="POST" enctype="multipart/form-data">
         @csrf
 
@@ -179,6 +193,7 @@
                                 'showRotate'=> false,
                             ],
                             'showCancel' => false,
+                            'maxFileSize' => 2048,
                             // 'maxFileCount' => 5,
                         ];
                     @endphp
@@ -187,6 +202,9 @@
                             label="{{ __('adminlte::adminlte.attachmentsUpload') . ' (' . __('adminlte::adminlte.image') . ')' }}"
                             data-msg-placeholder="Choose a text, office or pdf file..." label-class="text-olive"
                             :config="$config" />
+                        @error('files.*')
+                            <span class="text-danger small">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
                 <div class="text-center">
@@ -209,4 +227,26 @@
 @section('plugins.Select2', true)
 
 @section('adminlte_js')
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function(e) {
+                let isValid = true;
+                let errorMessage = "";
+
+                if ($('#title').val().trim() === "") {
+                    isValid = false;
+                    errorMessage += "• {{ __('adminlte::adminlte.title_required') }}\n";
+                }
+                if ($('textarea[name="content_ar"]').summernote('isEmpty')) {
+                    isValid = false;
+                    errorMessage += "• {{ __('adminlte::adminlte.content_required') }}\n";
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    toastr.error(errorMessage);
+                }
+            });
+        });
+    </script>
 @stop
