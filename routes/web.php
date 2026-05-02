@@ -271,12 +271,15 @@ Route::group([
 
     //  المركز الاعلامي
     Route::get('/newsAndActivities', [MediaCenterController::class, 'newsAndActivitiesIndex'])->name('newsAndActivities');
-    Route::get('/News/{id}/{slug}', [MediaCenterController::class, 'newsShowIndex'])->name('News.show');
+    Route::get('/News/{id}/{slug?}', [MediaCenterController::class, 'newsShowIndex'])->name('News.show');
     Route::get('/photosGalary', [MediaCenterController::class, 'photosGalaryIndex'])->name('photosGalary');
     Route::get('/videos', [MediaCenterController::class, 'videosIndex'])->name('videos');
     Route::get('/documents', [MediaCenterController::class, 'documentsIndex'])->name('documents');
+    Route::get('/documents/{id}/{slug?}', [MediaCenterController::class, 'documentsShowIndex'])->name('landing.documents.show');
     Route::get('/inspection-certificates', [MediaCenterController::class, 'inspectionCertificatesIndex'])->name('inspectionCertificates');
-    Route::get('/documents', [MediaCenterController::class, 'specificationsIndex'])->name('specifications');
+    Route::get('/inspection-certificates/{id}/{slug?}', [MediaCenterController::class, 'inspectionCertificatesShowIndex'])->name('landing.inspectionCertificates.show');
+    Route::get('/specifications', [MediaCenterController::class, 'specificationsIndex'])->name('specifications');
+    Route::get('/specifications/{id}/{slug?}', [MediaCenterController::class, 'specificationsShowIndex'])->name('landing.specifications.show');
 
     //  التنمية المستدامة
     // Route::get('/sustainableDevelopment', [SustainableDevelopmentController::class, 'index'])->name('sustainableDevelopment');

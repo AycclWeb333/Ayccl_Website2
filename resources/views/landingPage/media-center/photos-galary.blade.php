@@ -156,73 +156,109 @@
             });
         });
 
-        // OwlCarousel initialization
-        @foreach ($posts as $post)
-        @isset($post->media)
-            @if (count($post->media) > 1)
-                $(document).ready(function() {
-                    var owl_{{ $post->id }} = $('#post-carousel-{{ $post->id }}');
-                    var loader_{{ $post->id }} = $('#loader-{{ $post->id }}');
+        // Helper function to reliably wait for images
+        function waitForImagesGallery($imgs, timeoutMs = 5000) {
+            return new Promise((resolve) => {
+                if (!$imgs || !$imgs.length) return resolve({ loaded: 0, total: 0 });
+                let total = $imgs.length;
+                let loaded = 0;
+                let resolved = false;
 
-                    owl_{{ $post->id }}.owlCarousel({
-                        loop: true,
-                        autoplay: true,
-                        autoplayTimeout: 5000,
-                        autoplayHoverPause: true,
-                        rtl: document.documentElement.getAttribute('dir') === 'rtl',
-                        items: 1,
-                        nav: true,
-                        dots: false,
-                        navText: [
-                                '<button class="btn absolute top-1/3 rtl:right-0 ltr:left-0 h-2/6 btn-square btn-lg shadow-2xl bg-black/30 hover:bg-black/50 text-white border-0">❮</button>',
-                                '<button class="btn absolute top-1/3 rtl:left-0 ltr:right-0 h-2/6 btn-square btn-lg shadow-2xl bg-black/30 hover:bg-black/50 text-white border-0">❯</button>'
-                            ]
-                    });
-
-                    // Image loader
-                    var totalImages = owl_{{ $post->id }}.find('img').length;
-                    var imagesLoaded = 0;
-
-                    function checkAllLoaded() {
-                        if (imagesLoaded === totalImages) loader_{{ $post->id }}.fadeOut(300);
+                const checkDone = () => {
+                    if (!resolved && loaded >= total) {
+                        resolved = true;
+                        resolve();
                     }
+                };
 
-                    owl_{{ $post->id }}.find('img').each(function() {
-                        const img = $(this);
-                        if (img[0].complete && img[0].naturalHeight !== 0) {
-                            imagesLoaded++;
-                            checkAllLoaded();
-                        } else {
-                            img.on('load error', function() {
-                                imagesLoaded++;
-                                checkAllLoaded();
-                            });
-                        }
-                    });
+                $imgs.each(function () {
+                    const img = this;
+                    if (img.complete && img.naturalWidth > 0) {
+                        loaded++;
+                    } else {
+                        $(img).one('load error', function () {
+                            loaded++;
+                            checkDone();
+                        });
+                    }
+                });
+                
+                checkDone();
+                setTimeout(() => { if (!resolved) { resolved = true; resolve(); } }, timeoutMs);
+            });
+        }
 
-                    // Fallback
-                    setTimeout(function() {
-                        if (loader_{{ $post->id }}.is(':visible')) loader_{{ $post->id }}.fadeOut(
-                            300);
-                    }, 10000);
+        $(document).ready(function () {
+            function initGalleryCarousel($owl, $loader) {
+                // Prevent duplicate initialization
+                if ($owl.hasClass('owl-loaded')) {
+                    $owl.trigger('destroy.owl.carousel');
+                    $owl.removeClass('owl-loaded');
+                    $owl.find('.owl-stage-outer').children().unwrap();
+                    $owl.find('.owl-stage').children().unwrap();
+                    $owl.find('.owl-item').children().unwrap();
+                }
+
+                // Bind events BEFORE initialization
+                $owl.on('initialized.owl.carousel refreshed.owl.carousel', function () {
+                    setTimeout(() => {
+                        waitForImagesGallery($owl.find('img'), 5000).then(() => {
+                            $loader.fadeOut(300);
+                        });
+                    }, 100);
                 });
-            @elseif (count($post->media) == 1)
-                // Single image loader
-                $(document).ready(function() {
-                    var loader_{{ $post->id }} = $('#loader-{{ $post->id }}');
-                    var img = $('img[src="{{ asset($post->media[0]->filepath) }}"]');
-                    if (img[0].complete && img[0].naturalHeight !== 0) loader_{{ $post->id }}.fadeOut(300);
-                    else img.on('load error', function() {
-                        loader_{{ $post->id }}.fadeOut(300);
-                    });
-                    setTimeout(function() {
-                        if (loader_{{ $post->id }}.is(':visible')) loader_{{ $post->id }}.fadeOut(
-                            300);
-                    }, 5000);
+
+                $owl.owlCarousel({
+                    loop: true,
+                    autoplay: true,
+                    autoplayTimeout: 5000,
+                    autoplayHoverPause: true,
+                    rtl: document.documentElement.getAttribute('dir') === 'rtl',
+                    items: 1,
+                    nav: true,
+                    dots: false,
+                    smartSpeed: 600,
+                    autoHeight: false,
+                    responsiveRefreshRate: 100,
+                    navText: [
+                        '<button class="btn absolute top-1/3 rtl:right-0 ltr:left-0 h-2/6 btn-square btn-lg shadow-2xl bg-black/30 hover:bg-black/50 text-white border-0">❮</button>',
+                        '<button class="btn absolute top-1/3 rtl:left-0 ltr:right-0 h-2/6 btn-square btn-lg shadow-2xl bg-black/30 hover:bg-black/50 text-white border-0">❯</button>'
+                    ]
                 });
-            @endif
-            @endisset
-        @endforeach
+            }
+
+            @foreach ($posts as $post)
+            @isset($post->media)
+                @if (count($post->media) > 1)
+                    (function () {
+                        const $owl = $('#post-carousel-{{ $post->id }}');
+                        const $loader = $('#loader-{{ $post->id }}');
+
+                        initGalleryCarousel($owl, $loader);
+
+                        // Re-initialize on window resize to fix broken layout occasionally
+                        let resizeTimer;
+                        $(window).on('resize', function () {
+                            clearTimeout(resizeTimer);
+                            resizeTimer = setTimeout(function () {
+                                initGalleryCarousel($owl, $loader);
+                            }, 300);
+                        });
+                    })();
+                @elseif (count($post->media) == 1)
+                    // Single image loader
+                    (function () {
+                        const $loader = $('#loader-{{ $post->id }}');
+                        const $img = $loader.closest('.card').find('img');
+
+                        waitForImagesGallery($img, 3000).then(() => {
+                            $loader.fadeOut(300);
+                        });
+                    })();
+                @endif
+                @endisset
+            @endforeach
+        });
     </script>
 
     {{-- Images Preview --}}

@@ -37,23 +37,17 @@ class MediaCenterController extends Controller
 
         return view($this->path . "news-activities", compact('posts', 'page'));
     }
-    public function newsShowIndex($locale, $id, $slug)
+    public function newsShowIndex($locale, $id, $slug = null)
     {
         $pageId = 51;
         $page = Page::findOrFail($pageId);
 
+        // Fetch post safely using ID only to avoid Arabic slug encoding 404 errors
         $post = Post::where("id", $id)
             ->where("page_id", $pageId)
-            ->whereHas('postDetail', function ($query) use ($slug) {
-                $query->where('slug', $slug);
-            })
-            ->with([
-                'postDetail' => function ($query) use ($slug) {
-                    $query->where('slug', $slug);
-                },
-                'media'
-            ])
+            ->with(['postDetail', 'media'])
             ->firstOrFail();
+            
         return view($this->path . "news-page", compact('post', 'page'));
     }
 
@@ -104,5 +98,31 @@ class MediaCenterController extends Controller
         return view($this->path . "specifications", compact('posts', 'page'));
     }
 
+    public function documentsShowIndex($locale, $id, $slug = null)
+    {
+        return $this->genericShow(54, $id);
+    }
 
+    public function inspectionCertificatesShowIndex($locale, $id, $slug = null)
+    {
+        return $this->genericShow(55, $id);
+    }
+
+    public function specificationsShowIndex($locale, $id, $slug = null)
+    {
+        return $this->genericShow(56, $id);
+    }
+
+    private function genericShow($pageId, $id)
+    {
+        $page = Page::findOrFail($pageId);
+
+        // Fetch post safely using ID only
+        $post = Post::where("id", $id)
+            ->where("page_id", $pageId)
+            ->with(['postDetail', 'media'])
+            ->firstOrFail();
+            
+        return view($this->path . "news-page", compact('post', 'page'));
+    }
 }

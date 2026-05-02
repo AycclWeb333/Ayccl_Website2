@@ -32,9 +32,20 @@
     </a>
 
     <!-- Card Body -->
+    @php
+        $routeNames = [
+            51 => 'News.show',
+            54 => 'landing.documents.show',
+            55 => 'landing.inspectionCertificates.show',
+            56 => 'landing.specifications.show',
+        ];
+        $routeName = $routeNames[$post->page_id] ?? 'News.show';
+        $slug = !empty($post->postDetail[0]->slug) ? $post->postDetail[0]->slug : 'post';
+        $postUrl = localizedRoute($routeName, ['id' => $post->id, 'slug' => $slug]);
+    @endphp
     <div class="card-body">
         <h2 class="card-title"> <a
-                href="{{ localizedRoute('News.show', ['id' => $post->id, 'slug' => $post->postDetail[0]->slug]) }}"
+                href="{{ $postUrl }}"
                 class="text-emerald-700"> {{ $post->postDetail[0]->title }}</a> </h2>
         <time datetime="{{ \Carbon\Carbon::parse($post->date)->toIso8601String() }}" class="text-sm text-gray-500">
             {{ \Carbon\Carbon::parse($post->date)->format('M d, Y') }}
@@ -42,7 +53,7 @@
         <p class="text-gray-800 ">
             {!! \Illuminate\Support\Str::limit(strip_tags($post->postDetail[0]->content), 180) !!}
         </p>
-        <a href="{{ localizedRoute('News.show', ['id' => $post->id, 'slug' => $post->postDetail[0]->slug]) }}"
+        <a href="{{ $postUrl }}"
             class="text-white font-bold  mx-auto btn bg-emerald-700">{{ __('adminlte::landingpage.readmore') }}</a>
     </div>
 </div>

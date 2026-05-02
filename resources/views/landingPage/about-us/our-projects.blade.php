@@ -48,4 +48,45 @@
 
 @endsection
 @section('jsafter')
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Find all images in the page
+        const images = document.querySelectorAll('img');
+        let loadedCount = 0;
+
+        function refreshAOS() {
+            if (typeof AOS !== 'undefined') {
+                AOS.refresh();
+            }
+        }
+
+        if (images.length === 0) {
+            refreshAOS();
+        } else {
+            images.forEach(img => {
+                if (img.complete) {
+                    loadedCount++;
+                    if (loadedCount === images.length) refreshAOS();
+                } else {
+                    img.addEventListener('load', () => {
+                        loadedCount++;
+                        if (loadedCount === images.length) refreshAOS();
+                    });
+                    img.addEventListener('error', () => {
+                        loadedCount++;
+                        if (loadedCount === images.length) refreshAOS();
+                    });
+                }
+            });
+        }
+
+        // Fallback: forcefully refresh AOS multiple times during the first 3 seconds
+        let attempts = 0;
+        let interval = setInterval(() => {
+            refreshAOS();
+            attempts++;
+            if(attempts > 6) clearInterval(interval);
+        }, 500);
+    });
+</script>
 @endsection

@@ -29,9 +29,20 @@
         <div class="w-[95%] md:w-[90%] lg:w-[95%] mx-auto my-20">
         
                 <div class="breadcrumbs text-lg mb-5 ">
+                    @php
+                        $parentRoutes = [
+                            51 => ['route' => 'newsAndActivities', 'label' => 'newsAndActivities'],
+                            54 => ['route' => 'documents', 'label' => 'documents'],
+                            55 => ['route' => 'inspectionCertificates', 'label' => 'inspectionCertificates'],
+                            56 => ['route' => 'specifications', 'label' => 'specifications'],
+                        ];
+                        $parent = $parentRoutes[$post->page_id] ?? $parentRoutes[51];
+                    @endphp
                     <ul>
-                        <li class="hover:text-emerald-600 underline underline-offset-8"><a
-                                href="{{ localizedRoute('newsAndActivities') }}">{{ __('adminlte::landingpage.newsAndActivities') }}</a>
+                        <li class="hover:text-emerald-600 underline underline-offset-8">
+                            <a href="{{ localizedRoute($parent['route']) }}">
+                                {{ __("adminlte::landingpage.{$parent['label']}") }}
+                            </a>
                         </li>
                         <li></li>
                     </ul>
