@@ -110,6 +110,7 @@ class SpecificationController extends Controller
 
             // 3) Upload Media using CloudMediaTrait
             $this->storeCombinedMedia($request, $post->id, $this->route, Post::class);
+            DB::commit();
 
             return redirect()->route("$this->route.index", app()->getLocale())
                 ->with(['success' => __('adminlte::adminlte.succCreate')]);

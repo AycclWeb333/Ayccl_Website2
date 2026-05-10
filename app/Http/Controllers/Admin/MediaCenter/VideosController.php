@@ -19,8 +19,12 @@ use Illuminate\Support\Facades\File; // This is the new import
 use PhpParser\Node\Expr\Throw_;
 use Spatie\Image\Drivers\ImageDriver;
 
+use App\Traits\CloudMediaTrait;
+
 class VideosController extends Controller
 {
+    use CloudMediaTrait;
+    public $route = 'videos';
     public $pageId = 53;
 
     /**
@@ -241,8 +245,7 @@ class VideosController extends Controller
             // 1. Delete all related PostDetail records first
             $post->postDetail()->delete();
             // 2. Delete all related Media records and their files
-            // $media = Media::where('imageable_id', $id)->firstOrFail();
-            $post->media()->delete();
+            $this->deleteCloudMediaDirectory($post, $this->route, $id);
             // 3. Delete the parent post
             $post->delete();
 

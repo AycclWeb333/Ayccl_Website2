@@ -129,12 +129,12 @@
         <div style="font-size: 14px;"><br>{{ __('adminlte::adminlte.deactivateCaution') }}</div>
         <x-slot name="footerSlot">
             {{-- Form for Delete Action --}}
-            {{-- <form id="formDelete" action="" method="POST">
+            <form id="formDelete" action="" method="POST">
                 @csrf
                 @method('DELETE')
                 <x-adminlte-button class="mr-auto" type="submit" theme="outline-danger"
                     label="{{ __('adminlte::adminlte.delete') }}" />
-            </form> --}}
+            </form>
             {{-- Form for DEACTIVATE Action --}}
             <form id="formDeactivate" action="" method="POST" style="display:inline;">
                 @csrf

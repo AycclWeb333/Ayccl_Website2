@@ -30,7 +30,7 @@
 @endpush
 @php
     $route = "cement-blogs";
-    $id = "cement-blog";
+    $id = "cement_blog";
 @endphp
 
 @section('title', __('adminlte::menu.cementBlogs') .' - '. __('adminlte::adminlte.editNews'))
