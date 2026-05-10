@@ -20,11 +20,12 @@ use Illuminate\Support\Facades\File; // This is the new import
 use PhpParser\Node\Expr\Throw_;
 use Spatie\Image\Drivers\ImageDriver;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-
-
+use App\Traits\CloudMediaTrait;
 
 class DocumentsController extends Controller
 {
+    use CloudMediaTrait;
+
     public $pageId = 54;
 
     /**
@@ -120,41 +121,12 @@ class DocumentsController extends Controller
             $postDetail->active    = $request->active ?? true;
             $postDetail->save();
 
-            // Force Spatie/Image to use GD instead of Imagick
-
             // 3) Upload Media (if provided)
-            if ($request->hasFile('files')) {
-                $filearr = $request->file('files');
-                $file = $filearr[0];
-                // 1) Get the original file name from the UploadedFile object
-                $originalFileName = Media::getAlt($file->getClientOriginalName());
-            
-                // 2) Define paths based on your requirements
-                $filePath = "files/documents/{$post->id}/{$originalFileName}";
-                $thumbnailPath = "images/thumbnails/document.png";
-                $destinationPath = public_path("files/documents/{$post->id}");
-            
-                // 3) Create the directory if it doesn't exist
-                File::makeDirectory($destinationPath, 0755, true, true);
-            
-                // 4) Move the file to the correct location using its original name
-                $file->move($destinationPath, $originalFileName);
-            
-                // 5) Save the database record
-                $media = new Media();
-                $media->media_type_id = 3; 
-                $media->thumbnailpath = $thumbnailPath;
-                $media->filepath = $filePath;
-                $media->alt = $post->postDetailOne->title;
-                $media->setAltEnAttribute($post->postDetailOne->title_en);
-                $media->link = $filePath;
-                $media->media_able_id = $post->id;
-                $media->media_able_type = Post::class;
-                $media->save();
-            } else {
-                // You should handle the case where no file is uploaded
+            if (!$request->hasFile('files')) {
                 throw new \Exception(__('adminlte::adminlte.files_required'));
             }
+
+            $this->storeDocumentMedia($request, $post->id, 'documents', Post::class, $post->postDetailOne->title, $post->postDetailOne->title_en);
             DB::commit();
             
             return redirect()->route('documents.index', app()->getLocale())
@@ -227,40 +199,18 @@ class DocumentsController extends Controller
             $postDetail->active    = $request->active ?? true;
             $postDetail->save();
 
-            // Force Spatie/Image to use GD instead of Imagick
-
-            if ($request->hasFile('files')) {
-                $filearr = $request->file('files');
-                $file = $filearr[0];
-                // 1) Get the original file name from the UploadedFile object
-                $originalFileName = Media::getAlt($file->getClientOriginalName());
-            
-                // 2) Define paths based on your requirements
-                $filePath = "files/documents/{$post->id}/{$originalFileName}";
-                $thumbnailPath = "images/thumbnails/document.png";
-                $destinationPath = public_path("files/documents/{$post->id}");
-            
-                // 3) Create the directory if it doesn't exist
-                File::makeDirectory($destinationPath, 0755, true, true);
-            
-                // 4) Move the file to the correct location using its original name
-                $file->move($destinationPath, $originalFileName);
-            
-                // 5) Save the database record
+            $media = Media::where('media_able_id', $post->id)->where('media_able_type', Post::class)->first();
+            if (!$media) {
                 $media = new Media();
-                $media->media_type_id = 3; 
-                $media->thumbnailpath = $thumbnailPath;
-                $media->filepath = $filePath;
-                $media->alt = $post->postDetailOne->title;
-                $media->setAltEnAttribute($post->postDetailOne->title_en);
-                $media->link = $filePath;
                 $media->media_able_id = $post->id;
                 $media->media_able_type = Post::class;
                 $media->save();
-            } 
-            $media = Media::where('media_able_id', $post->id)->count();
-            if ($media == 0) {
-                throw new \Exception(__('adminlte::adminlte.files_required')    );
+            }
+
+            $this->updateDocumentMedia($request, $media, $post->id, 'documents', $post->postDetailOne->title, $post->postDetailOne->title_en);
+
+            if (!$media->filepath && !$request->hasFile('files')) {
+                throw new \Exception(__('adminlte::adminlte.files_required'));
             }
             DB::commit();
 
@@ -281,14 +231,8 @@ class DocumentsController extends Controller
 
             // 1. Delete all related PostDetail records first
             $post->postDetail()->delete();
-            $directoryPath = "files/documents/{$post->id}";
-
-                // 1. Delete the entire directory and all its contents from storage
-                if (Storage::disk('images')->exists($directoryPath)) {
-                    Storage::disk('images')->deleteDirectory($directoryPath);
-                }
-            // Delete the record from the database
-            $post->mediaOne()->delete();
+            // 2. Delete all related Media records and their directories from Cloud
+            $this->deleteCloudMediaDirectory($post, 'documents', $id);
             // 3. Delete the parent post
             $post->delete();
 
