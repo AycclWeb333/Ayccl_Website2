@@ -42,18 +42,21 @@ class CustomerServiceController extends Controller
     public function show($locale, $id)
     {
         $media = Media::findOrFail($id);
-    
-        // Full path to file
-        $path = public_path($media->link);
-    
-        if (!file_exists($path)) {
+
+        $disk = env('FILESYSTEM_DISK', 's3');
+        $doDisk = Storage::disk($disk);
+        $extractPath = function ($url) {
+            return ltrim(parse_url($url, PHP_URL_PATH), '/');
+        };
+
+        $path = $media->link ? $extractPath($media->link) : $media->filepath;
+        
+        if (!$path || !$doDisk->exists($path)) {
             abort(404, 'File not found.');
         }
-    
-        return response()->file($path, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . basename($path) . '"'
-        ]);
+
+        // Return a stream or temporary URL
+        return redirect($doDisk->temporaryUrl($path, now()->addMinutes(5)));
     }
 
     public function create()

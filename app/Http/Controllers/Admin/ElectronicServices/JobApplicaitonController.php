@@ -18,9 +18,11 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File; // This is the new import
 use PhpParser\Node\Expr\Throw_;
 use Spatie\Image\Drivers\ImageDriver;
+use App\Traits\CloudMediaTrait;
 
 class JobApplicaitonController extends Controller
 {
+    use CloudMediaTrait;
     public $pageId = 101;
     public $route = 'job-application';
     public $view = 'admin-panel.electronic-services.job-application';
@@ -40,17 +42,21 @@ class JobApplicaitonController extends Controller
     {
         $media = Media::findOrFail($id);
 
-        // Full path to file
-        $path = public_path($media->link);
+        $doDisk = Storage::disk('do');
+        $extractPath = function ($url) {
+            return ltrim(parse_url($url, PHP_URL_PATH), '/');
+        };
 
-        if (!file_exists($path)) {
+        $path = $extractPath($media->link);
+
+        if (!$doDisk->exists($path)) {
             abort(404, 'File not found.');
         }
 
-        return response()->file($path, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . basename($path) . '"'
-        ]);
+        // Return a stream or temporary URL
+        return redirect($doDisk->temporaryUrl($path, now()->addMinutes(5)));
+
+
     }
 
 
@@ -131,100 +137,8 @@ class JobApplicaitonController extends Controller
             $postDetail->active    = $request->active ?? true;
             $postDetail->save();
 
-            // Force Spatie/Image to use GD instead of Imagick
-
             // 3) Upload & Save Media (Only if files or PDF are provided)
-            if ($request->hasFile('files') || $request->hasFile('files_pdf')) {
-                $media = new Media();
-                $media->media_type_id  = 1;
-                $media->media_able_id  = $post->id;
-                $media->media_able_type = Post::class;
-                $media->link           = $request->link; // default link if any
-
-                // Handle Image Files
-                if ($request->hasFile('files')) {
-                    $files = is_array($request->file('files')) ? $request->file('files') : [$request->file('files')];
-                    foreach ($files as $file) {
-                        $fileName      = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-                        $ext           = strtolower($file->getClientOriginalExtension());
-                        $uniqueName    = "{$fileName}-" . time() . ".{$ext}";
-
-                        $originalRel   = "images/$this->route/{$post->id}/{$uniqueName}";
-                        $thumbRel      = "images/$this->route/{$post->id}/thumbnails/{$uniqueName}";
-
-                        $originalDir   = public_path("images/$this->route/{$post->id}");
-                        $thumbDir      = public_path("images/$this->route/{$post->id}/thumbnails");
-
-                        File::makeDirectory($originalDir, 0755, true, true);
-                        File::makeDirectory($thumbDir, 0755, true, true);
-
-                        $absoluteOriginal = public_path($originalRel);
-                        $file->move($originalDir, $uniqueName);
-
-                        // Thumbnail logic
-                        $absoluteThumb = public_path($thumbRel);
-                        $src = match ($ext) {
-                            'jpg', 'jpeg' => imagecreatefromjpeg($absoluteOriginal),
-                            'png'        => imagecreatefrompng($absoluteOriginal),
-                            'gif'        => imagecreatefromgif($absoluteOriginal),
-                            'webp'       => function_exists('imagecreatefromwebp') ? imagecreatefromwebp($absoluteOriginal) : null,
-                            default      => null,
-                        };
-
-                        if ($src) {
-                            $srcW = imagesx($src); $srcH = imagesy($src);
-                            $targetW = 300; $targetH = 300;
-                            $scale   = max($targetW / $srcW, $targetH / $srcH);
-                            $newW    = (int) round($srcW * $scale); $newH    = (int) round($srcH * $scale);
-                            $resized = imagecreatetruecolor($newW, $newH);
-                            if (in_array($ext, ['png', 'webp'])) {
-                                imagealphablending($resized, false); imagesavealpha($resized, true);
-                                imagefilledrectangle($resized, 0, 0, $newW, $newH, imagecolorallocatealpha($resized, 0, 0, 0, 127));
-                            }
-                            imagecopyresampled($resized, $src, 0, 0, 0, 0, $newW, $newH, $srcW, $srcH);
-                            $thumb = imagecreatetruecolor($targetW, $targetH);
-                            if (in_array($ext, ['png', 'webp'])) {
-                                imagealphablending($thumb, false); imagesavealpha($thumb, true);
-                                imagefilledrectangle($thumb, 0, 0, $targetW, $targetH, imagecolorallocatealpha($thumb, 0, 0, 0, 127));
-                            }
-                            imagecopy($thumb, $resized, 0, 0, (int) floor(($newW - $targetW) / 2), (int) floor(($newH - $targetH) / 2), $targetW, $targetH);
-                            match ($ext) {
-                                'jpg', 'jpeg' => imagejpeg($thumb, $absoluteThumb, 90),
-                                'png'        => imagepng($thumb, $absoluteThumb, 9),
-                                'gif'        => imagegif($thumb, $absoluteThumb),
-                                'webp'       => function_exists('imagewebp') ? imagewebp($thumb, $absoluteThumb, 90) : null,
-                                default      => null,
-                            };
-                            imagedestroy($thumb); imagedestroy($resized); imagedestroy($src);
-                        }
-
-                        $media->thumbnailpath  = $thumbRel;
-                        $media->filepath       = $originalRel;
-                        $media->alt            = $fileName;
-                        $media->setAltEnAttribute($fileName);
-                    }
-                }
-
-                // Handle PDF File
-                if ($request->hasFile('files_pdf')) {
-                    $filearr = $request->file('files_pdf');
-                    $file = is_array($filearr) ? $filearr[0] : $filearr;
-                    $originalFileName = Media::getAlt($file->getClientOriginalName());
-                    $pdfPath = "files/$this->route/{$post->id}/{$originalFileName}";
-                    $destinationPath = public_path("files/$this->route/{$post->id}");
-                    File::makeDirectory($destinationPath, 0755, true, true);
-                    $file->move($destinationPath, $originalFileName);
-                    $media->link = $pdfPath;
-                    
-                    // If no image was uploaded, we might want to set some defaults for media
-                    if (!$media->filepath) {
-                        $media->filepath = $pdfPath;
-                        $media->alt = $originalFileName;
-                    }
-                }
-
-                $media->save();
-            }
+            $this->storeCombinedMedia($request, $post->id, $this->route, Post::class);
 
             // Commit after processing
             DB::commit();
@@ -302,108 +216,15 @@ class JobApplicaitonController extends Controller
             $postDetail->save();
 
             // 3. Handle Media Update (Only if files or PDF are provided)
-            if ($request->hasFile('files') || $request->hasFile('files_pdf')) {
+            if ($request->hasFile('files') || $request->hasFile('files_pdf') || $request->has('link')) {
                 $oldMediaId = $post->mediaOne->id ?? null;
                 $media = Media::findOrNew($oldMediaId);
-                $media->media_type_id  = 1;
-                $media->media_able_id  = $post->id;
-                $media->media_able_type = Post::class;
-                
                 if (!$media->exists) {
-                    $media->link = $request->link;
+                    $media->media_able_id = $post->id;
+                    $media->media_able_type = Post::class;
                 }
-
-                // Handle Image Files
-                if ($request->hasFile('files')) {
-                    $files = is_array($request->file('files')) ? $request->file('files') : [$request->file('files')];
-                    foreach ($files as $file) {
-                        $fileName      = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-                        $ext           = strtolower($file->getClientOriginalExtension());
-                        $uniqueName    = "{$fileName}-" . time() . ".{$ext}";
-
-                        $originalRel   = "images/$this->route/{$post->id}/{$uniqueName}";
-                        $thumbRel      = "images/$this->route/{$post->id}/thumbnails/{$uniqueName}";
-
-                        $originalDir   = public_path("images/$this->route/{$post->id}");
-                        $thumbDir      = public_path("images/$this->route/{$post->id}/thumbnails");
-
-                        File::makeDirectory($originalDir, 0755, true, true);
-                        File::makeDirectory($thumbDir, 0755, true, true);
-
-                        $absoluteOriginal = public_path($originalRel);
-                        $file->move($originalDir, $uniqueName);
-
-                        // Thumbnail logic (GD)
-                        $absoluteThumb = public_path($thumbRel);
-                        $src = match ($ext) {
-                            'jpg', 'jpeg' => imagecreatefromjpeg($absoluteOriginal),
-                            'png'        => imagecreatefrompng($absoluteOriginal),
-                            'gif'        => imagecreatefromgif($absoluteOriginal),
-                            'webp'       => function_exists('imagecreatefromwebp') ? imagecreatefromwebp($absoluteOriginal) : null,
-                            default      => null,
-                        };
-
-                        if ($src) {
-                            $srcW = imagesx($src); $srcH = imagesy($src);
-                            $targetW = 500; $targetH = 500;
-                            $scale   = max($targetW / $srcW, $targetH / $srcH);
-                            $newW    = (int) round($srcW * $scale); $newH = (int) round($srcH * $scale);
-                            $resized = imagecreatetruecolor($newW, $newH);
-                            if (in_array($ext, ['png', 'webp'])) {
-                                imagealphablending($resized, false); imagesavealpha($resized, true);
-                                imagefilledrectangle($resized, 0, 0, $newW, $newH, imagecolorallocatealpha($resized, 0, 0, 0, 127));
-                            }
-                            imagecopyresampled($resized, $src, 0, 0, 0, 0, $newW, $newH, $srcW, $srcH);
-                            $thumb = imagecreatetruecolor($targetW, $targetH);
-                            if (in_array($ext, ['png', 'webp'])) {
-                                imagealphablending($thumb, false); imagesavealpha($thumb, true);
-                                imagefilledrectangle($thumb, 0, 0, $targetW, $targetH, imagecolorallocatealpha($thumb, 0, 0, 0, 127));
-                            }
-                            imagecopy($thumb, $resized, 0, 0, (int) floor(($newW - $targetW) / 2), (int) floor(($newH - $targetH) / 2), $targetW, $targetH);
-                            match ($ext) {
-                                'jpg', 'jpeg' => imagejpeg($thumb, $absoluteThumb, 90),
-                                'png'        => imagepng($thumb, $absoluteThumb, 9),
-                                'gif'        => imagegif($thumb, $absoluteThumb),
-                                'webp'       => function_exists('imagewebp') ? imagewebp($thumb, $absoluteThumb, 90) : null,
-                                default      => null,
-                            };
-                            imagedestroy($thumb); imagedestroy($resized); imagedestroy($src);
-                        }
-
-                        // Delete old files
-                        if($oldMediaId) {
-                            if ($media->filepath && Storage::disk('images')->exists($media->filepath)) Storage::disk('images')->delete($media->filepath);
-                            if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) Storage::disk('images')->delete($media->thumbnailpath);
-                        }
-
-                        $media->thumbnailpath  = $thumbRel;
-                        $media->filepath       = $originalRel;
-                        $media->alt            = $fileName;
-                        $media->setAltEnAttribute($fileName);
-                    }
-                }
-
-                // Handle PDF File
-                if ($request->hasFile('files_pdf')) {
-                    $filearr = $request->file('files_pdf');
-                    $file = is_array($filearr) ? $filearr[0] : $filearr;
-                    $originalFileName = Media::getAlt($file->getClientOriginalName());
-                    $pdfPath = "files/$this->route/{$post->id}/{$originalFileName}";
-                    $destinationPath = public_path("files/$this->route/{$post->id}");
-
-                    if($oldMediaId && $media->link){
-                        if (Storage::disk('images')->exists($media->link)) Storage::disk('images')->delete($media->link);
-                    }
-                    File::makeDirectory($destinationPath, 0755, true, true);
-                    $file->move($destinationPath, $originalFileName);
-                    
-                    $media->link = $pdfPath;
-                    if (!$media->filepath) {
-                        $media->filepath = $pdfPath;
-                        $media->alt = $originalFileName;
-                    }
-                }
-                $media->save();
+                
+                $this->updateCombinedMedia($request, $media, $post->id, $this->route);
             }
 
             DB::commit();
@@ -427,18 +248,7 @@ class JobApplicaitonController extends Controller
             // 1. Delete all related PostDetail records first
             $post->postDetail()->delete();
             // 2. Delete all related Media records and their files
-            $post->media->each(function (Media $media) {
-                // Delete the image file from files
-                if (Storage::disk('images')->exists($media->filepath)) {
-                    Storage::disk('images')->delete($media->filepath);
-                }
-                // Delete the thumbnail file from storage
-                if (Storage::disk('images')->exists($media->thumbnailpath)) {
-                    Storage::disk('images')->delete($media->thumbnailpath);
-                }
-                // Delete the record from the database
-                $media->delete();
-            });
+            $this->deleteCloudMediaDirectory($post, $this->route, $id);
             // 3. Delete the parent post
             $post->delete();
 
