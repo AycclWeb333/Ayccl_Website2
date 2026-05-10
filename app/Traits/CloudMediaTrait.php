@@ -317,20 +317,9 @@ trait CloudMediaTrait
             $srcW = imagesx($src);
             $srcH = imagesy($src);
 
-            $scale   = max($targetW / $srcW, $targetH / $srcH);
+            $scale   = min($targetW / $srcW, $targetH / $srcH);
             $newW    = (int) round($srcW * $scale);
             $newH    = (int) round($srcH * $scale);
-
-            $resized = imagecreatetruecolor($newW, $newH);
-
-            if (in_array($ext, ['png', 'webp'])) {
-                imagealphablending($resized, false);
-                imagesavealpha($resized, true);
-                $transparent = imagecolorallocatealpha($resized, 0, 0, 0, 127);
-                imagefilledrectangle($resized, 0, 0, $newW, $newH, $transparent);
-            }
-
-            imagecopyresampled($resized, $src, 0, 0, 0, 0, $newW, $newH, $srcW, $srcH);
 
             $thumb = imagecreatetruecolor($targetW, $targetH);
 
@@ -339,11 +328,14 @@ trait CloudMediaTrait
                 imagesavealpha($thumb, true);
                 $transparent = imagecolorallocatealpha($thumb, 0, 0, 0, 127);
                 imagefilledrectangle($thumb, 0, 0, $targetW, $targetH, $transparent);
+            } else {
+                $white = imagecolorallocate($thumb, 255, 255, 255);
+                imagefilledrectangle($thumb, 0, 0, $targetW, $targetH, $white);
             }
 
-            $offsetX = (int) floor(($newW - $targetW) / 2);
-            $offsetY = (int) floor(($newH - $targetH) / 2);
-            imagecopy($thumb, $resized, 0, 0, $offsetX, $offsetY, $targetW, $targetH);
+            $offsetX = (int) floor(($targetW - $newW) / 2);
+            $offsetY = (int) floor(($targetH - $newH) / 2);
+            imagecopyresampled($thumb, $src, $offsetX, $offsetY, 0, 0, $newW, $newH, $srcW, $srcH);
 
             match ($ext) {
                 'jpg', 'jpeg' => imagejpeg($thumb, $absoluteThumb, 90),
@@ -354,7 +346,6 @@ trait CloudMediaTrait
             };
 
             imagedestroy($thumb);
-            imagedestroy($resized);
             imagedestroy($src);
         }
     }
