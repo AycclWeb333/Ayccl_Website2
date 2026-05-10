@@ -14,9 +14,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use App\Traits\CloudMediaTrait;
 
 class CertificatesController extends Controller
 {
+    use CloudMediaTrait;
     public $pageId = 26;
     public $route = 'prizes-and-certificates';
     public $view = 'admin-panel.about-us.prizes-and-certificates';
@@ -128,126 +130,7 @@ class CertificatesController extends Controller
             // Force Spatie/Image to use GD instead of Imagick
 
             // 3) Upload Media (if provided)
-            if ($request->hasFile('files')) {
-                $files = is_array($request->file('files')) ? $request->file('files') : [$request->file('files')];
-
-                foreach ($files as $file) {
-                    // 1) Names & paths
-                    $fileName      = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-                    $ext           = strtolower($file->getClientOriginalExtension());
-                    $uniqueName    = "{$fileName}-" . time() . ".{$ext}";
-
-                    $originalRel   = "images/$this->route/{$post->id}/{$uniqueName}";
-                    $thumbRel      = "images/$this->route/{$post->id}/thumbnails/{$uniqueName}";
-
-                    $originalDir   = public_path("images/$this->route/{$post->id}");
-                    $thumbDir      = public_path("images/$this->route/{$post->id}/thumbnails");
-
-                    // 2) Ensure directories exist
-                    File::makeDirectory($originalDir, 0755, true, true);
-                    File::makeDirectory($thumbDir, 0755, true, true);
-
-                    // 3) Move original file to /public (no Imagick)
-                    $absoluteOriginal = public_path($originalRel);
-                    $file->move($originalDir, $uniqueName);
-
-                    // 4) (Optional) Optimize original - Disabled to avoid cloud server issues
-                    // Image optimization requires external binaries that may not be available on cloud
-                    // The images are already optimized by GD during thumbnail creation
-
-                    // 5) Create 200x200 thumbnail with GD
-                    $absoluteThumb = public_path($thumbRel);
-
-                    // Load source via GD
-                    $src = match ($ext) {
-                        'jpg', 'jpeg' => imagecreatefromjpeg($absoluteOriginal),
-                        'png'        => imagecreatefrompng($absoluteOriginal),
-                        'gif'        => imagecreatefromgif($absoluteOriginal),
-                        'webp'       => function_exists('imagecreatefromwebp') ? imagecreatefromwebp($absoluteOriginal) : null,
-                        default      => null,
-                    };
-
-                    if ($src) {
-                        $srcW = imagesx($src);
-                        $srcH = imagesy($src);
-
-                        // Fit & crop center to 200x200
-                        $targetW = 300;
-                        $targetH = 300;
-                        $scale   = max($targetW / $srcW, $targetH / $srcH);
-                        $newW    = (int) round($srcW * $scale);
-                        $newH    = (int) round($srcH * $scale);
-
-                        $resized = imagecreatetruecolor($newW, $newH);
-
-                        // Preserve transparency for PNG/WebP
-                        if (in_array($ext, ['png', 'webp'])) {
-                            imagealphablending($resized, false);
-                            imagesavealpha($resized, true);
-                            $transparent = imagecolorallocatealpha($resized, 0, 0, 0, 127);
-                            imagefilledrectangle($resized, 0, 0, $newW, $newH, $transparent);
-                        }
-
-                        imagecopyresampled($resized, $src, 0, 0, 0, 0, $newW, $newH, $srcW, $srcH);
-
-                        $thumb = imagecreatetruecolor($targetW, $targetH);
-
-                        if (in_array($ext, ['png', 'webp'])) {
-                            imagealphablending($thumb, false);
-                            imagesavealpha($thumb, true);
-                            $transparent = imagecolorallocatealpha($thumb, 0, 0, 0, 127);
-                            imagefilledrectangle($thumb, 0, 0, $targetW, $targetH, $transparent);
-                        }
-
-                        $offsetX = (int) floor(($newW - $targetW) / 2);
-                        $offsetY = (int) floor(($newH - $targetH) / 2);
-                        imagecopy($thumb, $resized, 0, 0, $offsetX, $offsetY, $targetW, $targetH);
-
-                        // Save thumbnail
-                        match ($ext) {
-                            'jpg', 'jpeg' => imagejpeg($thumb, $absoluteThumb, 90),
-                            'png'        => imagepng($thumb, $absoluteThumb, 9),
-                            'gif'        => imagegif($thumb, $absoluteThumb),
-                            'webp'       => function_exists('imagewebp') ? imagewebp($thumb, $absoluteThumb, 90) : null,
-                            default      => null,
-                        };
-
-                        imagedestroy($thumb);
-                        imagedestroy($resized);
-                        imagedestroy($src);
-                    }
-                }
-
-            }
-
-            // saving pdf files
-            if ($request->hasFile('files_pdf')) {
-                $filearr = $request->file('files_pdf');
-                $file = $filearr[0];
-                // 1) Get the original file name from the UploadedFile object
-                $originalFileName = Media::getAlt($file->getClientOriginalName());
-
-                // 2) Define paths based on your requirements
-                $pdfPath = "files/$this->route/{$post->id}/{$originalFileName}";
-                $destinationPath = public_path("files/$this->route/{$post->id}");
-
-                // 3) Create the directory if it doesn't exist
-                File::makeDirectory($destinationPath, 0755, true, true);
-
-                // 4) Move the file to the correct location using its original name
-                $file->move($destinationPath, $originalFileName);
-            }
-            // 6) Save DB record
-            $media                 = new Media();
-            $media->media_type_id  = 1;
-            $media->thumbnailpath  = $thumbRel;      // store relative path
-            $media->filepath       = $originalRel;   // store relative path
-            $media->alt            = $fileName;
-            $media->setAltEnAttribute($fileName);
-            $media->link           = $pdfPath ;
-            $media->media_able_id  = $post->id;
-            $media->media_able_type = Post::class;
-            $media->save();
+            $this->storeCombinedMedia($request, $post->id, $this->route, Post::class);
             // Commit after processing all files
             DB::commit();
 
@@ -347,149 +230,15 @@ class CertificatesController extends Controller
             $postDetail->save();
 
             // Force Spatie/Image to use GD instead of Imagick
-            $oldMediaId = $post->mediaOne->id ?? null;
-            $media = Media::findOrNew($oldMediaId);
-            // 3) Upload Media (if provided)
-            if ($request->hasFile('files'))
-            {
-                $files = is_array($request->file('files')) ? $request->file('files') : [$request->file('files')];
-
-                foreach ($files as $file) {
-                    // 1) Names & paths
-                    $fileName      = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-                    $ext           = strtolower($file->getClientOriginalExtension());
-                    $uniqueName    = "{$fileName}-" . time() . ".{$ext}";
-
-                    $originalRel   = "images/$this->route/{$post->id}/{$uniqueName}";
-                    $thumbRel      = "images/$this->route/{$post->id}/thumbnails/{$uniqueName}";
-
-                    $originalDir   = public_path("images/$this->route/{$post->id}");
-                    $thumbDir      = public_path("images/$this->route/{$post->id}/thumbnails");
-
-                    // 2) Ensure directories exist
-                    File::makeDirectory($originalDir, 0755, true, true);
-                    File::makeDirectory($thumbDir, 0755, true, true);
-
-                    // 3) Move original file to /public (no Imagick)
-                    $absoluteOriginal = public_path($originalRel);
-                    $file->move($originalDir, $uniqueName);
-
-                    // 4) (Optional) Optimize original - Disabled to avoid cloud server issues
-                    // Image optimization requires external binaries that may not be available on cloud
-                    // The images are already optimized by GD during thumbnail creation
-
-                    // 5) Create 200x200 thumbnail with GD
-                    $absoluteThumb = public_path($thumbRel);
-
-                    // Load source via GD
-                    $src = match ($ext) {
-                        'jpg', 'jpeg' => imagecreatefromjpeg($absoluteOriginal),
-                        'png'        => imagecreatefrompng($absoluteOriginal),
-                        'gif'        => imagecreatefromgif($absoluteOriginal),
-                        'webp'       => function_exists('imagecreatefromwebp') ? imagecreatefromwebp($absoluteOriginal) : null,
-                        default      => null,
-                    };
-
-                    if ($src) {
-                        $srcW = imagesx($src);
-                        $srcH = imagesy($src);
-
-                        // Fit & crop center to 200x200
-                        $targetW = 500;
-                        $targetH = 500;
-                        $scale   = max($targetW / $srcW, $targetH / $srcH);
-                        $newW    = (int) round($srcW * $scale);
-                        $newH    = (int) round($srcH * $scale);
-
-                        $resized = imagecreatetruecolor($newW, $newH);
-
-                        // Preserve transparency for PNG/WebP
-                        if (in_array($ext, ['png', 'webp'])) {
-                            imagealphablending($resized, false);
-                            imagesavealpha($resized, true);
-                            $transparent = imagecolorallocatealpha($resized, 0, 0, 0, 127);
-                            imagefilledrectangle($resized, 0, 0, $newW, $newH, $transparent);
-                        }
-
-                        imagecopyresampled($resized, $src, 0, 0, 0, 0, $newW, $newH, $srcW, $srcH);
-
-                        $thumb = imagecreatetruecolor($targetW, $targetH);
-
-                        if (in_array($ext, ['png', 'webp'])) {
-                            imagealphablending($thumb, false);
-                            imagesavealpha($thumb, true);
-                            $transparent = imagecolorallocatealpha($thumb, 0, 0, 0, 127);
-                            imagefilledrectangle($thumb, 0, 0, $targetW, $targetH, $transparent);
-                        }
-
-                        $offsetX = (int) floor(($newW - $targetW) / 2);
-                        $offsetY = (int) floor(($newH - $targetH) / 2);
-                        imagecopy($thumb, $resized, 0, 0, $offsetX, $offsetY, $targetW, $targetH);
-
-                        // Save thumbnail
-                        match ($ext) {
-                            'jpg', 'jpeg' => imagejpeg($thumb, $absoluteThumb, 90),
-                            'png'        => imagepng($thumb, $absoluteThumb, 9),
-                            'gif'        => imagegif($thumb, $absoluteThumb),
-                            'webp'       => function_exists('imagewebp') ? imagewebp($thumb, $absoluteThumb, 90) : null,
-                            default      => null,
-                        };
-
-                        imagedestroy($thumb);
-                        imagedestroy($resized);
-                        imagedestroy($src);
-                    }
-
-                    // 6) Save DB record
-                    if($oldMediaId){
-                        if ($media->filepath && Storage::disk('images')->exists($media->filepath)) {
-                            Storage::disk('images')->delete($media->filepath);
-                        }
-                        if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
-                            Storage::disk('images')->delete($media->thumbnailpath);
-                        }
-                    }
-
-                }
-
-            }
-            if ($request->hasFile('files_pdf')) {
-                $filearr = $request->file('files_pdf');
-                $file = $filearr[0];
-                // 1) Get the original file name from the UploadedFile object
-                $originalFileName = Media::getAlt($file->getClientOriginalName());
-
-                // 2) Define paths based on your requirements
-                $pdfPath = "files/$this->route/{$post->id}/{$originalFileName}";
-                $destinationPath = public_path("files/$this->route/{$post->id}");
-
-                if($oldMediaId){
-                    if ($media->link && Storage::disk('images')->exists($media->link)) {
-                        Storage::disk('images')->delete($media->link);
-                    }
-                }
-                // 3) Create the directory if it doesn't exist
-                File::makeDirectory($destinationPath, 0755, true, true);
-
-                // 4) Move the file to the correct location using its original name
-                $file->move($destinationPath, $originalFileName);
-
+            // 3. Update Media using CloudMediaTrait
+            $media = Media::where('media_able_id', $post->id)->where('media_able_type', Post::class)->first();
+            if (!$media) {
+                $media = new Media();
+                $media->media_able_id = $post->id;
+                $media->media_able_type = Post::class;
             }
 
-            $media = Media::where('media_able_id', $post->id)->count();
-            if ($media == 0) {
-                throw new \Exception(__('adminlte::adminlte.files_required')    );
-            }
-
-            $media->media_type_id  = 1;
-            $media->thumbnailpath  = $thumbRel;      // store relative path
-            $media->filepath       = $originalRel;   // store relative path
-            $media->alt            = $fileName;
-            $media->setAltEnAttribute($fileName);
-            $media->link           = $pdfPath ;
-            $media->media_able_id  = $post->id;
-            $media->media_able_type = Post::class;
-            $media->save();
+            $this->updateCombinedMedia($request, $media, $post->id, $this->route);
             // Commit after processing all files
             DB::commit();
 
@@ -514,18 +263,7 @@ class CertificatesController extends Controller
             // 1. Delete all related PostDetail records first
             $post->postDetail()->delete();
             // 2. Delete all related Media records and their files
-            $post->media->each(function (Media $media) {
-                // Delete the image file from files
-                if (Storage::disk('images')->exists($media->filepath)) {
-                    Storage::disk('images')->delete($media->filepath);
-                }
-                // Delete the thumbnail file from storage
-                if (Storage::disk('images')->exists($media->thumbnailpath)) {
-                    Storage::disk('images')->delete($media->thumbnailpath);
-                }
-                // Delete the record from the database
-                $media->delete();
-            });
+            $this->deleteCloudMediaDirectory($post, $this->route, $id);
             // 3. Delete the parent post
             $post->delete();
 
