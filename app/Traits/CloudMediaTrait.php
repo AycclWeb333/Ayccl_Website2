@@ -225,6 +225,7 @@ trait CloudMediaTrait
             $media->link = $request->link;
         }
 
+        $media->media_type_id = $media->media_type_id ?? 1;
         $media->save();
     }
 
@@ -295,6 +296,7 @@ trait CloudMediaTrait
         
         $media->alt = $title;
         $media->setAltEnAttribute($title_en);
+        $media->media_type_id = $media->media_type_id ?? 3;
         $media->save();
     }
 
