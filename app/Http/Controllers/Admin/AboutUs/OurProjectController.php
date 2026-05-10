@@ -211,10 +211,12 @@ class OurProjectController extends Controller
             // Force Spatie/Image to use GD instead of Imagick
 
             // 3. Update Media using CloudMediaTrait
-            $media = Media::firstOrNew([
-                'media_able_id' => $post->id,
-                'media_able_type' => Post::class
-            ]);
+            $media = Media::where('media_able_id', $post->id)->where('media_able_type', Post::class)->first();
+            if (!$media) {
+                $media = new Media();
+                $media->media_able_id = $post->id;
+                $media->media_able_type = Post::class;
+            }
 
             $this->updateCombinedMedia($request, $media, $post->id, $this->route);
 
