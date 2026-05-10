@@ -228,6 +228,23 @@ class ProductsController extends Controller
                         imagedestroy($resized);
                         imagedestroy($src);
                     }
+
+                    // Upload to DigitalOcean Spaces
+                    $doDisk = Storage::disk('do');
+                    $doDisk->put($originalRel, file_get_contents($absoluteOriginal), 'public');
+                    if (file_exists($absoluteThumb)) {
+                        $doDisk->put($thumbRel, file_get_contents($absoluteThumb), 'public');
+                    }
+
+                    // Get Full Cloud URLs
+                    $originalRel = $doDisk->url($originalRel);
+                    $thumbRel = $doDisk->url($thumbRel);
+
+                    // Clean up local temp files
+                    unlink($absoluteOriginal);
+                    if (file_exists($absoluteThumb)) {
+                        unlink($absoluteThumb);
+                    }
                 }
 
             }
@@ -247,7 +264,16 @@ class ProductsController extends Controller
                 File::makeDirectory($destinationPath, 0755, true, true);
 
                 // 4) Move the file to the correct location using its original name
+                $absolutePdf = $destinationPath . '/' . $originalFileName;
                 $file->move($destinationPath, $originalFileName);
+
+                // 5) Upload to DigitalOcean
+                $doDisk = Storage::disk('do');
+                $doDisk->put($pdfPath, file_get_contents($absolutePdf), 'public');
+                $pdfPath = $doDisk->url($pdfPath);
+
+                // Clean up local file
+                unlink($absolutePdf);
             }
             // 6) Save DB record
             $media                 = new Media();
@@ -472,14 +498,38 @@ class ProductsController extends Controller
                         imagedestroy($src);
                     }
 
-                    // 6) Delete old files if replacing
+                    // Upload to DigitalOcean Spaces
+                    $doDisk = Storage::disk('do');
+                    $doDisk->put($originalRel, file_get_contents($absoluteOriginal), 'public');
+                    if (file_exists($absoluteThumb)) {
+                        $doDisk->put($thumbRel, file_get_contents($absoluteThumb), 'public');
+                    }
+
+                    // Get Full Cloud URLs
+                    $originalRel = $doDisk->url($originalRel);
+                    $thumbRel = $doDisk->url($thumbRel);
+
+                    // Clean up local temp files
+                    unlink($absoluteOriginal);
+                    if (file_exists($absoluteThumb)) {
+                        unlink($absoluteThumb);
+                    }
+
+                    // 6) Delete old files from Cloud if replacing
                     if($oldMediaId){
-                        // Only delete if it's actually an image (don't delete PDF that was moved here)
-                        if ($media->filepath && $media->filepath != $pdfPath && Storage::disk('images')->exists($media->filepath)) {
-                            Storage::disk('images')->delete($media->filepath);
+                        // Helper to extract path from Cloud URL
+                        $extractPath = function($url) {
+                            $parsed = parse_url($url, PHP_URL_PATH);
+                            return ltrim($parsed, '/');
+                        };
+
+                        if ($media->filepath && $media->filepath != $pdfPath) {
+                            $oldImgPath = $extractPath($media->filepath);
+                            if($doDisk->exists($oldImgPath)) $doDisk->delete($oldImgPath);
                         }
-                        if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
-                            Storage::disk('images')->delete($media->thumbnailpath);
+                        if ($media->thumbnailpath) {
+                            $oldThumbPath = $extractPath($media->thumbnailpath);
+                            if($doDisk->exists($oldThumbPath)) $doDisk->delete($oldThumbPath);
                         }
                     }
                 }
@@ -493,13 +543,25 @@ class ProductsController extends Controller
                 $pdfPath = "files/$this->route/{$post->id}/{$originalFileName}";
                 $destinationPath = public_path("files/$this->route/{$post->id}");
 
+                $doDisk = Storage::disk('do');
+
                 if($oldMediaId){
-                    if ($media->link && Storage::disk('images')->exists($media->link)) {
-                        Storage::disk('images')->delete($media->link);
+                    if ($media->link) {
+                        $oldPdfPath = ltrim(parse_url($media->link, PHP_URL_PATH), '/');
+                        if($doDisk->exists($oldPdfPath)) $doDisk->delete($oldPdfPath);
                     }
                 }
                 File::makeDirectory($destinationPath, 0755, true, true);
+                
+                $absolutePdf = $destinationPath . '/' . $originalFileName;
                 $file->move($destinationPath, $originalFileName);
+
+                // Upload to DigitalOcean
+                $doDisk->put($pdfPath, file_get_contents($absolutePdf), 'public');
+                $pdfPath = $doDisk->url($pdfPath);
+
+                // Clean up local file
+                unlink($absolutePdf);
             }
 
             $hasImage = false;
@@ -549,36 +611,36 @@ class ProductsController extends Controller
 
             // 1. Delete all related PostDetail records first
             $post->postDetail()->delete();
-            // 2. Delete all related Media records and their files
-            $post->media->each(function (Media $media) {
-                // Delete the image file from files
-                if ($media->filepath && Storage::disk('images')->exists($media->filepath)) {
-                    Storage::disk('images')->delete($media->filepath);
+            // 2. Delete all related Media records and their files from Cloud
+            $doDisk = Storage::disk('do');
+            $extractPath = function($url) {
+                return ltrim(parse_url($url, PHP_URL_PATH), '/');
+            };
+
+            $post->media->each(function (Media $media) use ($doDisk, $extractPath) {
+                if ($media->filepath) {
+                    $path = $extractPath($media->filepath);
+                    if ($doDisk->exists($path)) $doDisk->delete($path);
                 }
-                // Delete the thumbnail file from storage
-                if ($media->thumbnailpath && Storage::disk('images')->exists($media->thumbnailpath)) {
-                    Storage::disk('images')->delete($media->thumbnailpath);
+                if ($media->thumbnailpath) {
+                    $path = $extractPath($media->thumbnailpath);
+                    if ($doDisk->exists($path)) $doDisk->delete($path);
                 }
-                // Delete the PDF file from storage (stored in 'link' field)
-                if ($media->link && Storage::disk('images')->exists($media->link)) {
-                    Storage::disk('images')->delete($media->link);
+                if ($media->link) {
+                    $path = $extractPath($media->link);
+                    if ($doDisk->exists($path)) $doDisk->delete($path);
                 }
-                // Delete the record from the database
                 $media->delete();
             });
             // 3. Delete the parent post
             $post->delete();
 
-            // 4. Delete the entire directories for this product to keep the filesystem clean
+            // 4. Delete local temp directories if they exist
             $imageDir = public_path("images/$this->route/{$id}");
             $fileDir  = public_path("files/$this->route/{$id}");
 
-            if (File::isDirectory($imageDir)) {
-                File::deleteDirectory($imageDir);
-            }
-            if (File::isDirectory($fileDir)) {
-                File::deleteDirectory($fileDir);
-            }
+            if (File::isDirectory($imageDir)) File::deleteDirectory($imageDir);
+            if (File::isDirectory($fileDir)) File::deleteDirectory($fileDir);
 
             DB::commit();
 

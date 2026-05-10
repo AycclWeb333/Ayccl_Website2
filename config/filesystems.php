@@ -68,6 +68,17 @@ return [
             'report' => false,
         ],
 
+        'do' => [
+            'driver' => 's3',
+            'key' => env('DO_ACCESS_KEY_ID'),
+            'secret' => env('DO_SECRET_ACCESS_KEY'),
+            'region' => env('DO_DEFAULT_REGION', 'fra1'),
+            'bucket' => env('DO_BUCKET'),
+            'endpoint' => env('DO_ENDPOINT'),
+            'use_path_style_endpoint' => false,
+            'throw' => false,
+        ],
+
     ],
 
     /*
