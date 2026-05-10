@@ -30,7 +30,7 @@
 @endpush
 @php
     $route = "our-guests";
-    $id = "our-guest";
+    $id = "our_guest";
 @endphp
 
 @section('title', __('adminlte::menu.ourGuests') .' - '. __('adminlte::adminlte.editNews'))

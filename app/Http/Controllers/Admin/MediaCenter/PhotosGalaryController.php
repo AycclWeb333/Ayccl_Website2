@@ -60,7 +60,7 @@ class PhotosGalaryController extends Controller
         try{
             $categories = Category::whereHas('postDetail', function ($query) {
                 $query->whereHas('post', function ($q) {
-                    $q->where('page_id', 52);
+                    $q->where('page_id', $this->pageId);
                 });
             })
             ->select('id', 'name','name_en')
@@ -98,11 +98,11 @@ class PhotosGalaryController extends Controller
             // 1. Create Post
             $post = new Post();
             $post->category_id = 1;
-            $post->page_id = 52; // default page
+            $post->page_id = $this->pageId; // default page
             if (isset($request->order))
                 $post->order     = $request->order;
             else {
-                $maxOrder = Post::where('page_id', 52)->where('active', true)->max('order');
+                $maxOrder = Post::where('page_id', $this->pageId)->where('active', true)->max('order');
                 $post->order = $maxOrder +1;
             }
             $post->active = true;
@@ -140,7 +140,7 @@ class PhotosGalaryController extends Controller
             $post = Post::findOrFail($id);
             $categories = Category::whereHas('postDetail', function ($query) {
                 $query->whereHas('post', function ($q) {
-                    $q->where('page_id', 52);
+                    $q->where('page_id', $this->pageId);
                 });
             })
             ->select('id', 'name', 'name_en')
@@ -187,12 +187,12 @@ class PhotosGalaryController extends Controller
             DB::beginTransaction();
             // dd($post);
             $post->category_id = $request->category_id;
-            $post->page_id = 52; // default page
+            $post->page_id = $this->pageId; // default page
             // $post->date = $request->date;
             if (isset($request->order))
                 $post->order     = $request->order;
             else {
-                $maxOrder = Post::where('page_id', 52)->where('active', true)->max('order');
+                $maxOrder = Post::where('page_id', $this->pageId)->where('active', true)->max('order');
                 $post->order = $maxOrder +1;
             }
             // $post->order = $request->order ?? 1;

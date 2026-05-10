@@ -187,7 +187,11 @@ class OurGuestController extends Controller
             $post->save();
 
             // 2. Create PostDetail
-            $postDetail = PostDetail::where('post_id' , $post->id)->firstOrFail();
+            $postDetail = PostDetail::where('post_id' , $post->id)->first();
+            if (!$postDetail) {
+                $postDetail = new PostDetail();
+                $postDetail->post_id = $post->id;
+            }
             // $postDetail->post_id   = $post->id;
             $postDetail->category_id = $request->category_id;
             $postDetail->title = $request->title;
