@@ -150,7 +150,7 @@
                     </div>
                     {{-- content EN --}}
 
-                    <div class="form-group col-12 col-md-6" style="direction: ltr">
+                    <div class="form-group col-12 col-md-6" style="text-align: left; direction: ltr;  text-align: left;" >
                         <x-adminlte-text-editor name="content_en" label="{{ __('adminlte::adminlte.contentEN') }}"
                             label-class="text-olive" igroup-size="sm" placeholder="Write some text..."
                             enable-old-support />
