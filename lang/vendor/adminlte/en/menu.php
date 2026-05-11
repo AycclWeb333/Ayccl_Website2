@@ -23,7 +23,7 @@ return [
 'users_management' => 'User Management',
 'users_data' => 'User Data',
 'users_privilages' => 'User Privileges',
-
+'hadhrami' => 'Hadhramout 100% Cement',
 'website_management' => 'Website Management',
 'website_variables' => 'Website Variables',
 'website_logs' => 'Website Logs',

@@ -21,7 +21,7 @@ return [
     'users_management' => 'إدارة المستخدمين',
     'users_data' => 'بيانات المستخدمين',
     'users_privilages' => 'صلاحيات المستخدمين',
-
+    'hadhrami' => 'اسمنت حضرموت 100%',
     'website_management' => 'إدارة الموقع',
     'website_variables' => 'متغيرات الموقع',
     'website_logs' => 'رقابة الموقع',
