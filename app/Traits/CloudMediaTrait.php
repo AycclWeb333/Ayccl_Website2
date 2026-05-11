@@ -318,24 +318,23 @@ trait CloudMediaTrait
             $srcH = imagesy($src);
 
             $scale   = min($targetW / $srcW, $targetH / $srcH);
+            if ($scale > 1) $scale = 1; // Don't upscale
             $newW    = (int) round($srcW * $scale);
             $newH    = (int) round($srcH * $scale);
 
-            $thumb = imagecreatetruecolor($targetW, $targetH);
+            $thumb = imagecreatetruecolor($newW, $newH);
 
             if (in_array($ext, ['png', 'webp'])) {
                 imagealphablending($thumb, false);
                 imagesavealpha($thumb, true);
                 $transparent = imagecolorallocatealpha($thumb, 0, 0, 0, 127);
-                imagefilledrectangle($thumb, 0, 0, $targetW, $targetH, $transparent);
+                imagefilledrectangle($thumb, 0, 0, $newW, $newH, $transparent);
             } else {
                 $white = imagecolorallocate($thumb, 255, 255, 255);
-                imagefilledrectangle($thumb, 0, 0, $targetW, $targetH, $white);
+                imagefilledrectangle($thumb, 0, 0, $newW, $newH, $white);
             }
 
-            $offsetX = (int) floor(($targetW - $newW) / 2);
-            $offsetY = (int) floor(($targetH - $newH) / 2);
-            imagecopyresampled($thumb, $src, $offsetX, $offsetY, 0, 0, $newW, $newH, $srcW, $srcH);
+            imagecopyresampled($thumb, $src, 0, 0, 0, 0, $newW, $newH, $srcW, $srcH);
 
             match ($ext) {
                 'jpg', 'jpeg' => imagejpeg($thumb, $absoluteThumb, 90),
