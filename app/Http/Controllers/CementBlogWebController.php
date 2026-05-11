@@ -45,5 +45,14 @@ class CementBlogWebController extends Controller
         }
         return view($this->path . "cement-blog", compact('cementBlogs', 'page'));
     }
-    //
+    public function show($locale, $id)
+    {
+        try {
+            $post = Post::with(['postDetailOne', 'media'])->findOrFail($id);
+            $page = Page::findOrFail($this->pageId);
+        } catch (Exception $e) {
+            return redirect()->back()->with(['error' => $e->getMessage()]);
+        }
+        return view($this->path . "show", compact('post', 'page'));
+    }
 }

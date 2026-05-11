@@ -202,4 +202,5 @@ return array(
     'save_success' => 'تم الحفظ بنجاح.',
     'update_success' => 'تم التعديل بنجاح.',
     'delete_success' => 'تم الحذف بنجاح.',
+    'back' => 'العودة للخلف',
 );

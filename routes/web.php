@@ -258,6 +258,7 @@ Route::group([
 
     //  مدونة اسمنتية
     Route::get('/cementBlog', [CementBlogWebController::class, 'index'])->name('cementBlog');
+    Route::get('/cementBlog/{id}', [CementBlogWebController::class, 'show'])->name('cementBlog.show');
 
     // الموارد البشرية
     Route::get('/employeesAdvantages', [HumanResourcesController::class, 'employeesAdvantagesIndex'])->name('employeesAdvantages');

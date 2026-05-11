@@ -35,7 +35,13 @@
                             {{ $post->postDetailOne->title }}
                         </h2>
                         <div class="text-md xl:text-xl space-y-4 text-gray-700">
-                            {!! $post->postDetailOne->content !!}
+                            {!! Str::limit(strip_tags($post->postDetailOne->content), 300) !!}
+                        </div>
+                        <div class="flex justify-center lg:justify-start">
+                            <a href="{{ localizedRoute('cementBlog.show', ['id' => $post->id]) }}" 
+                               class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-6 rounded-full transition duration-300">
+                                {{ __('adminlte::adminlte.showmore') }}
+                            </a>
                         </div>
                     </div>
 

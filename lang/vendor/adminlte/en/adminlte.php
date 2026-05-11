@@ -193,4 +193,5 @@ return array(
     'save_success' => 'Saved successfully.',
     'update_success' => 'Updated successfully.',
     'delete_success' => 'Deleted successfully.',
+    'back' => 'Go Back',
 );
