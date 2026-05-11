@@ -180,6 +180,7 @@ return array(
     'editPageBackgroundAndDesc' => 'تعديل وصف وخلفية الصفحة',
     'emailSentSuccessfully' => 'تم إرسال الإيميل بنجاح.',
     'showmore' => 'إعرف أكثر',
+    'hadhrami' => 'اسمنت حضرموت 100%',
 
     'file_limit_image' => 'حجم الصورة كبير جداً، الحد الأقصى للملف الواحد هو 2 ميجابايت.',
     'file_limit_pdf'   => 'حجم ملف الـ PDF كبير جداً، الحد الأقصى هو 10 ميجابايت.',

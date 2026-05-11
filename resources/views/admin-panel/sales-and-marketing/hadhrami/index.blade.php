@@ -1,8 +1,8 @@
 @extends('adminlte::page')
-@section('title', __('adminlte::menu.socialReponsibility'))
+@section('title', __('adminlte::menu.hadhrami'))
 
 @section('content_header')
-    <h1>{{ __('adminlte::menu.socialReponsibility') }}</h1>
+    <h1>{{ __('adminlte::menu.hadhrami') }}</h1>
 @stop
 
 

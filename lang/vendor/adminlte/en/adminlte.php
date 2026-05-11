@@ -28,7 +28,7 @@ return array(
     'verify_request_another' => 'click here to request another',
     'confirm_password_message' => 'Please, confirm your password to continue.',
     'remember_me_hint' => 'Keep me authenticated indefinitely or until I manually logout',
-
+    'hadhrami' => 'Hadhramout 100% Cement',
     'aboutus' => 'About Us',
     'createNews' => 'Create News',
     'newsAndActivities' => 'News And Activities',
