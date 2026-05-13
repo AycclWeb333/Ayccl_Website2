@@ -518,7 +518,7 @@
 
                     <div class="opacity-100">
                         <a href="'.url($link).'" class="btn bg-brand-green hover:bg-white hover:text-white border-none text-black px-12 rounded-none font-bold transition-all duration-300 shadow-2xl">
-                            إعرف أكثر
+                            {{ app()->getLocale() == 'ar' ? 'إعرف أكثر' : 'Learn more' }}
                         </a>
                     </div>
                 </div>';
@@ -728,8 +728,11 @@
     <div class="relative h-full w-full overflow-hidden">
         @foreach ($slideshows as $slideshow)
             @php
-                $fullTitle = $slideshow->postDetailOne->title;
-                $words = explode(' ', trim($fullTitle));
+                $detail = $slideshow->postDetailOne;
+                $title = app()->getLocale() == 'ar' ? $detail->title : $detail->title_en;
+                $content = app()->getLocale() == 'ar' ? $detail->content : $detail->content_en;
+                
+                $words = explode(' ', trim($title));
                 $firstWord = $words[0] ?? '';
                 $remainingTitle = implode(' ', array_slice($words, 1));
                 $link = $slideshow->mediaOne->link ?? '#';
@@ -742,7 +745,7 @@
                     </h2>
 
                     <p class="text-white text-xl md:text-2xl mb-5 font-normal max-w-4xl mx-auto drop-shadow-md">
-                        '.($slideshow->postDetailOne->content .'...' ?? 'أسسها صح...').'
+                        '.($content ?? 'أسسها صح...').'
                     </p>
 
                     <div class="opacity-100">

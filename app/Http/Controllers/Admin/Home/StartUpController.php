@@ -81,8 +81,8 @@ class StartUpController extends Controller
             [
                 'title'      => 'required',
                 'title_en'   => 'required',
-                // 'content_ar'    => 'required',
-                // 'content_en' => 'required',
+                'content_ar'    => 'required',
+                'content_en' => 'required',
                 'files'      => 'required',
                 // 'link'      => 'required',
                 // 'files_pdf'      => 'required',
@@ -90,8 +90,8 @@ class StartUpController extends Controller
             [
                 'title.required'      => __('adminlte::adminlte.title_required'),
                 'title_en.required'   => __('adminlte::adminlte.title_en_required'),
-                // 'content_ar.required'    => __('adminlte::adminlte.content_required'),
-                // 'content_en.required' => __('adminlte::adminlte.content_en_required'),
+                'content_ar.required'    => __('adminlte::adminlte.content_required'),
+                'content_en.required' => __('adminlte::adminlte.content_en_required'),
                 'files.required'      => __('adminlte::adminlte.files_required'),
                 // 'link.required'      => __('adminlte::adminlte.link_required'),
                 // 'files_pdf.required'      => __('adminlte::adminlte.files_required'),
@@ -168,8 +168,8 @@ class StartUpController extends Controller
                 // 'slug'       => 'required|string',
                 // 'slug_en'    => 'required|string',
                 // 'date'       => 'required|date',
-                // 'content_ar'    => 'required',
-                // 'content_en' => 'required',
+                'content_ar'    => 'required',
+                'content_en' => 'required',
                 // 'files'      => 'required',
             ],
             [
@@ -180,8 +180,8 @@ class StartUpController extends Controller
                 // 'slug_en.required'    => __('adminlte::adminlte.slug_en_required'),
                 // 'slug_en.unique'      => __('adminlte::adminlte.slug_en_unique'),
                 // 'date.required'       => __('adminlte::adminlte.date_required'),
-                // 'content_ar.required'    => __('adminlte::adminlte.content_required'),
-                // 'content_en.required' => __('adminlte::adminlte.content_en_required'),
+                'content_ar.required'    => __('adminlte::adminlte.content_required'),
+                'content_en.required' => __('adminlte::adminlte.content_en_required'),
                 // 'files.required'      => __('adminlte::adminlte.files_required'),
                 ]
         );

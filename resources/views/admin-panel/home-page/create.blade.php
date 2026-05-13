@@ -45,99 +45,43 @@
                                 required />
                         </div>
 
-
-                        <!-- DateTime Picker -->
-                        {{-- @php
-                            $config = [
-                                'format' => 'L',
-                                'defaultDate' => Carbon\Carbon::now()->format('m/d/Y'), // Corrected format for default date
-                            ];
-                        @endphp
-                        <x-adminlte-input-date name="date" :config="$config"
-                            placeholder="{{ __('adminlte::landingpage.choosedate') }}" label-class="text-olive"
-                            label="{{ __('adminlte::adminlte.date') }}" required enable-old-support>
-                            <x-slot name="prependSlot">
-                                <div class="input-group-text bg-gradient-success">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </div>
-                            </x-slot>
-                        </x-adminlte-input-date> --}}
                         <div class="form-group">
                             <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive"
                                 label="{{ __('adminlte::adminlte.title(EN)') }}" enable-old-support />
                         </div>
                     </div>
 
-                    <!-- slug Column -->
+                    <!-- link Column -->
                     <div class="col-12 col-md-6">
-
-
                         <div class="form-group">
                             <x-adminlte.form.input id="link" name="link" label-class="text-olive"
                                 label="{{ __('adminlte::adminlte.link') }}" enable-old-support />
                         </div>
+                    </div>
+                </div>
 
-
-                        {{-- <div class="form-group">
-                            <x-adminlte-input name="slug" label="{{ __('adminlte::adminlte.slug(AR)') }}"
-                                placeholder="postal code" label-class="text-olive" enable-old-support>
-                                <x-slot name="prependSlot">
-                                    <div class="input-group-text">
-                                        <i class="fas fa-link"></i>
-                                    </div>
-                                </x-slot>
-                                <x-slot name="bottomSlot">
-                                    <a href="#" data-toggle="modal"
-                                        data-target="#modalMin">{{ __('adminlte::adminlte.whatItMeans') }}</a>
-                                </x-slot>
-                            </x-adminlte-input>
-                        </div>
-
-                        <div class="form-group">
-                            <x-adminlte-input name="slug_en" label="{{ __('adminlte::adminlte.slug(EN)') }}"
-                                placeholder="postal code" label-class="text-olive" enable-old-support>
-                                <x-slot name="prependSlot">
-                                    <div class="input-group-text">
-                                        <i class="fas fa-link"></i>
-                                    </div>
-                                </x-slot>
-                                <x-slot name="bottomSlot">
-                                    <a href="#" data-toggle="modal"
-                                        data-target="#modalMin">{{ __('adminlte::adminlte.whatItMeans') }}</a>
-                                </x-slot>
-                            </x-adminlte-input>
-                        </div> --}}
-
-
-
-                        {{-- <div class="form-group">
-                            <x-adminlte-select2 name="category_id" :config="['minimumResultsForSearch' => 'Infinity']"
-                                label="{{ __('adminlte::adminlte.postType') }}" label-class="text-olive">
-                                @foreach ($categories as $category )
-                                
-                                <option {{ $loop->iteration==1?'selected':'' }} value="{{ $category->id }}">{{ $category->name }}</option>
-                                    
-                                @endforeach
-                            </x-adminlte-select2>
-                        </div> --}}
-
-                        {{-- <x-adminlte-modal tabindex="-1" id="modalMin" title="{{ __('adminlte::adminlte.slug') }}" theme="olive"
-                            icon="fas fa-question" size='lg'>
-                            <p class="bg-secondary text-white container p-3 my-3 border responsive-text"
-                                style="direction: ltr; text-align: left;">
-                                <span class="bg-dark text-white container m-2"> URL : </span>
-                                <span class="responsive-text">
-                                    https://www.ayccl.com/ar/News/36/افتتاح-وتدشين-المسار-الجديد-لطريق-عقبة-عبدالله-غريب
-                                </span>
-                            </p>
-                            <p class="responsive-text">
-                                {{ __('adminlte::adminlte.slug') }}:
-                                <span class="text-danger">افتتاح-وتدشين-المسار-الجديد-لطريق-عقبة-عبدالله-غريب</span>
-                            </p>
-                            <p class="responsive-text">
-                                {!! nl2br(__('adminlte::adminlte.slugInfo')) !!}
-                            </p>
-                        </x-adminlte-modal> --}}
+                <div class="row">
+                    @php
+                        $config = [
+                            'height' => 150,
+                            'toolbar' => [
+                                ['style', ['bold', 'italic', 'underline', 'clear']],
+                                ['font', ['strikethrough', 'superscript', 'subscript']],
+                                ['fontsize', ['fontsize']],
+                                ['color', ['color']],
+                                ['para', ['ul', 'ol', 'paragraph']],
+                                ['height', ['height']],
+                                ['view', ['fullscreen', 'codeview', 'help']],
+                            ],
+                        ];
+                    @endphp
+                    <div class="col-12 col-md-6">
+                        <x-adminlte-text-editor name="content_ar" label="{{ __('adminlte::adminlte.contentAR') }}"
+                            label-class="text-olive" :config="$config" required />
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <x-adminlte-text-editor name="content_en" label="{{ __('adminlte::adminlte.contentEN') }}"
+                            label-class="text-olive" :config="$config" required />
                     </div>
                 </div>
             </div>
