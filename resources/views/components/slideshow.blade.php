@@ -640,6 +640,10 @@
         text-shadow: 0px 0px 1px rgba(255,255,255,0.3);
     }
 
+    .slideshow-desc, .slideshow-desc * {
+        color: #ffffff !important;
+    }
+
     #slideshow-text h2, #slideshow-text p, #slideshow-text div {
         animation: slideUpFade 0.8s ease forwards;
     }
@@ -744,9 +748,9 @@
                         <span class="text-black-custom">'.$remainingTitle.'</span>
                     </h2>
 
-                    <p class="text-white text-xl md:text-2xl mb-5 font-normal max-w-4xl mx-auto drop-shadow-md">
+                    <div class="slideshow-desc text-white text-xl md:text-2xl mb-5 font-normal max-w-4xl mx-auto drop-shadow-md">
                         '.($content ?? 'أسسها صح...').'
-                    </p>
+                    </div>
 
                     <div class="opacity-100">
                         <a href="'.url($link).'" class="btn bg-brand-green hover:bg-white hover:text-white border-none text-black px-3 rounded-none font-bold transition-all duration-300 shadow-2xl">
