@@ -98,7 +98,8 @@
     {{-- شريط الاستفسار (CTA) --}}
     <div class="mt-16 bg-brand-green text-white py-6 px-4 text-center rounded-none shadow-lg" data-aos="zoom-in" style="margin-top: 10px;">
         <p class="text-lg md:text-2xl font-bold flex flex-wrap justify-center items-center gap-3">
-            <span>{{ app()->getLocale() == 'ar' ? 'هل ترغب في بناء مشروع أحلامك معنا؟' : 'Do you want to build your dream project with us?' }}</span>
+            <!-- <span>{{ app()->getLocale() == 'ar' ? 'هل ترغب في بناء مشروع أحلامك معنا؟' : 'Do you want to build your dream project with us?' }}</span> -->
+            <span>{{ app()->getLocale() == 'ar' ? 'تواصل مع فريقنا الآن' : 'Contact our team now' }}</span>
             <a href="{{ localizedRoute('customerservice') }}" class="underline decoration-2 underline-offset-8 hover:text-black transition-colors">
                 {{ app()->getLocale() == 'ar' ? 'استفسر هنا' : 'Inquire here' }}
                 <span class="inline-block {{ app()->getLocale() == 'ar' ? 'rotate-180' : '' }}">❯</span>
