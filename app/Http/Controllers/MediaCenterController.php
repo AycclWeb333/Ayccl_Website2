@@ -32,10 +32,16 @@ class MediaCenterController extends Controller
         $pageId = 51;
         $page = Page::findOrFail($pageId);
         $posts = Post::where("page_id", $page->id)
-        ->where('active', true)
-        ->with(['postDetail', 'media'])->get();
+            ->where('active', true)
+            ->with(['postDetail', 'media'])->get();
 
-        return view($this->path . "news-activities", compact('posts', 'page'));
+        // News (7), Activities (2)
+        $categories = Category::whereIn('id', [7, 2])->get()
+            ->sortBy(function ($category) {
+                return array_search($category->id, [7, 2]);
+            })->values();
+
+        return view($this->path . "news-activities", compact('posts', 'page', 'categories'));
     }
     public function newsShowIndex($locale, $id, $slug = null)
     {
