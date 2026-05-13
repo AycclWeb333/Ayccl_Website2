@@ -17,6 +17,7 @@ return [
     'information' => 'Information',
     'english' => 'English',
     'arabic' => 'العربية',
+    'home-page' => 'Home Page',
 
 
 'system_management' => 'System Management',

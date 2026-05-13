@@ -14,7 +14,7 @@ return [
     'important' => 'Important',
     'warning' => 'Warning',
     'information' => 'Information',
-
+    'home-page' => 'الصفحة الرئيسية',
 
     'account_settings' => 'إعدادات الحساب',
     'system_management' => 'إدارة النظام',
