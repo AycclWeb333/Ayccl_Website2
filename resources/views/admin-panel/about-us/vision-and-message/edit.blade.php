@@ -76,7 +76,7 @@
                     <!-- slug Column -->
                     <div class="col-12 col-md-6">
                         <div class="form-group">
-                            <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive"
+                            <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive" style="text-align: left; direction: ltr;"
                                 value="{{ $post->postDetailOne->title_en }}"
                                 label="{{ __('adminlte::adminlte.title(EN)') }}" enable-old-support />
                         </div>

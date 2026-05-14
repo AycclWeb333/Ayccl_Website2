@@ -39,7 +39,7 @@
                                 required />
                         </div>
                         <div class="form-group">
-                            <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive"
+                            <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive" style="text-align: left; direction: ltr;"
                                 label="{{ __('adminlte::adminlte.title(EN)') }}" placeholder="{{ __('adminlte::landingpage.fullName') }} .." enable-old-support />
                         </div>
                     </div>

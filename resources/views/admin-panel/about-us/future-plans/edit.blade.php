@@ -68,7 +68,7 @@
                                 required />
                         </div>
                         <div class="form-group">
-                            <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive" value="{{ $post->postDetailOne->title_en }}"
+                            <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive" value="{{ $post->postDetailOne->title_en }}" style="text-align: left; direction: ltr;"
                                 label="{{ __('adminlte::adminlte.title(EN)') }}" enable-old-support />
                         </div>
 

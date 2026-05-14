@@ -24,7 +24,7 @@
                         </div>
                         <div class="form-group">
                             <label for="title_en" class="text-olive">{{ __('adminlte::adminlte.title(EN)') }}</label>
-                            <input type="text" name="title_en" class="form-control" value="{{ old('title_en') }}">
+                            <input type="text" name="title_en" class="form-control" value="{{ old('title_en') }}" style="text-align: left; direction: ltr;">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -54,7 +54,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="content_en" class="text-olive">{{ __('adminlte::adminlte.contentEN') }}</label>
-                            <textarea name="content_en" class="form-control" rows="4">{{ old('content_en') }}</textarea>
+                            <textarea name="content_en" class="form-control" rows="4" style="text-align: left; direction: ltr;">{{ old('content_en') }}</textarea>
                         </div>
                     </div>
                 </div>
