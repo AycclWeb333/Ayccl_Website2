@@ -39,10 +39,10 @@
                             {{-- Content Container --}}
                             <div class="w-full lg:w-1/2 text-right {{ session('locale') == 'en' ? 'lg:text-left' : 'lg:text-right' }}">
                                 @foreach ($post->postDetail as $postDetail)
-                                    <div class="inline-block px-4 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold text-sm mb-4 tracking-wider uppercase">
+                                    <!-- <div class="inline-block px-4 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold text-sm mb-4 tracking-wider uppercase">
                                         {{ __('adminlte::menu.employeeAdvantages') }}
-                                    </div>
-                                    <h2 class="text-4xl lg:text-5xl font-black text-gray-900 mb-8 leading-tight">
+                                    </div> -->
+                                    <h2 class="text-2xl lg:text-3xl font-black text-gray-900 mb-8 leading-tight">
                                         {{ $postDetail->title }}
                                     </h2>
                                     <div class="prose prose-lg prose-emerald max-w-none text-gray-600 leading-relaxed font-medium">

@@ -205,31 +205,43 @@
                 })();
             </script>
         @else
-            <!-- Simple image loader for single image -->
+            <!-- Simple image/PDF loader -->
             <script>
                 (function() {
                     const loader_{{ $post->id }} = $('#loader-{{ $post->id }}');
-                    const img = $('img[src="{{ asset($post->media[0]->filepath) }}"]');
-
-                    if (img[0].complete && img[0].naturalHeight !== 0) {
-                        // Image is already loaded
-                        loader_{{ $post->id }}.fadeOut(300);
-                    } else {
-                        // Image is still loading
-                        img.on('load', function() {
-                            loader_{{ $post->id }}.fadeOut(300);
-                        }).on('error', function() {
-                            // Handle image load errors
+                    @if($isPdf)
+                        // For PDF iframes
+                        const iframe = $('iframe[src="{{ asset($firstMedia->filepath) }}"]');
+                        iframe.on('load', function() {
                             loader_{{ $post->id }}.fadeOut(300);
                         });
-                    }
+                        // Fallback for PDF
+                        setTimeout(() => loader_{{ $post->id }}.fadeOut(300), 3000);
+                    @else
+                        const img = $('img[src="{{ asset($post->media[0]->filepath) }}"]');
+
+                        if (img[0] && img[0].complete && img[0].naturalHeight !== 0) {
+                            // Image is already loaded
+                            loader_{{ $post->id }}.fadeOut(300);
+                        } else if (img[0]) {
+                            // Image is still loading
+                            img.on('load', function() {
+                                loader_{{ $post->id }}.fadeOut(300);
+                            }).on('error', function() {
+                                // Handle image load errors
+                                loader_{{ $post->id }}.fadeOut(300);
+                            });
+                        } else {
+                            loader_{{ $post->id }}.fadeOut(300);
+                        }
+                    @endif
 
                     // Fallback: hide loader after a reasonable timeout
                     setTimeout(function() {
                         if (loader_{{ $post->id }}.is(':visible')) {
                             loader_{{ $post->id }}.fadeOut(300);
                         }
-                    }, 5000); // 5 second timeout for single image
+                    }, 5000); 
                 })();
             </script>
         @endif
