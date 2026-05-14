@@ -158,7 +158,7 @@
                     </div>
                 </div>
                 {{-- Attachments images upload --}}
-                {{-- <div class="row">
+                <div class="row">
                     <!-- File Upload -->
                     @php
                         $config = [
@@ -183,42 +183,13 @@
                             // 'maxFileCount' => 5,
                         ];
                     @endphp
-                    <div class="form-group col-12 col-md-6">
+                    <div class="form-group col-12 ">
                         <x-adminlte-input-file-krajee name="files"
                             label="{{ __('adminlte::adminlte.attachmentsUpload') . ' (' . __('adminlte::adminlte.image') . ')' }}"
-                            data-msg-placeholder="Choose a text, office or pdf file..." label-class="text-olive"
+                            data-msg-placeholder="Choose an image..." label-class="text-olive"
                             :config="$config" />
                     </div>
-                    @php
-                        $config = [
-                            'allowedFileTypes' => ['pdf'],
-                            'browseOnZoneClick' => true,
-                            'theme' => 'fa5',
-                            'overwriteInitial' => true,
-                            'initialPreviewAsData' => true,
-                            'uploadUrl' => '#',
-                            'uploadAsync' => false,
-                            'deleteUrl' => '#',
-                            'showRemove' => true,
-                            'showUpload' => false,
-                            'showClose' => false,
-                            'fileActionSettings' => [
-                                'showRemove' => true,
-                                'showZoom' => true,
-                                'showUpload' => false,
-                                'showRotate'=> false,
-                            ],
-                            'showCancel' => false,
-                            // 'maxFileCount' => 5,
-                        ];
-                    @endphp
-                    <div class="form-group col-12 col-md-6">
-                        <x-adminlte-input-file-krajee name="files_pdf"
-                            label="{{ __('adminlte::adminlte.attachmentsUpload') }} (PDF)"
-                            data-msg-placeholder="Choose a text, office or pdf file..." label-class="text-olive"
-                            :config="$config" />
-                    </div>
-                </div> --}}
+                </div>
                 <div class="text-center">
                     <button class="btn btn-success p-2 col-12 col-md-6 " type="submit">
                         {{ __('adminlte::adminlte.save') }}
