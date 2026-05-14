@@ -27,7 +27,7 @@
     <x-hero title="{{ $page->title }}" description="{{ $page->content }}" img="{{ asset($page->background) }}" />
 
     <div class="w-[95%] md:w-[90%] lg:w-[95%] mx-auto my-20">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:gap-8 lg:gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-8 lg:gap-4">
             @foreach ($posts as $post)
                 <x-image-slides :post="$post" />
             @endforeach

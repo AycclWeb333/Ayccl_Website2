@@ -36,7 +36,7 @@
             @endforeach
         </div>
 
-        <div id="news-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:gap-8 lg:gap-4">
+        <div id="news-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-8 lg:gap-4">
             @foreach ($posts as $post)
                 @php $catId = $post->postDetail->first()->category_id ?? $post->category_id; @endphp
                 <div class="mix cat-{{ $catId }}">
