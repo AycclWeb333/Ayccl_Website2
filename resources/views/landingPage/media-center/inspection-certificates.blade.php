@@ -29,7 +29,14 @@
     <div class="w-[95%] md:w-[90%] lg:w-[95%] mx-auto my-20">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:gap-8 lg:gap-4">
             @foreach ($posts as $post)
-                <x-image-slides :post="$post" />
+                <x-image-slides :post="$post">
+                    @if(isset($post->mediaOne->filepath))
+                        <a href="{{ asset($post->mediaOne->filepath) }}" download
+                            class="text-white font-bold btn bg-brand-green hover:bg-brand-green-dark border-none flex-1 min-w-[120px]">
+                            <i class="fas fa-download mr-1"></i> {{ __('adminlte::adminlte.attachments') }}
+                        </a>
+                    @endif
+                </x-image-slides>
             @endforeach
         </div>
     </div>

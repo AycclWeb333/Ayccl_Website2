@@ -226,7 +226,7 @@
                     <!-- File Upload -->
                     @php
                         $config = [
-                            'allowedFileTypes' => ['image'],
+                            'allowedFileTypes' => ['pdf'],
                             'browseOnZoneClick' => true,
                             'theme' => 'fa5',
                             'overwriteInitial' => true,
@@ -244,14 +244,14 @@
                                 'showRotate'=> false,
                             ],
                             'showCancel' => false,
-                            'maxFileSize' => 2048,
+                            'maxFileSize' => 10240,
                             // 'maxFileCount' => 10,
                         ];
                     @endphp
                     <div class="form-group">
                         <x-adminlte-input-file-krajee name="files"
-                            label="{{ __('adminlte::adminlte.attachmentsUpload') }}"
-                            data-msg-placeholder="Choose a text, office or pdf file..." label-class="text-olive"
+                            label="{{ __('adminlte::adminlte.attachmentsUpload') . ' (PDF)' }}"
+                            data-msg-placeholder="Choose a pdf file..." label-class="text-olive"
                             :config="$config" />
                         @error('files.*')
                             <span class="text-danger small">{{ $message }}</span>

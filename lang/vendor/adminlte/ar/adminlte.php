@@ -203,4 +203,5 @@ return array(
     'update_success' => 'تم التعديل بنجاح.',
     'delete_success' => 'تم الحذف بنجاح.',
     'back' => 'العودة للخلف',
+    'pdf_required' => 'يجب أن يكون الملف المرفوع من نوع PDF فقط.',
 );

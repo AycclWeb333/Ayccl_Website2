@@ -242,6 +242,7 @@
                                 // Add the configuration for this specific image
                                 // dd($deleteUrl);
                                 $initialPreviewConfig[] = [
+                                    'type' => 'pdf',
                                     'caption' => basename($media->filepath), // The filename for display
                                     'size' => Storage::disk('images')->exists($media->filepath) ? Storage::disk('images')->size($media->filepath) : 0, // File size in bytes
                                     'key' => $media->id, // A unique key for deletion
@@ -251,7 +252,7 @@
                             }
                         }
                         $config = [
-                            'allowedFileTypes' => ['image'],
+                            'allowedFileTypes' => ['pdf'],
                             'browseOnZoneClick' => true,
                             'theme' => 'fa5',
                             'overwriteInitial' => true,
@@ -272,7 +273,7 @@
                                 'showRotate'=> false,
                             ],
                             'showCancel' => false,
-                            'maxFileSize' => 2048,
+                            'maxFileSize' => 10240,
                             // 'maxFileCount' => 10,
                         ];
                     @endphp

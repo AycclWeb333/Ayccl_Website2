@@ -68,13 +68,28 @@
                     </svg>
                 </div>
 
-                @if (count($post->media) == 1)
+                @php
+                    $firstMedia = $post->media[0] ?? null;
+                    $isPdf = $firstMedia && (Str::endsWith($firstMedia->filepath, '.pdf') || $firstMedia->media_type_id == 3);
+                @endphp
+
+                @if ($isPdf)
+                    <!-- PDF Preview / Download -->
+                    <div class="relative w-full lg:mx-5 h-[500px] overflow-hidden rounded-2xl border shadow-sm">
+                        <iframe src="{{ asset($firstMedia->filepath) }}" class="w-full h-full" frameborder="0"></iframe>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="{{ asset($firstMedia->filepath) }}" download class="btn bg-brand-green text-white font-bold">
+                            <i class="fas fa-download mr-2"></i> {{ __('adminlte::adminlte.attachments') }}
+                        </a>
+                    </div>
+                @elseif (count($post->media) == 1)
                     <!-- Single Image -->
                     <div class="relative w-full lg:mx-5 h-100 overflow-hidden rounded-t-lg">
                         <img src="{{ asset($post->media[0]->filepath) }}" alt="{{ $post->media[0]->alt ?? '' }}"
                             class="h-100 object-cover w-full rounded-2xl" />
                     </div>
-                @else
+                @elseif (count($post->media) > 1)
                     <div class="relative w-full h-full lg:mx-5">
                         <!-- OwlCarousel for multiple images -->
                         <div id="post-carousel-{{ $post->id }}"
@@ -96,10 +111,16 @@
 
             </div>
             <!-- Card Body -->
-            <div>
-                <p class="text-black text-lg mx-2 sm:mx-0 text-justify">
+            <div class="max-w-none mt-10">
+                <style>
+                    .post-content, .post-content * {
+                        color: #000000 !important;
+                        opacity: 1 !important;
+                    }
+                </style>
+                <div class="post-content text-black !text-black text-lg mx-2 sm:mx-0 text-justify leading-relaxed">
                     {!! ($post->postDetail[0]->content) !!}
-                </p>
+                </div>
             </div>
         </article>
         <!-- Init Script - Only for multiple images -->

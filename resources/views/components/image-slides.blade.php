@@ -53,8 +53,13 @@
         <p class="text-gray-800 ">
             {!! \Illuminate\Support\Str::limit(strip_tags($post->postDetail[0]->content), 180) !!}
         </p>
-        <a href="{{ $postUrl }}"
-            class="text-white font-bold  mx-auto btn bg-emerald-700">{{ __('adminlte::landingpage.readmore') }}</a>
+        <div class="flex flex-wrap gap-2 justify-center mt-auto">
+            <a href="{{ $postUrl }}"
+                class="text-white font-bold btn bg-emerald-700 hover:bg-emerald-800 border-none flex-1 min-w-[120px]">
+                {{ in_array($post->page_id, [54, 55, 56]) ? __('adminlte::adminlte.preview') : __('adminlte::landingpage.readmore') }}
+            </a>
+            {{ $slot }}
+        </div>
     </div>
 </div>
 

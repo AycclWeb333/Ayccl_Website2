@@ -194,4 +194,5 @@ return array(
     'update_success' => 'Updated successfully.',
     'delete_success' => 'Deleted successfully.',
     'back' => 'Go Back',
+    'pdf_required' => 'The uploaded file must be a PDF.',
 );

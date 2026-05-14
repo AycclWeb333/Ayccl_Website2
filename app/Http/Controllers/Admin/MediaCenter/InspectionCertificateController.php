@@ -62,6 +62,10 @@ class InspectionCertificateController extends Controller
     public function store(Request $request)
     {
         $fileVal = $this->getFileValidation();
+        $fileVal['rules']['files.*'] = 'mimes:pdf|max:10240';
+        $fileVal['messages']['files.*.mimes'] = __('adminlte::adminlte.file_type_pdf');
+        $fileVal['messages']['files.*.max'] = __('adminlte::adminlte.file_limit_pdf');
+
         $request->validate(
             array_merge($fileVal['rules'], [
                 'title'      => 'required',
@@ -110,7 +114,7 @@ class InspectionCertificateController extends Controller
             $postDetail->save();
 
             // 3) Upload Media using CloudMediaTrait
-            $this->storeCombinedMedia($request, $post->id, $this->route, Post::class);
+            $this->storeDocumentMedia($request, $post->id, $this->route, Post::class, $request->title, $request->title_en);
             DB::commit();
 
             return redirect()->route("$this->route.index", app()->getLocale())
@@ -142,6 +146,10 @@ class InspectionCertificateController extends Controller
     public function update(Request $request, $locale, int $id)
     {
         $fileVal = $this->getFileValidation();
+        $fileVal['rules']['files.*'] = 'nullable|mimes:pdf|max:10240';
+        $fileVal['messages']['files.*.mimes'] = __('adminlte::adminlte.file_type_pdf');
+        $fileVal['messages']['files.*.max'] = __('adminlte::adminlte.file_limit_pdf');
+
         $request->validate(
             array_merge($fileVal['rules'], [
                 'title'      => 'required',
@@ -199,7 +207,7 @@ class InspectionCertificateController extends Controller
                 $media->media_able_type = Post::class;
             }
 
-            $this->updateCombinedMedia($request, $media, $post->id, $this->route);
+            $this->updateDocumentMedia($request, $media, $post->id, $this->route, $request->title, $request->title_en);
             $media = Media::where('media_able_id', $post->id)->count();
             if ($media == 0) {
                 throw new \Exception(__('adminlte::adminlte.files_required')    );
