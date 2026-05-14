@@ -133,15 +133,14 @@
                         </div> --}}
 
 
-{{-- 
                         <div class="form-group">
                             <x-adminlte-select2 name="category_id" :config="['minimumResultsForSearch' => 'Infinity']"
                                 label="{{ __('adminlte::adminlte.postType') }}" label-class="text-olive">
                                 @foreach ($categories as $category )
-                                <option {{ $post->postDetailOne->category_id==$category->id?'selected':'' }} value="{{ $category->id }}">{{ $category->name }}</option>
+                                    <option {{ $post->category_id == $category->id ? 'selected' : '' }} value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
                             </x-adminlte-select2>
-                        </div> --}}
+                        </div>
 
                         {{-- <x-adminlte-modal tabindex="-1" id="modalMin" title="{{ __('adminlte::adminlte.slug') }}" theme="olive"
                             icon="fas fa-question" size='lg'>

@@ -183,13 +183,29 @@ class AboutUsController extends Controller
     }
     public function socialResponsibilityIndex()
     {
-         // $pageId = app()->getlocale() =='ar' ? 23 : 123 ;
         $pageId = 25;
         $page = Page::findOrFail($pageId);
-        $posts = Post::where("page_id", $page->id)->where('active', true)->orderBy('order')->get();
-        // echo dd($posts);
+        
+        // Auto-create categories if missing
+        $defaults = [
+            ['name' => 'البيئة', 'name_en' => 'Environment'],
+            ['name' => 'التعليم', 'name_en' => 'Education'],
+            ['name' => 'الصحة', 'name_en' => 'Health'],
+            ['name' => 'التدريب', 'name_en' => 'Training'],
+            ['name' => 'البنية التحتية', 'name_en' => 'Infrastructure'],
+        ];
 
-         return view($this->path."social-responsibility", compact('posts', 'page'));
+        foreach ($defaults as $cat) {
+            \App\Models\Category::firstOrCreate(
+                ['name' => $cat['name'], 'type' => $pageId],
+                ['name_en' => $cat['name_en']]
+            );
+        }
+
+        $posts = Post::where("page_id", $pageId)->where('active', true)->orderBy('order')->get();
+        $categories = \App\Models\Category::where('type', $pageId)->get();
+
+        return view($this->path."social-responsibility", compact('posts', 'page', 'categories'));
     }
     public function certificatesIndex()
     {

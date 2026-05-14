@@ -26,10 +26,29 @@ class SocialResponsibilityController extends Controller
      public $pageId = 25;
      public $route = 'social-reponsibility';
      public $view = 'admin-panel.about-us.social-reponsibility';
+ 
+     private function ensureCategoriesExist()
+     {
+         $defaults = [
+             ['name' => 'البيئة', 'name_en' => 'Environment'],
+             ['name' => 'التعليم', 'name_en' => 'Education'],
+             ['name' => 'الصحة', 'name_en' => 'Health'],
+             ['name' => 'التدريب', 'name_en' => 'Training'],
+             ['name' => 'البنية التحتية', 'name_en' => 'Infrastructure'],
+         ];
+ 
+         foreach ($defaults as $cat) {
+             \App\Models\Category::firstOrCreate(
+                 ['name' => $cat['name'], 'type' => $this->pageId],
+                 ['name_en' => $cat['name_en']]
+             );
+         }
+     }
 
     public function index()
     {
         try{
+            $this->ensureCategoriesExist();
             $posts = Post::where('page_id', $this->pageId)->get();
             $page = Page::findOrFail($this->pageId);
         }
@@ -40,20 +59,13 @@ class SocialResponsibilityController extends Controller
     }
     public function create()
     {
-        try{
-            $categories = Category::whereHas('postDetail', function ($query) {
-                $query->whereHas('post', function ($q) {
-                    $q->where('page_id', $this->pageId);
-                });
-            })
-            ->select('id', 'name','name_en')
-            ->distinct()
-            ->get();
-        }
-        catch(\Exception $e){
+        try {
+            $this->ensureCategoriesExist();
+            $categories = Category::where('type', $this->pageId)->get();
+        } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view("$this->view.create", compact( 'categories'));
+        return view("$this->view.create", compact('categories'));
     }
 
     /**
@@ -81,9 +93,8 @@ class SocialResponsibilityController extends Controller
 
         try {
             DB::beginTransaction();
-            // 1. Create Post
             $post = new Post();
-            $post->category_id = 1;
+            $post->category_id = $request->category_id ?? 1;
             $post->page_id = $this->pageId; // default page
             if (isset($request->order))
                 $post->order     = $request->order;
@@ -125,23 +136,16 @@ class SocialResponsibilityController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($locale , int $id)
+    public function edit($locale, int $id)
     {
-        try{
+        try {
+            $this->ensureCategoriesExist();
             $post = Post::findOrFail($id);
-            $categories = Category::whereHas('postDetail', function ($query) {
-                $query->whereHas('post', function ($q) {
-                    $q->where('page_id', $this->pageId);
-                });
-            })
-            ->select('id', 'name','name_en')
-            ->distinct()
-            ->get();
-        }
-        catch(\Exception $e){
+            $categories = Category::where('type', $this->pageId)->get();
+        } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view("$this->view.edit", compact(  'post', 'categories'));
+        return view("$this->view.edit", compact('post', 'categories'));
     }
 
     /**
