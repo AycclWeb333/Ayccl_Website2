@@ -17,6 +17,21 @@
 @stop
 
 
+@push('css')
+    <style>
+        /* إصلاح قائمة الخطوط في Summernote */
+        .note-dropdown-menu {
+            max-height: 400px !important;
+            overflow-y: auto !important;
+            z-index: 9999 !important;
+        }
+        .note-editor {
+            position: relative !important;
+            z-index: 1;
+        }
+    </style>
+@endpush
+
 @section('content')
     {{-- Placeholder, date only and append icon --}}
     @include('admin-panel.modals')
@@ -69,7 +84,7 @@
 
 
                         <div class="form-group">
-                            <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive"
+                            <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive" style="text-align: left; direction: ltr;"
                                 label="{{ __('adminlte::adminlte.title(EN)') }}" enable-old-support />
                         </div>
 
@@ -142,17 +157,36 @@
             <div class="card-body">
                 <div class="row">
                     {{-- content --}}
-
+                    @php
+                        $config = [
+                            'height' => 200,
+                            'minHeight' => 100,
+                            'maxHeight' => null,
+                            'dialogsInBody' => true,
+                            'disableResizeEditor' => false,
+                            'toolbar' => [
+                                ['style', ['bold', 'italic', 'underline', 'clear']],
+                                ['font', ['fontname', 'fontsize', 'strikethrough', 'superscript', 'subscript']],
+                                ['color', ['color']],
+                                ['para', ['ul', 'ol', 'paragraph']],
+                                ['height', ['height']],
+                                ['insert', ['link']],
+                                ['view', ['fullscreen', 'codeview']],
+                            ],
+                            'fontNames' => ['Tajawal', 'Cairo', 'Almarai', 'Amiri', 'Lemonada', 'Changa', 'Reem Kufi', 'Roboto', 'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Merriweather'],
+                            'fontNamesIgnoreCheck' => ['Tajawal', 'Cairo', 'Almarai', 'Amiri', 'Lemonada', 'Changa', 'Reem Kufi', 'Roboto'],
+                        ];
+                    @endphp
                     <div class="form-group col-12 col-md-6">
                         <x-adminlte-text-editor name="content_ar" label="{{ __('adminlte::adminlte.contentAR') }}"
-                            label-class="text-olive" igroup-size="sm" placeholder="اكتب النص هنا ..."
+                            label-class="text-olive" igroup-size="sm" placeholder="اكتب النص هنا ..." :config="$config"
                             enable-old-support />
                     </div>
                     {{-- content EN --}}
 
                     <div class="form-group col-12 col-md-6" style="text-align: left; direction: ltr;  text-align: left;" >
                         <x-adminlte-text-editor name="content_en" label="{{ __('adminlte::adminlte.contentEN') }}"
-                            label-class="text-olive" igroup-size="sm" placeholder="Write some text..."
+                            label-class="text-olive" igroup-size="sm" placeholder="Write some text..." :config="$config"
                             enable-old-support />
                     </div>
                 </div>

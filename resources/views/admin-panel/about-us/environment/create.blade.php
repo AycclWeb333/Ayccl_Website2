@@ -26,6 +26,16 @@
             left: 1px !important;
             right: auto !important;
         }
+        /* إصلاح قائمة الخطوط في Summernote */
+        .note-dropdown-menu {
+            max-height: 400px !important;
+            overflow-y: auto !important;
+            z-index: 9999 !important;
+        }
+        .note-editor {
+            position: relative !important;
+            z-index: 1;
+        }
     </style>
 @endpush
 
@@ -99,7 +109,7 @@
 
 
                         <div class="form-group">
-                            <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive"
+                            <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive" style="text-align: left; direction: ltr;"
                                 label="{{ __('adminlte::adminlte.title(EN)') }}" enable-old-support />
                         </div>
 
@@ -181,13 +191,15 @@
                             'disableResizeEditor' => false,
                             'toolbar' => [
                                 ['style', ['bold', 'italic', 'underline', 'clear']],
-                                ['fontsize', ['fontsize']],
+                                ['font', ['fontname', 'fontsize', 'strikethrough', 'superscript', 'subscript']],
                                 ['color', ['color']],
                                 ['para', ['ul', 'ol', 'paragraph']],
                                 ['height', ['height']],
                                 ['insert', ['link']],
                                 ['view', ['fullscreen', 'codeview']],
                             ],
+                            'fontNames' => ['Tajawal', 'Cairo', 'Almarai', 'Amiri', 'Lemonada', 'Changa', 'Reem Kufi', 'Roboto', 'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Merriweather'],
+                            'fontNamesIgnoreCheck' => ['Tajawal', 'Cairo', 'Almarai', 'Amiri', 'Lemonada', 'Changa', 'Reem Kufi', 'Roboto'],
                             'colorList' => [
                                 // Corrected from 'c' to 'colorList'
                                 ['#fff', '#228B22', '#3cb371', '#2e8b57', '#006400', '#008000', '#32cd32', '#90ee90'],

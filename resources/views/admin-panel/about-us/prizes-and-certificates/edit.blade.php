@@ -17,6 +17,21 @@
 @stop
 
 
+@push('css')
+    <style>
+        /* إصلاح قائمة الخطوط في Summernote */
+        .note-dropdown-menu {
+            max-height: 400px !important;
+            overflow-y: auto !important;
+            z-index: 9999 !important;
+        }
+        .note-editor {
+            position: relative !important;
+            z-index: 1;
+        }
+    </style>
+@endpush
+
 @section('content')
     {{-- Placeholder, date only and append icon --}}
     @include('admin-panel.modals')
@@ -69,8 +84,7 @@
                     <div class="col-12 col-md-6">
 
                         <div class="form-group">
-                            <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive"
-                                value="{{ $post->postDetailOne->title_en }}"
+                            <x-adminlte.form.input id="title_en" name="title_en" label-class="text-olive" value="{{ $post->postDetailOne->title_en }}" style="text-align: left; direction: ltr;"
                                 label="{{ __('adminlte::adminlte.title(EN)') }}" enable-old-support />
                         </div>
 
@@ -152,13 +166,15 @@
                             'disableResizeEditor' => false,
                             'toolbar' => [
                                 ['style', ['bold', 'italic', 'underline', 'clear']],
-                                ['fontsize', ['fontsize']],
+                                ['font', ['fontname', 'fontsize', 'strikethrough', 'superscript', 'subscript']],
                                 ['color', ['color']],
                                 ['para', ['ul', 'ol', 'paragraph']],
                                 ['height', ['height']],
                                 ['insert', ['link']],
                                 ['view', ['fullscreen', 'codeview']],
                             ],
+                            'fontNames' => ['Tajawal', 'Cairo', 'Almarai', 'Amiri', 'Lemonada', 'Changa', 'Reem Kufi', 'Roboto', 'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Merriweather'],
+                            'fontNamesIgnoreCheck' => ['Tajawal', 'Cairo', 'Almarai', 'Amiri', 'Lemonada', 'Changa', 'Reem Kufi', 'Roboto'],
                         ];
                     @endphp
                     <div class="form-group col-12 col-md-6">
