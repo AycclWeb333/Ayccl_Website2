@@ -87,11 +87,11 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                    <div id="content-1" class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <div id="content-1" class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                         <div class="p-4 bg-white">
-                            <p class="font-semibold text-lg text-gray-700">
-                                {!! nl2br($posts[0]->postDetailOne->content) !!}
-                            </p>
+                            <div class="font-semibold text-lg text-gray-700">
+                                {!! $posts[0]->postDetailOne->content !!}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -106,9 +106,9 @@
                     </button>
                     <div id="content-2" class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                         <div class="p-4 bg-white">
-                            <p class="font-semibold text-lg text-gray-700">
-                                {!! nl2br($posts[1]->postDetailOne->content) !!}
-                            </p>
+                            <div class="font-semibold text-lg text-gray-700">
+                                {!! $posts[1]->postDetailOne->content !!}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -122,9 +122,9 @@
                     </button>
                     <div id="content-3" class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                         <div class="p-4 bg-white">
-                            <p class="font-semibold text-lg text-gray-700">
-                                {!! nl2br($posts[2]->postDetailOne->content) !!}
-                            </p>
+                            <div class="font-semibold text-lg text-gray-700">
+                                {!! $posts[2]->postDetailOne->content !!}
+                            </div>
                         </div>
                     </div>
                 </div>
