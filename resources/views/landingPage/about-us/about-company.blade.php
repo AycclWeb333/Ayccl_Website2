@@ -27,7 +27,7 @@
                             <span>{{ $section->icon }}
                                 {{ app()->getLocale() == 'ar' ? $section->title : ($section->title_en ?? $section->title) }}</span>
                         </button>
-                        <div class="card-content">
+                        <div class="card-content text-justify">
                             {{ app()->getLocale() == 'ar' ? $section->content : ($section->content_en ?? $section->content) }}
                         </div>
                     </div>
