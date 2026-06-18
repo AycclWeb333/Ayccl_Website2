@@ -36,27 +36,39 @@
         @foreach ($posts as $post)
             <div
                 class="item transition-all duration-300 ease-in-out hover:scale-[0.95] hover:z-10 cursor-grab text-center">
-                
+
                 {{--
                     KEY CHANGE: Image Wrapper
                     1. w-full: Takes full width of the item.
                     2. h-72: Enforces a fixed height (you can adjust this, e.g., h-64, h-80).
                     3. overflow-hidden: Hides any parts of the image that spill out.
                 --}}
-                <div class="w-full h-50 overflow-hidden  flex justify-center items-center ">
-                    <img 
-                        src="{{ asset($post->mediaOne->filepath) }}" 
+                {{-- <div class="w-full h-50 overflow-hidden  flex justify-center items-center ">
+                    <img
+                        src="{{ asset($post->mediaOne->filepath) }}"
                         alt="{{ $post->mediaOne->filepath }}"
-                        
-                        {{-- 
-                            UPDATED: Image Styling
-                            1. w-full h-full: Makes the image take the entire space of the h-72 wrapper.
-                            2. object-contain: Scales the image to fit entirely within the container, preserving its aspect ratio. This may result in empty space (letterboxing/pillarboxing) if aspect ratios don't match.
-                        --}}
-                        class="w-full h-full object-contain {{ $style }}" 
+
+
+                        class="w-full h-full object-contain {{ $style }}"
                     />
+                </div> --}}
+
+                <div class="w-full h-50 overflow-hidden flex justify-center items-center">
+                    @if($post->mediaOne && $post->mediaOne->filepath)
+                        <img
+                            src="{{ asset($post->mediaOne->filepath) }}"
+                            alt="{{ $post->title }}"
+                            class="w-full h-full object-contain {{ $style }}"
+                        />
+                    @else
+                        <!-- صورة افتراضية في حال لم يرفع المستخدم صورة للمنتج أو المنشور -->
+                        <img
+                            src="{{ asset('images/default-placeholder.jpg') }}"
+                            alt="Default Image"
+                            class="w-full h-full object-contain {{ $style }}"
+                        />
+                    @endif
                 </div>
-                
                 @if (!empty($post->postDetailOne->title))
                     <p class="mt-2 text-gray-700 font-medium">{{ $post->postDetailOne->title }}</p>
                 @endif
