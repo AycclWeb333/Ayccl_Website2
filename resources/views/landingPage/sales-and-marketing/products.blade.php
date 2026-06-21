@@ -33,8 +33,8 @@
                         <ol class="text-md xl:text-lg space-y-4 font-bold">
                             {!! html_entity_decode($post->postDetailOne->content) !!}
                         </ol>
-                        @isset($post->mediaOne->link)
-                            <a href="{{ asset($post->mediaOne->link) }}" download
+                        @isset($post->mediaOne->id)
+                            <a href="{{ route('media.download', ['locale' => app()->getLocale(), 'id' => $post->mediaOne->id]) }}"
                                 class="btn btn-primary hover:text-white w-min-2/5 w-max-full mx-auto flex ">
                                 <x-heroicon-c-document-arrow-down class="w-10 h-10" />
                                 {{ __('adminlte::landingpage.downloadSpecsFile') }}

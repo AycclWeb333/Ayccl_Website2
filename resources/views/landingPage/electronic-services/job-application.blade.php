@@ -29,9 +29,8 @@
                                             {{ $post->created_at?->format('Y-m-d') }}
                                         </div>
 
-                                        @if(isset($post->mediaOne->link))
-                                        <a href="{{ asset($post->mediaOne->link) }}" 
-                                           target="_blank"
+                                        @if(isset($post->mediaOne->id))
+                                        <a href="{{ route('media.download', ['locale' => app()->getLocale(), 'id' => $post->mediaOne->id]) }}" 
                                            class="btn btn-primary bg-green-700 border-none hover:bg-green-800 text-white rounded-lg px-6 shadow-md hover:shadow-lg transition-all flex items-center gap-2">
                                             <i class="fas fa-file-pdf"></i>
                                             {{ app()->getLocale() == 'ar' ? 'تحميل الشروط والتقديم' : 'Download & Apply' }}
