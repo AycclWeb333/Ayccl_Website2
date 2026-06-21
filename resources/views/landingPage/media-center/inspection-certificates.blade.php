@@ -30,8 +30,8 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-8 lg:gap-4">
             @foreach ($posts as $post)
                 <x-image-slides :post="$post">
-                    @if(isset($post->mediaOne->id))
-                        <a href="{{ route('media.download', ['locale' => app()->getLocale(), 'id' => $post->mediaOne->id]) }}"
+                    @if(isset($post->mediaOne->filepath))
+                        <a href="{{ asset($post->mediaOne->filepath) }}" download
                             class="text-white font-bold btn bg-brand-green hover:bg-brand-green-dark border-none flex-1 min-w-[120px]">
                             <i class="fas fa-download mr-1"></i> {{ __('adminlte::adminlte.attachments') }}
                         </a>

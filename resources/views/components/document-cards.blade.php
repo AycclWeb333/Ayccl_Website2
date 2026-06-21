@@ -29,7 +29,7 @@
         <h2 class="text-sm text-gray-700">{!! $formattedSize ?? '' !!}</h2>
 
         <div class="mt-3">
-            <a href="{{ route('media.download', ['locale' => app()->getLocale(), 'id' => $post->mediaOne->id]) }}"
+            <a href="{{ asset($post->mediaOne->link) }}" target="_blank"
                 class="btn btn-sm rounded-lg bg-white text-emerald-800 font-semibold shadow-md hover:scale-105 transition-transform duration-300">
                 <x-heroicon-c-document-arrow-down class="w-5 h-5" />
                 {{ __('adminlte::landingpage.download') }}

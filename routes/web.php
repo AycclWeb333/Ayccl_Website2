@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\AccountSettingsController;
+use App\Http\Controllers\AccountSettingsController;
 use App\Http\Controllers\Admin\AboutUs\AboutCompanyController;
 use App\Http\Controllers\Admin\AboutUs\AboutCompanySectionController;
 use App\Http\Controllers\Admin\AboutUs\CertificatesController;
@@ -26,7 +26,7 @@ use App\Http\Controllers\Admin\ContactUs\ContactUsAdminController;
 use App\Http\Controllers\Admin\ExternalLinks\ExternalLinksController;
 use App\Http\Controllers\Admin\Users\UsersManagementtController;
 use App\Http\Controllers\Admin\General\StatisticsController;
-use App\Http\Controllers\Admin\ContentManagementController;
+use App\Http\Controllers\ContentManagementController;
 use App\Http\Controllers\StartPage;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\AboutUs;
@@ -47,7 +47,7 @@ use App\Http\Controllers\MediaCenterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\SustainableDevelopmentController;
-use App\Http\Controllers\Admin\WebsiteManagementController;
+use App\Http\Controllers\WebsiteManagementController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -281,7 +281,6 @@ Route::group([
     Route::get('/inspection-certificates/{id}/{slug?}', [MediaCenterController::class, 'inspectionCertificatesShowIndex'])->name('landing.inspectionCertificates.show');
     Route::get('/specifications', [MediaCenterController::class, 'specificationsIndex'])->name('specifications');
     Route::get('/specifications/{id}/{slug?}', [MediaCenterController::class, 'specificationsShowIndex'])->name('landing.specifications.show');
-    Route::get('/download-media/{id}', [MediaCenterController::class, 'downloadMedia'])->name('media.download');
 
     //  التنمية المستدامة
     // Route::get('/sustainableDevelopment', [SustainableDevelopmentController::class, 'index'])->name('sustainableDevelopment');
