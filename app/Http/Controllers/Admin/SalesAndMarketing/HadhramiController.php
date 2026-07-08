@@ -69,12 +69,14 @@ class HadhramiController extends Controller
                 'title_en'   => 'required',
                 'content_ar' => 'required',
                 'content_en' => 'required',
+                'files'      => 'required',
             ]),
             array_merge($fileVal['messages'], [
                 'title.required'      => __('adminlte::adminlte.title_required'),
                 'title_en.required'   => __('adminlte::adminlte.title_en_required'),
                 'content_ar.required' => __('adminlte::adminlte.content_required'),
                 'content_en.required' => __('adminlte::adminlte.content_en_required'),
+                'files.required'      => __('adminlte::adminlte.files_required'),
             ])
         );
 
@@ -107,8 +109,8 @@ class HadhramiController extends Controller
            $postDetail->active    = $request->active ?? true;
            $postDetail->save();
 
-           // 3) Upload Media using CloudMediaTrait
-           $this->storeCombinedMedia($request, $post->id, $this->route, Post::class);
+           // 3) Upload Media (Multiple) using CloudMediaTrait
+           $this->storeMultipleMedia($request, $post->id, $this->route, Post::class);
 
            DB::commit();
 
@@ -116,10 +118,9 @@ class HadhramiController extends Controller
                ->with(['success' => __('adminlte::adminlte.succCreate')]);
        } catch (\Exception $e) {
            DB::rollBack();
-           // return redirect()->back()->withErrors(['error' => $e->getMessage()]);
            return redirect()->back()->with(['error' => $e->getMessage()]);
        }
-   }
+    }
 
    /**
     * Show the form for editing the specified resource.
@@ -160,55 +161,41 @@ class HadhramiController extends Controller
        try {
            $post = Post::findOrFail($id);
            DB::beginTransaction();
-           // dd($post);
+
            $post->category_id = $request->category_id;
-           $post->page_id = $this->pageId; // default page
-           // $post->date = $request->date;
-           // if (isset($request->order))
-           //     $post->order     = $request->order;
-           // else {
-           //     $maxOrder = Post::where('page_id', $this->pageId)->where('active', true)->max('order');
-           //     $post->order = $maxOrder +1;
-           // }
-           // $post->order = $request->order ?? 1;
-           // $post->active = true;
+           $post->page_id     = $this->pageId;
            $post->save();
 
-           // 2. Create PostDetail
-           $postDetail = PostDetail::where('post_id' , $post->id)->firstOrFail();
-           // $postDetail->post_id   = $post->id;
+           // 2. Update PostDetail
+           $postDetail = PostDetail::where('post_id', $post->id)->firstOrFail();
            $postDetail->category_id = $request->category_id;
-           $postDetail->title = $request->title;
-           $postDetail->title_en  = $request->title_en;
-           // $postDetail->setSlugAttribute($request->slug);
-           // $postDetail->setSlugEnAttribute($request->slug_en);
-           $postDetail->content   = $request->content_ar;
-           $postDetail->content_en = $request->content_en;
-           // $postDetail->color     = $request->color?? '';
-           $postDetail->order     = $postDetail->order ?? 1;
-           $postDetail->active    = $postDetail->active ?? true;
+           $postDetail->title       = $request->title;
+           $postDetail->title_en    = $request->title_en;
+           $postDetail->content     = $request->content_ar;
+           $postDetail->content_en  = $request->content_en;
+           $postDetail->order       = $postDetail->order ?? 1;
+           $postDetail->active      = $postDetail->active ?? true;
            $postDetail->save();
 
-           // 3. Update Media using CloudMediaTrait
-           $media = Media::where('media_able_id', $post->id)->where('media_able_type', Post::class)->first();
-           if (!$media) {
-               $media = new Media();
-               $media->media_able_id = $post->id;
-               $media->media_able_type = Post::class;
+           // 3. Append newly uploaded images (existing images deleted individually via Krajee)
+           if ($request->hasFile('files')) {
+               $this->storeMultipleMedia($request, $post->id, $this->route, Post::class);
            }
 
-           $this->updateCombinedMedia($request, $media, $post->id, $this->route);
-
-           if (!$media->filepath && !$request->hasFile('files')) {
+           // Ensure at least one media record remains
+           $mediaCount = Media::where('media_able_id', $post->id)
+                              ->where('media_able_type', Post::class)
+                              ->count();
+           if ($mediaCount === 0) {
                throw new \Exception(__('adminlte::adminlte.files_required'));
            }
+
            DB::commit();
-           
+
            return redirect()->route("$this->route.index", app()->getLocale())
                ->with(['success' => __('adminlte::adminlte.succEdit')]);
        } catch (\Exception $e) {
            DB::rollBack();
-           // return redirect()->back()->withErrors(['error' => $e->getMessage()]);
            return redirect()->back()->with(['error' => $e->getMessage()]);
        }
    }
