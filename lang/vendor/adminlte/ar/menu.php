@@ -42,7 +42,7 @@ return [
 'aboutCompany' => 'عن الشركة',
 'aboutCompanySections' => 'أقسام نبذة عن الشركة',
 'managementBoard' => 'مجلس الإدارة',
-'visionAndMessage' => 'الأهداف',
+'visionAndMessage' => 'الرؤية والرسالة والأهداف',
 'futurePlans' => 'خطط مستقبلية',
 'socialReponsibility' => 'المسئولية الاجتماعية',
 'prizedAndCertificates' => 'الجوائز والشهائد',

@@ -26,13 +26,11 @@ class PagesController extends Controller
 
         $request->validate(
             [
-                'content_ar'    => 'required',
-                'content_en' => 'required',
+                'content_ar' => 'nullable',
+                'content_en' => 'nullable',
                 'files'      => 'required',
             ],
             [
-                'content_ar.required'    => __('adminlte::adminlte.content_required'),
-                'content_en.required' => __('adminlte::adminlte.content_en_required'),
                 'files.required'      => __('adminlte::adminlte.files_required'),
             ]
         );
