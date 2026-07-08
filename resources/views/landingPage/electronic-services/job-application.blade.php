@@ -19,8 +19,30 @@
                                         {{ $detail?->title }}
                                     </h2>
                                     
-                                    <div class="prose prose-sm max-w-none text-gray-600 line-clamp-4 mb-6">
-                                        {!! html_entity_decode($detail?->content) !!}
+                                    <div class="prose prose-sm max-w-none text-gray-600 mb-6 job-desc-container">
+                                        @php
+                                            $fullContent = html_entity_decode($detail?->content ?? '');
+                                            $plainText = strip_tags($fullContent);
+                                            $shouldTruncate = mb_strlen($plainText) > 200;
+                                        @endphp
+
+                                        @if($shouldTruncate)
+                                            <div class="short-content" style="max-height: 100px; overflow: hidden;">
+                                                {!! $fullContent !!}
+                                            </div>
+                                            <div class="toggle-btn-container mt-2">
+                                                <button class="read-more-btn font-bold inline-block focus:outline-none transition-colors duration-200" style="color: #006b36;">
+                                                    {{ app()->getLocale() == 'ar' ? 'عرض المزيد' : 'Read More' }}
+                                                </button>
+                                            </div>
+                                            <div class="full-content" style="display: none;">
+                                                {!! $fullContent !!}
+                                            </div>
+                                        @else
+                                            <div class="full-content">
+                                                {!! $fullContent !!}
+                                            </div>
+                                        @endif
                                     </div>
 
                                     <div class="mt-auto pt-6 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
@@ -60,4 +82,42 @@
     </div>
 @endsection
 @section('jsafter')
+<script>
+    $(document).ready(function() {
+        $('.job-desc-container').each(function() {
+            var $container = $(this);
+            var $shortContent = $container.find('.short-content');
+            var $fullContent = $container.find('.full-content');
+            var $btnContainer = $container.find('.toggle-btn-container');
+            var $btn = $container.find('.read-more-btn');
+
+            $btn.on('click', function() {
+                $shortContent.addClass('hidden').hide();
+                $btnContainer.addClass('hidden').hide();
+                $fullContent.removeClass('hidden').show();
+
+                // Create inline "Read Less / عرض أقل" link
+                var lessText = "{{ app()->getLocale() == 'ar' ? 'عرض أقل' : 'Read Less' }}";
+                var $lessBtn = $('<span class="read-less-inline cursor-pointer font-bold inline-block ms-2 transition-colors duration-200 hover:opacity-80" style="color: #006b36;">(' + lessText + ')</span>');
+
+                // Append to the last paragraph/list/div inside the full content
+                var $lastEl = $fullContent.find('p, li, div').last();
+                if ($lastEl.length) {
+                    $lastEl.append($lessBtn);
+                } else {
+                    $fullContent.append($lessBtn);
+                }
+
+                // Click handler for Read Less
+                $lessBtn.on('click', function(e) {
+                    e.stopPropagation();
+                    $fullContent.addClass('hidden').hide();
+                    $shortContent.removeClass('hidden').show();
+                    $btnContainer.removeClass('hidden').show();
+                    $lessBtn.remove();
+                });
+            });
+        });
+    });
+</script>
 @endsection

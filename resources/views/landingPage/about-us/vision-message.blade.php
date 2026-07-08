@@ -9,7 +9,7 @@
 <div class="w-[85%] sm:w-[100%] md:w-[80%] lg:w-[90%] mx-auto" data-aos="fade-up" data-aos-duration="700">
 
     {{-- القسم الرئيسي: الأهداف مع الصورة --}}
-    @php $objectivesPost = $posts->firstWhere(fn($p) => $p->id == 20) ?? $posts->first(); @endphp
+    <!-- @php $objectivesPost = $posts->firstWhere(fn($p) => $p->id == 20) ?? $posts->first(); @endphp -->
 
     @if($objectivesPost && $objectivesPost->postDetailOne)
     <div class="bg-base-100 shadow-lg m-10 lg:w-[90%] mx-auto rounded-3xl overflow-hidden">
@@ -18,7 +18,7 @@
             {{-- جانب الـ Accordion --}}
             <div class="lg:w-1/2 w-full space-y-4">
                 <h2 class="font-semibold text-3xl lg:text-4xl text-green-900 text-center mb-6">
-                   الشركة العربية للإسمنت
+                  الشركة العربية اليمنية للإسمنت المحدودة
                 </h2>
 
                 <div class="accordion-item border border-gray-200 rounded-lg overflow-hidden">

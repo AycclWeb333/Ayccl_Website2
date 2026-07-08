@@ -108,8 +108,13 @@ class AboutUsController extends Controller
             ->orderBy('id')
             ->get();
 
+        $objectivesPost = Post::whereIn('id', [20])
+            ->where('active', true)
+            ->with(['postDetailOne', 'mediaOne'])
+            ->first();
+
         return view($this->path."about-company", compact(
-            'posts', 'page', 'companyStats', 'mainContentHtml', 'companySections', 'visionPosts'
+            'posts', 'page', 'companyStats', 'mainContentHtml', 'companySections', 'visionPosts', 'objectivesPost'
         ));
     }
 

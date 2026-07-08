@@ -17,7 +17,7 @@
                 @endif
 
                 {{-- </figure> --}}
-                <div class="card-body leading-relaxed h-fit my-auto text-black font-bold bg-contain "style="background-image: url('{{ asset('images/backgrounds/subtle-prism.svg') }}');"
+                <div class="card-body leading-relaxed h-fit my-auto text-black font-bold" style="background: linear-gradient(135deg, rgba(0, 107, 54, 0.03) 0%, rgba(0, 107, 54, 0.08) 100%); border: 1px solid rgba(0, 107, 54, 0.1); border-radius: 1rem;"
                     data-aos="fade-right" data-aos-once="false" data-aos-duration="700">
                     @if (isset($posts[0]))
                         <p class="text-base leading-relaxed md:text-sm " data-aos="fade-up" data-aos-once="false"

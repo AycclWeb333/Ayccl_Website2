@@ -173,7 +173,6 @@ class JobApplicaitonController extends Controller
     {
         $request->validate(
             [
-                'category_id' => 'required',
                 'title'      => 'required',
                 'title_en'   => 'required',
                 'content_ar'    => 'required',
@@ -182,7 +181,6 @@ class JobApplicaitonController extends Controller
                 'link'      => 'nullable',
             ],
             [
-                'category_id.required'  => __('adminlte::adminlte.category_id_required'),
                 'title.required'      => __('adminlte::adminlte.title_required'),
                 'title_en.required'   => __('adminlte::adminlte.title_en_required'),
                 'content_ar.required'    => __('adminlte::adminlte.content_ar_required'),
@@ -198,6 +196,9 @@ class JobApplicaitonController extends Controller
             // Automatically assign category if not provided (now that UI field is removed)
             $catId = $request->category_id;
             if (!$catId) {
+                $catId = $post->category_id;
+            }
+            if (!$catId) {
                 // Get category from any existing post on this page, or default to some logic
                 $existingPost = Post::where('page_id', $this->pageId)->first();
                 $catId = $existingPost ? $existingPost->category_id : 1; 
@@ -207,7 +208,7 @@ class JobApplicaitonController extends Controller
 
             // 2. Update PostDetail
             $postDetail = PostDetail::where('post_id' , $post->id)->firstOrFail();
-            $postDetail->category_id = $request->category_id;
+            $postDetail->category_id = $catId;
             $postDetail->title = $request->title;
             $postDetail->title_en  = $request->title_en;
             $postDetail->content   = $request->content_ar;
