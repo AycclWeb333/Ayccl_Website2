@@ -42,7 +42,7 @@ return [
 'aboutCompany' => 'عن الشركة',
 'aboutCompanySections' => 'أقسام نبذة عن الشركة',
 'managementBoard' => 'مجلس الإدارة',
-'visionAndMessage' => 'الرؤية والرسالة',
+'visionAndMessage' => 'الأهداف',
 'futurePlans' => 'خطط مستقبلية',
 'socialReponsibility' => 'المسئولية الاجتماعية',
 'prizedAndCertificates' => 'الجوائز والشهائد',
@@ -53,7 +53,7 @@ return [
 'products' => 'المنتجات',
 'customerService' => 'خدمة العملاء',
 
-'employeeAdvantages' => 'مميزات العاملين',
+'employeeAdvantages' => 'ميزات العاملين',
 'jobApplication' => 'طلب التوظيف',
 'askForVisit' => 'طلب زيارة',
 'internshipRequest' => 'طلب تدريب',
@@ -65,7 +65,7 @@ return [
 
 'cementBlogs' => 'مدونة اسمنتية',
 'blog' => 'المدونة',
-'employees' => 'القوى العاملة',
+'employees' => 'كوادر تصنع النجاح',
 'ourGuests' => 'ضيوفنا',
 'specifications' => 'المواصفات',
 'inspectionCertificates' => 'شهادات الفحص',

@@ -10,7 +10,7 @@ return array (
   'trustedbyothers' => 'موثوقة من قبل فرق العمل الأكثر ابتكارًا',
   'ourlocation' => 'موقعنا',
   'management' => 'مجلس الإدارة',
-  'ourvision' => 'الرؤية والرسالة',
+  'ourvision' => 'الأهداف',
   'contactus' => 'تواصل معنا',
   'clicktomove' => 'انقر للانتقال',
   'css' => 'نظام الخدمة الذاتية للعملاء',
@@ -45,8 +45,8 @@ return array (
 
   // الموارد البشرية
   'humanResources' => 'الموارد البشرية',
-  'employees' => 'القوى العاملة',
-  'employeesAdvantages' => 'مميزات العاملين',
+  'employees' => 'كوادر تصنع النجاح',
+  'employeesAdvantages' => 'ميزات العاملين',
   'jobApplication' => 'طلب التوظيف',
   'askForVisit' => 'طلب زيارة',
   'askForTraining' => 'طلب تدريب',

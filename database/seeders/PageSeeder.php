@@ -22,7 +22,7 @@ class PageSeeder extends Seeder
             "من-نحن"                => ["slug_en" => "about-us", "title_en" => "About Us", "content_en" => null],
             "نبذة-عن-الشركة"        => ["slug_en" => "company-profile", "title_en" => "Company Profile", "content_en" => "The Yemeni Arabian Cement Company is considered the first leading company in the field of cement in Yemen"],
             "مجلس-الإدارة"          => ["slug_en" => "board-of-directors", "title_en" => "Board of Directors", "content_en" => null],
-            "الرؤية-والرسالة"       => ["slug_en" => "vision-and-mission", "title_en" => "Vision and Mission", "content_en" => null],
+            "الأهداف"       => ["slug_en" => "objectives", "title_en" => "Objectives", "content_en" => null],
             "خطط-مستقبلية"          => ["slug_en" => "future-plans", "title_en" => "Future Plans", "content_en" => null],
             "المسئولية-الإجتماعية"  => ["slug_en" => "social-responsibility", "title_en" => "Social Responsibility", "content_en" => null],
             "الجوائز-والشهائد"      => ["slug_en" => "awards-and-certificates", "title_en" => "Awards and Certificates", "content_en" => null],
@@ -35,11 +35,11 @@ class PageSeeder extends Seeder
             "خدمة-العملاء"          => ["slug_en" => "customer-service", "title_en" => "Customer Service", "content_en" => null],
             "الاقتراحات-والشكاوى"   => ["slug_en" => "suggestions-and-complaints", "title_en" => "Suggestions and Complaints", "content_en" => null],
             "الموارد-البشرية"       => ["slug_en" => "human-resources", "title_en" => "Human Resources", "content_en" => null],
-            "القوى-العاملة"       => ["slug_en" => "employees", "title_en" => "Employees", "content_en" => null],
+            "كوادر-تصنع-النجاح"       => ["slug_en" => "employees", "title_en" => "Employees", "content_en" => null],
             "ضيوفنا"               => ["slug_en" => "ourguests", "title_en" => "Our Guests", "content_en" => null],
             "شهادات-الفحص"          => ["slug_en" => "inspection-certificates", "title_en" => "Inspection certificates", "content_en" => null],
             "المواصفات"          => ["slug_en" => "specifications", "title_en" => "Specifications", "content_en" => null],
-            "مميزات-العاملين"       => ["slug_en" => "employee-benefits", "title_en" => "Employee Benefits", "content_en" => "The Yemeni Arabian Cement Company aims to provide necessary care for its employees, considering them the most important element in the company's progress and advancement. Recognizing this role, it has been keen to provide many benefits to its employees to overcome life's difficulties, making them put all their efforts into providing the best to complete their tasks. The company is still striving to provide more that motivates its employees and increases their productivity."],
+            "ميزات-العاملين"       => ["slug_en" => "employee-benefits", "title_en" => "Employee Benefits", "content_en" => "The Yemeni Arabian Cement Company aims to provide necessary care for its employees, considering them the most important element in the company's progress and advancement. Recognizing this role, it has been keen to provide many benefits to its employees to overcome life's difficulties, making them put all their efforts into providing the best to complete their tasks. The company is still striving to provide more that motivates its employees and increases their productivity."],
             "الخدمات-الإلكترونية"       => ["slug_en" => "electronic-services", "title_en" => "Electronic Services", "content_en" => "The Yemeni Arabian Cement Company aims to provide necessary care for its employees, considering them the most important element in the company's progress and advancement. Recognizing this role, it has been keen to provide many benefits to its employees to overcome life's difficulties, making them put all their efforts into providing the best to complete their tasks. The company is still striving to provide more that motivates its employees and increases their productivity."],
             "طلب-التوظيف"           => ["slug_en" => "job-application", "title_en" => "Job Application", "content_en" => "The Yemeni Arabian Cement Company seeks to attract experienced and qualified local personnel to fill available job vacancies. It also works on honing and developing their skills in various fields by integrating them with foreign experts working at the company, as well as providing them with internal and external training courses. From this perspective, the Yemeni Arabian Cement Company has made the nationalization of jobs one of its goals, and to achieve this, its human resources department is making a great effort to attract and retain qualified local talent."],
             "طلب-زيارة"             => ["slug_en" => "request-a-visit", "title_en" => "Request a Visit", "content_en" => null],
@@ -61,7 +61,7 @@ class PageSeeder extends Seeder
                 [ "id" => 2, "slug" => "من-نحن", "title" => "من نحن", "background" => "images/hero/news1.png", "content" => "" ],
                 [ "id" => 21, "slug" => "نبذة-عن-الشركة", "title" => "نبذة عن الشركة", "background" => "images/hero/news1.png", "content" => "الشركة العربية اليمنية للاسمنت تعتبر الشركة الاولى الرائدة في مجال الاسمنت في اليمن" ],
                 [ "id" => 22, "slug" => "مجلس-الإدارة", "title" => "مجلس الإدارة", "background" => "images/hero/news1.png", "content" => "" ],
-                [ "id" => 23, "slug" => "الرؤية-والرسالة", "title" => "الرؤية والرسالة", "background" => "images/hero/news1.png", "content" => "" ],
+                [ "id" => 23, "slug" => "الأهداف", "title" => "الأهداف", "background" => "images/hero/news1.png", "content" => "" ],
                 [ "id" => 24, "slug" => "خطط-مستقبلية", "title" => "خطط مستقبلية", "background" => "images/hero/news1.png", "content" => "" ],
                 [ "id" => 25, "slug" => "المسئولية-الإجتماعية", "title" => "المسئولية الإجتماعية", "background" => "images/hero/news1.png", "content" => "" ],
                 [ "id" => 26, "slug" => "الجوائز-والشهائد", "title" => "الجوائز والشهائد", "background" => "images/hero/news1.png", "content" => "" ],
@@ -77,13 +77,13 @@ class PageSeeder extends Seeder
             ],
             [
                 [ "id" => 4, "slug" => "الموارد-البشرية", "title" => "الموارد البشرية", "background" => "images/hero/news1.png", "content" => "" ],
-                [ "id" => 41, "slug" => "مميزات-العاملين", "title" => "مميزات العاملين", "background" => "images/hero/news1.png", "content" => "تهدف الشركة العربيَّة اليمنيَّة للأسمنت المحدودة إلى تقديم العناية اللَّازمة لموظَّفيها باعتبارهم العنصر الأهم في تقدُّم الشركة ورقيِّها، واستشعاراً منها بذلك الدور حرصت على توفير مزايا كثيرة لموظَّفيها تذلِّل أمامهم صعاب الحياة، لتجعلهم يبذلون كل جهدهم في سبيل تقديم الأفضل لإنجاز مهامهم، وما زالت الشركة ساعية لتقديم المزيد ممَّا يحفِّز موظَّفيها ويزيد من إنتاجيتهم." ],
+                [ "id" => 41, "slug" => "ميزات-العاملين", "title" => "ميزات العاملين", "background" => "images/hero/news1.png", "content" => "تهدف الشركة العربيَّة اليمنيَّة للأسمنت المحدودة إلى تقديم العناية اللَّازمة لموظَّفيها باعتبارهم العنصر الأهم في تقدُّم الشركة ورقيِّها، واستشعاراً منها بذلك الدور حرصت على توفير مزايا كثيرة لموظَّفيها تذلِّل أمامهم صعاب الحياة، لتجعلهم يبذلون كل جهدهم في سبيل تقديم الأفضل لإنجاز مهامهم، وما زالت الشركة ساعية لتقديم المزيد ممَّا يحفِّز موظَّفيها ويزيد من إنتاجيتهم." ],
 
                 // [ "id" => 42, "slug" => "طلب-التوظيف", "title" => "طلب التوظيف", "background" => "images/hero/news1.png", "content" => "تسعى الشركة العربيَّة اليمنيَّة للأسمنت المحدودة لاستقطاب ذوي الخبرات من الكادر المحلِّي المؤهَّل لشغل الخانات الوظيفيَّة المتاحة، كما تقوم بالعمل على صقل مهاراتهم وتطويرها في مجالات شتَّى من خلال دمجهم بالخبرات الأجنبيَّة العاملة بالشركة، كذلك تقديم الدورات التدريبيَّة الداخليَّة والخارجيَّة لهم. ومن هذا المنطلق فقد جعلت الشركة العربيَّة اليمنيَّة للأسمنت المحدودة من ضمن أهدافها يمننة الوظائف، وفي سبيل تحقيق هذا الهدف تبذل إدارة مواردها البشريَّة الكثير من الجهد لجذب الكوادر المحليَّة المؤهَّلة إليها والمحافظة عليها." ],
                 // [ "id" => 43, "slug" => "طلب-زيارة", "title" => "طلب زيارة", "background" => "images/hero/news1.png", "content" => "" ],
                 // [ "id" => 44, "slug" => "طلب-التدريب", "title" => "طلب التدريب", "background" => "images/hero/news1.png", "content" => "" ],
 
-                [ "id" => 45, "slug" => "القوى-العاملة", "title" => "القوى العاملة", "background" => "images/hero/news1.png", "content" => "" ],
+                [ "id" => 45, "slug" => "كوادر-تصنع-النجاح", "title" => "كوادر تصنع النجاح", "background" => "images/hero/news1.png", "content" => "" ],
                 [ "id" => 46, "slug" => "ضيوفنا", "title" => "ضيوفنا", "background" => "images/hero/news1.png", "content" => "" ],
 
 
