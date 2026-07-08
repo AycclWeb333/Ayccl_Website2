@@ -305,6 +305,11 @@ trait CloudMediaTrait
      */
     private function createThumbnailGD($absoluteOriginal, $absoluteThumb, $ext, $targetW, $targetH)
     {
+        if ($ext === 'svg') {
+            copy($absoluteOriginal, $absoluteThumb);
+            return;
+        }
+
         $src = match ($ext) {
             'jpg', 'jpeg' => imagecreatefromjpeg($absoluteOriginal),
             'png'        => imagecreatefrompng($absoluteOriginal),
