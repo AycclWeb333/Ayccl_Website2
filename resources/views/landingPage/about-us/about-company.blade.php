@@ -171,6 +171,94 @@
         </script>
 
 
+        {{-- ═══════════════════════════════════════════════════════════
+             قسم الرؤية والرسالة
+        ═══════════════════════════════════════════════════════════ --}}
+        <x-divider>الرؤية والرسالة</x-divider>
+        @if($visionPosts->isNotEmpty())
+        <div class="bg-base-100 shadow-lg m-10 lg:w-[90%] mx-auto rounded-3xl overflow-hidden" data-aos="fade-up" data-aos-duration="700">
+            <div class="flex flex-col lg:flex-row gap-8 p-6">
+
+                {{-- جانب الـ Accordion (الرؤية والرسالة) --}}
+                <div class="lg:w-1/2 w-full space-y-4">
+                    <!-- <h2 class="font-semibold text-3xl lg:text-4xl text-green-900 text-center mb-6">
+                        {{ __('adminlte::landingpage.aboutcompany') }}
+                    </h2> -->
+
+                    @foreach($visionPosts as $i => $vPost)
+                        @if($vPost->postDetailOne)
+                        <div class="accordion-item border border-gray-200 rounded-lg overflow-hidden">
+                            <button class="accordion-header w-full text-right p-4 bg-green-50 hover:bg-green-100 transition-colors duration-300 flex justify-between items-center cursor-pointer"
+                                    onclick="toggleVisionAccordion({{ $i + 1 }})">
+                                <span class="font-semibold text-xl text-green-900">
+                                    {{ app()->getLocale() == 'ar'
+                                        ? $vPost->postDetailOne->title
+                                        : ($vPost->postDetailOne->title_en ?? $vPost->postDetailOne->title) }}
+                                </span>
+                                <svg id="vision-icon-{{ $i + 1 }}" class="w-6 h-6 text-green-900 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div id="vision-content-{{ $i + 1 }}" class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                                <div class="p-4 bg-white">
+                                    <div class="content-area font-semibold text-lg text-gray-700">
+                                        {!! app()->getLocale() == 'ar'
+                                            ? $vPost->postDetailOne->content
+                                            : ($vPost->postDetailOne->content_en ?? $vPost->postDetailOne->content) !!}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                    @endforeach
+                </div>
+
+                {{-- جانب الصورة --}}
+                <div class="w-full lg:w-1/2 flex justify-center items-center">
+                    <div class="relative inline-block group">
+                        <div class="relative z-10 overflow-hidden shadow-lg" style="box-shadow: -20px -18px 4px 1px #2d843d; border-radius: 0px;">
+                            @isset($visionPosts[0]->mediaOne->filepath)
+                                <img src="{{ asset($visionPosts[0]->mediaOne->filepath) }}"
+                                     alt="{{ $visionPosts[0]->mediaOne->alt ?? 'صورة توضيحية' }}"
+                                     class="w-full h-80 sm:h-[400px] object-cover block" />
+                            @endisset
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        @endif
+
+        <script>
+        function toggleVisionAccordion(index) {
+            const content = document.getElementById(`vision-content-${index}`);
+            const icon    = document.getElementById(`vision-icon-${index}`);
+
+            const allContents = document.querySelectorAll('[id^="vision-content-"]');
+            const allIcons    = document.querySelectorAll('[id^="vision-icon-"]');
+
+            allContents.forEach((item, i) => {
+                if (item.id !== `vision-content-${index}`) {
+                    item.style.maxHeight = '0px';
+                    allIcons[i].style.transform = 'rotate(0deg)';
+                }
+            });
+
+            if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                content.style.maxHeight = '0px';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleVisionAccordion(1);
+        });
+        </script>
+
         <x-divider>{{ __('adminlte::landingpage.values') }}</x-divider>
         <section class=" px-4 bg-base-100 justify-center">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:inline-grid lg:grid-cols-3 lg:justify-center gap-6">

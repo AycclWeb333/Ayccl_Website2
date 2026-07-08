@@ -101,8 +101,15 @@ class AboutUsController extends Controller
             }
         }
 
+        // جلب سجلات الرؤية (ID=18) والرسالة (ID=19) لعرضهما في صفحة عن الشركة
+        $visionPosts = Post::whereIn('id', [18, 19])
+            ->where('active', true)
+            ->with(['postDetailOne', 'mediaOne'])
+            ->orderBy('id')
+            ->get();
+
         return view($this->path."about-company", compact(
-            'posts', 'page', 'companyStats', 'mainContentHtml', 'companySections'
+            'posts', 'page', 'companyStats', 'mainContentHtml', 'companySections', 'visionPosts'
         ));
     }
 

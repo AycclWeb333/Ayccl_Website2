@@ -24,7 +24,7 @@ class PhotosGalaryController extends Controller
 {
     use CloudMediaTrait;
 
-    public $pageId = 21;
+    public $pageId = 52;
     public $route = 'photos';
     public $view = 'admin-panel.media-center.photos';
 
