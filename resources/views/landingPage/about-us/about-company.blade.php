@@ -260,14 +260,23 @@
         </script>
 
         <x-divider>{{ __('adminlte::landingpage.values') }}</x-divider>
-        <section class=" px-4 bg-base-100 justify-center">
+        <!-- <section class=" px-4 bg-base-100 justify-center">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:inline-grid lg:grid-cols-3 lg:justify-center gap-6">
                 @foreach ($posts->skip(1) as $post)
                     <x-icon-card title="{{ $post->postDetailOne->title }}" icon="{{ $post->postDetailOne->color }}"
                         description="{{ $post->postDetailOne->content }}" />
                 @endforeach
             </div>
-        </section>
+        </section> -->
+
+        <section class="px-4 bg-base-100 flex justify-center w-full">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+                    @foreach ($posts->skip(1) as $post)
+                        <x-icon-card title="{{ $post->postDetailOne->title }}" icon="{{ $post->postDetailOne->color }}"
+                            description="{{ $post->postDetailOne->content }}" />
+                    @endforeach
+                </div>
+       </section>
     </div>
 @endsection
 @section('jsafter')
