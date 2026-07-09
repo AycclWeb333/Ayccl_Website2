@@ -23,6 +23,8 @@ return array (
   'ourprojects' => 'Our Projects',
   'environment' => 'Environment',
   'cementblog' => 'Cement Blogs',
+  'chairman' => 'Chairman of the board',
+
 
   'salesAndMarketing' => 'Sales & Marketing',
   '100hadrami' => '100% Hadhramout Cement',

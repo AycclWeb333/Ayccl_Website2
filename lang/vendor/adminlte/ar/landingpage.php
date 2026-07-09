@@ -29,6 +29,7 @@ return array (
   'ourprojects' => 'مشاريعنا',
   'environment' => 'البيئة',
   'cementblog' => 'مدونة اسمنتية',
+  'chairman' => 'رئيس مجلس الإدارة',
 
 
   //  المبيعات والتسويق
