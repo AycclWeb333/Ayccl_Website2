@@ -3,69 +3,80 @@
 @php
     $ytContent = trim($socialMediaPages[2]->postDetailOne->content ?? '');
     
-    $isVideo = false;
-    $videoId = '';
+    $videoIds = [];
     $playlistId = '';
     
-    // Parse URL if it is one
-    if (filter_var($ytContent, FILTER_VALIDATE_URL)) {
-        $urlParts = parse_url($ytContent);
-        
-        // Check for youtu.be
-        if (isset($urlParts['host']) && ($urlParts['host'] === 'youtu.be' || str_ends_with($urlParts['host'], '.youtu.be'))) {
-            $isVideo = true;
-            $videoId = trim($urlParts['path'] ?? '', '/');
-        }
-        // Check for youtube.com/watch?v=...
-        elseif (isset($urlParts['host']) && (str_ends_with($urlParts['host'], 'youtube.com'))) {
-            if (isset($urlParts['path']) && str_starts_with($urlParts['path'], '/watch')) {
-                parse_str($urlParts['query'] ?? '', $queryParts);
-                if (isset($queryParts['v'])) {
-                    $isVideo = true;
-                    $videoId = $queryParts['v'];
-                }
-            }
-            // Check for youtube.com/embed/... or youtube.com/shorts/...
-            elseif (isset($urlParts['path'])) {
-                $pathSegments = explode('/', trim($urlParts['path'], '/'));
-                if (count($pathSegments) >= 2 && ($pathSegments[0] === 'embed' || $pathSegments[0] === 'shorts')) {
-                    $isVideo = true;
-                    $videoId = $pathSegments[1];
-                }
-                // Check if it's a channel URL (e.g. youtube.com/channel/UC...)
-                elseif (count($pathSegments) >= 2 && $pathSegments[0] === 'channel') {
-                    $ytContent = $pathSegments[1];
-                }
-            }
-        }
-    }
+    // Split by comma in case they entered multiple video URLs/IDs
+    $rawItems = array_filter(array_map('trim', explode(',', $ytContent)));
     
-    // If not already determined as video, check by string format
-    if (!$isVideo && !empty($ytContent)) {
-        // Strip any query parameters just in case (e.g. ?si=...)
-        if (str_contains($ytContent, '?')) {
-            $parts = explode('?', $ytContent);
-            $ytContent = $parts[0];
+    foreach ($rawItems as $item) {
+        $isVideo = false;
+        $videoId = '';
+        
+        // Parse URL if it is one
+        if (filter_var($item, FILTER_VALIDATE_URL)) {
+            $urlParts = parse_url($item);
+            
+            // Check for youtu.be
+            if (isset($urlParts['host']) && ($urlParts['host'] === 'youtu.be' || str_ends_with($urlParts['host'], '.youtu.be'))) {
+                $isVideo = true;
+                $videoId = trim($urlParts['path'] ?? '', '/');
+            }
+            // Check for youtube.com/watch?v=...
+            elseif (isset($urlParts['host']) && (str_ends_with($urlParts['host'], 'youtube.com'))) {
+                if (isset($urlParts['path']) && str_starts_with($urlParts['path'], '/watch')) {
+                    parse_str($urlParts['query'] ?? '', $queryParts);
+                    if (isset($queryParts['v'])) {
+                        $isVideo = true;
+                        $videoId = $queryParts['v'];
+                    }
+                }
+                // Check for youtube.com/embed/... or youtube.com/shorts/...
+                elseif (isset($urlParts['path'])) {
+                    $pathSegments = explode('/', trim($urlParts['path'], '/'));
+                    if (count($pathSegments) >= 2 && ($pathSegments[0] === 'embed' || $pathSegments[0] === 'shorts')) {
+                        $isVideo = true;
+                        $videoId = $pathSegments[1];
+                    }
+                    // Check if it's a channel URL (e.g. youtube.com/channel/UC...)
+                    elseif (count($pathSegments) >= 2 && $pathSegments[0] === 'channel') {
+                        $item = $pathSegments[1];
+                    }
+                }
+            }
         }
         
-        // Remove trailing/leading slashes
-        $ytContent = trim($ytContent, '/');
-        
-        // A standard YouTube video ID has exactly 11 characters
-        if (strlen($ytContent) === 11) {
-            $isVideo = true;
-            $videoId = $ytContent;
-        } else {
-            // Treat as channel ID / playlist ID
-            if (str_starts_with($ytContent, 'UC')) {
-                $playlistId = 'UU' . substr($ytContent, 2);
-            } elseif (str_starts_with($ytContent, 'UU')) {
-                $playlistId = $ytContent;
-            } elseif (str_starts_with($ytContent, 'U')) {
-                $playlistId = 'U' . $ytContent;
-            } else {
-                $playlistId = 'UU' . $ytContent;
+        // If not already determined as video, check by string format
+        if (!$isVideo && !empty($item)) {
+            // Strip any query parameters just in case (e.g. ?si=...)
+            if (str_contains($item, '?')) {
+                $parts = explode('?', $item);
+                $item = $parts[0];
             }
+            
+            // Remove trailing/leading slashes
+            $item = trim($item, '/');
+            
+            // A standard YouTube video ID has exactly 11 characters
+            if (strlen($item) === 11) {
+                $isVideo = true;
+                $videoId = $item;
+            } else {
+                // Treat as channel ID / playlist ID
+                if (str_starts_with($item, 'UC')) {
+                    $playlistId = 'UU' . substr($item, 2);
+                } elseif (str_starts_with($item, 'UU')) {
+                    $playlistId = $item;
+                } elseif (str_starts_with($item, 'U')) {
+                    $playlistId = 'U' . $item;
+                } else {
+                    $playlistId = 'UU' . $item;
+                }
+            }
+        }
+        
+        if ($isVideo && !empty($videoId)) {
+            $videoIds[] = $videoId;
         }
     }
 @endphp
@@ -102,16 +113,18 @@
                 <i class="fa-brands fa-youtube text-4xl text-white"></i>
             </summary>
             <div class="grid grid-cols-1 transition-all duration-500 my-5">
-                @if ($isVideo)
-                    <div class="w-full">
-                        <iframe class="w-full h-60 p-5 rounded-4xl"
-                            src="https://www.youtube.com/embed/{{ $videoId }}"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                        </iframe>
-                    </div>
-                @else
+                @if (!empty($videoIds))
+                    @foreach ($videoIds as $vid)
+                        <div class="w-full">
+                            <iframe class="w-full h-60 p-5 rounded-4xl"
+                                src="https://www.youtube.com/embed/{{ $vid }}"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    @endforeach
+                @elseif (!empty($playlistId))
                     @for ($i = 1; $i <= 2; $i++)
                         <div class=" w-full">
                             <iframe class="w-full h-60  p-5 rounded-4xl"
