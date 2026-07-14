@@ -7,7 +7,10 @@
     <div
         class="relative z-10 flex flex-col items-center text-center p-4 transition-transform duration-500 ease-in-out hover:scale-105">
         {{-- Image section: stands out, partially over gray --}}
-        <div class="w-full h-64 md:h-80 lg:h-96 mb-4 flex justify-center items-end">
+        <!-- <div class="w-full h-64 md:h-80 lg:h-96 mb-4 flex justify-center items-end">
+            <img src="{{ $image }}" alt="{{ $name }}" class="w-full h-full object-contain object-bottom transition-transform duration-500 ease-in-out hover:scale-110" />
+        </div> -->
+        <div class="w-full h-72 md:h-80 lg:h-80 mb-4 flex justify-center items-end">
             <img src="{{ $image }}" alt="{{ $name }}" class="w-full h-full object-contain object-bottom transition-transform duration-500 ease-in-out hover:scale-110" />
         </div>
 
