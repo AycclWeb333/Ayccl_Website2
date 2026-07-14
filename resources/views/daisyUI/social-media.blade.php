@@ -31,11 +31,29 @@
                 class="py-3 p-2 flex justify-center h-full sm:justify-center transition-all duration-500 cursor-pointer list-none">
                 <i class="fa-brands fa-youtube text-4xl text-white"></i>
             </summary>
+            @php
+                $ytContent = trim($socialMediaPages[2]->postDetailOne->content ?? '');
+                // If it is a full URL, extract the last path segment (which is usually the channel ID)
+                if (filter_var($ytContent, FILTER_VALIDATE_URL)) {
+                    $parts = explode('/', rtrim($ytContent, '/'));
+                    $ytContent = end($parts);
+                }
+                // Handle different channel/playlist ID formats to get the correct uploads playlist ID starting with UU
+                if (str_starts_with($ytContent, 'UC')) {
+                    $playlistId = 'UU' . substr($ytContent, 2);
+                } elseif (str_starts_with($ytContent, 'UU')) {
+                    $playlistId = $ytContent;
+                } elseif (str_starts_with($ytContent, 'U')) {
+                    $playlistId = 'U' . $ytContent;
+                } else {
+                    $playlistId = 'UU' . $ytContent;
+                }
+            @endphp
             <div class="grid grid-cols-1 transition-all duration-500 my-5">
                 @for ($i = 1; $i <= 2; $i++)
                     <div class=" w-full">
                         <iframe class="w-full h-60  p-5 rounded-4xl"
-                            src="https://www.youtube.com/embed?listType=playlist&list=U{{ $socialMediaPages[2]->postDetailOne->content }}&index={{ $i }}"
+                            src="https://www.youtube.com/embed?listType=playlist&list={{ $playlistId }}&index={{ $i }}"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>

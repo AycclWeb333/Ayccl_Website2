@@ -76,7 +76,7 @@ class ViewServiceProvider extends ServiceProvider
             $socialLinks = Post::where("page_id", 8)->where('category_id', 16)->where('active', true)->with("mediaOne")->get();
             $systems = Post::where("page_id", 8)->where('category_id', 14)->where('active', true)->with("mediaOne","postDetailOne")->get();
             $floatingButtons = Post::where("page_id", 8)->where('category_id', 15)->where('active', true)->with("mediaOne","postDetailOne")->get();
-            $socialMediaPages = Post::where("page_id", 8)->where('category_id', 13)->where('active', true)->with("mediaOne","postDetailOne")->get();
+            $socialMediaPages = Post::where("page_id", 8)->where('category_id', 13)->where('active', true)->orderBy('order')->with("mediaOne","postDetailOne")->get();
 
             $view->with([
                 'address' => $address,
