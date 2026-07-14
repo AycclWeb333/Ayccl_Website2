@@ -1,5 +1,12 @@
 <x-divider>{{ __('adminlte::landingpage.socialmediainfo') }}</x-divider>
 
+<!-- 
+DEBUG SOCIAL MEDIA PAGES:
+@foreach($socialMediaPages as $index => $page)
+    [{{ $index }}] Title: {{ $page->postDetailOne->title ?? 'No Title' }} | Content: "{{ $page->postDetailOne->content ?? 'No Content' }}"
+@endforeach
+-->
+
 <div class="flex flex-col sm:flex-row w-full gap-4 justify-center">
 
     {{-- <!-- Facebook --><i class="fa-brands fa-facebook fa-flip"></i> --}}
