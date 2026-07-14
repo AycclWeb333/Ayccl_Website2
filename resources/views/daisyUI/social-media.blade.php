@@ -1,11 +1,27 @@
 <x-divider>{{ __('adminlte::landingpage.socialmediainfo') }}</x-divider>
 
-<!-- 
-DEBUG SOCIAL MEDIA PAGES:
-@foreach($socialMediaPages as $index => $page)
-    [{{ $index }}] Title: {{ $page->postDetailOne->title ?? 'No Title' }} | Content: "{{ $page->postDetailOne->content ?? 'No Content' }}"
-@endforeach
--->
+@php
+    $ytContent = trim($socialMediaPages[2]->postDetailOne->content ?? '');
+    // If it is a full URL, extract the last path segment (which is usually the channel ID)
+    if (filter_var($ytContent, FILTER_VALIDATE_URL)) {
+        $parts = explode('/', rtrim($ytContent, '/'));
+        $ytContent = end($parts);
+    }
+    // Handle different channel/playlist ID formats to get the correct uploads playlist ID starting with UU
+    if (str_starts_with($ytContent, 'UC')) {
+        $playlistId = 'UU' . substr($ytContent, 2);
+    } elseif (str_starts_with($ytContent, 'UU')) {
+        $playlistId = $ytContent;
+    } elseif (str_starts_with($ytContent, 'U')) {
+        $playlistId = 'U' . $ytContent;
+    } else {
+        $playlistId = 'UU' . $ytContent;
+    }
+@endphp
+
+<div class="text-center my-4 font-mono text-red-500 font-bold text-sm bg-red-100 p-2 rounded">
+    DIAGNOSTIC - DB YouTube Content: "{{ $socialMediaPages[2]->postDetailOne->content ?? 'NULL' }}" | Processed Playlist ID: "{{ $playlistId }}"
+</div>
 
 <div class="flex flex-col sm:flex-row w-full gap-4 justify-center">
 
@@ -38,24 +54,6 @@ DEBUG SOCIAL MEDIA PAGES:
                 class="py-3 p-2 flex justify-center h-full sm:justify-center transition-all duration-500 cursor-pointer list-none">
                 <i class="fa-brands fa-youtube text-4xl text-white"></i>
             </summary>
-            @php
-                $ytContent = trim($socialMediaPages[2]->postDetailOne->content ?? '');
-                // If it is a full URL, extract the last path segment (which is usually the channel ID)
-                if (filter_var($ytContent, FILTER_VALIDATE_URL)) {
-                    $parts = explode('/', rtrim($ytContent, '/'));
-                    $ytContent = end($parts);
-                }
-                // Handle different channel/playlist ID formats to get the correct uploads playlist ID starting with UU
-                if (str_starts_with($ytContent, 'UC')) {
-                    $playlistId = 'UU' . substr($ytContent, 2);
-                } elseif (str_starts_with($ytContent, 'UU')) {
-                    $playlistId = $ytContent;
-                } elseif (str_starts_with($ytContent, 'U')) {
-                    $playlistId = 'U' . $ytContent;
-                } else {
-                    $playlistId = 'UU' . $ytContent;
-                }
-            @endphp
             <div class="grid grid-cols-1 transition-all duration-500 my-5">
                 @for ($i = 1; $i <= 2; $i++)
                     <div class=" w-full">
