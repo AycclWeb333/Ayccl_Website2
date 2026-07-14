@@ -34,12 +34,18 @@
             <div class="grid grid-cols-1 transition-all duration-500 my-5">
                 @for ($i = 1; $i <= 2; $i++)
                     <div class=" w-full">
-                        <iframe class="w-full h-60  p-5 rounded-4xl"
+                        <!-- <iframe class="w-full h-60  p-5 rounded-4xl"
                             src="https://www.youtube.com/embed?listType=playlist&list=U{{ $socialMediaPages[2]->postDetailOne->content }}&index={{ $i }}"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>
-                        </iframe>
+                        </iframe> -->
+                        <iframe class="w-full h-60 p-5 rounded-4xl"
+    src="https://www.youtube.com/embed?listType=playlist&list={{ $socialMediaPages[2]->postDetailOne->content }}&index={{ $i }}"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen>
+</iframe>
                     </div>
                 @endfor
             </div>
