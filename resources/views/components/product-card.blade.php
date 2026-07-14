@@ -25,29 +25,31 @@
     </div>
 </div> -->
 
-<!-- كرت المنتج -->
-<div class="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col h-full">
-    
-    <!-- 1. حاوية الصورة - تحدد نسبة العرض إلى الارتفاع وتمنع خروج أي جزء زائد -->
-    <div class="relative w-full aspect-square bg-gray-100 overflow-hidden">
-        
-        <!-- 2. عنصر الصورة - يملأ المساحة بالكامل بذكاء -->
-        <img 
-            src="{{ asset('storage/' . $product->image) }}" 
-            alt="{{ $product->name }}" 
-            class="absolute inset-0 w-full h-full object-contain transition-transform duration-300 hover:scale-105"
-            loading="lazy"
-        />
-        
-    </div>
+<div class="relative bg-transparent rounded-xl overflow-hidden max-w-xs" data-aos="fade-up"
+    data-aos-once="true" data-aos-duration="700">
+    {{-- Gray bottom background layer (half card height) --}}
+    <div class="absolute bottom-0 left-0 w-full h-1/2 z-0"></div>
 
-    <!-- تفاصيل المنتج (الاسم والسعر) -->
-    <div class="p-4 flex flex-col flex-grow">
-        <h3 class="text-gray-800 font-semibold text-sm line-clamp-2 mb-2">
-            {{ $product->name }}
-        </h3>
-        <div class="mt-auto">
-            <span class="text-primary font-bold">{{ $product->price }} ر.ي</span>
+    {{-- Inner wrapper for hover transition --}}
+    <div
+        class="relative z-10 flex flex-col items-center text-center p-4 transition-transform duration-500 ease-in-out hover:scale-105">
+        
+        {{-- 
+            تعديل حاوية الصورة:
+            استخدمنا نسبة أبعاد ثابتةaspect-[3/4] (عرض 3 إلى ارتفاع 4) 
+            لتوحيد مساحة العرض في كل الشاشات المتوسطة والكبيرة تلقائياً.
+        --}}
+        <div class="w-full aspect-[3/4] mb-4 flex justify-center items-end overflow-hidden">
+            {{-- 
+                استخدمنا object-cover لملء المساحة المحددة بذكاء ودون تمدد، 
+                مع الحفاظ على التمركز في الأسفل object-bottom.
+            --}}
+            <img src="{{ $image }}" alt="{{ $name }}" 
+                 class="w-full h-full object-contain object-bottom transition-transform duration-500 ease-in-out hover:scale-110" />
         </div>
+
+        {{-- Name --}}
+        <h3 class="text-xl font-semibold mb-2 text-gray-900">{{ $name }}</h3>
     </div>
 </div>
+

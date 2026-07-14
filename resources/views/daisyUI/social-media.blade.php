@@ -25,7 +25,7 @@
         </details>
 
         <!-- YouTube -->
-        <details
+        <!-- <details
             class="group transition-all duration-500 border border-base-300 rounded-box bg-red-700 overflow-hidden w-full sm:w-20 open:sm:w-96 h-full">
             <summary
                 class="py-3 p-2 flex justify-center h-full sm:justify-center transition-all duration-500 cursor-pointer list-none">
@@ -34,22 +34,49 @@
             <div class="grid grid-cols-1 transition-all duration-500 my-5">
                 @for ($i = 1; $i <= 2; $i++)
                     <div class=" w-full">
-                        <!-- <iframe class="w-full h-60  p-5 rounded-4xl"
+                        <iframe class="w-full h-60  p-5 rounded-4xl"
                             src="https://www.youtube.com/embed?listType=playlist&list=U{{ $socialMediaPages[2]->postDetailOne->content }}&index={{ $i }}"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>
-                        </iframe> -->
-                        <iframe class="w-full h-60 p-5 rounded-4xl"
-    src="https://www.youtube.com/embed?listType=playlist&list={{ $socialMediaPages[2]->postDetailOne->content }}&index={{ $i }}"
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen>
-</iframe>
+                        </iframe>
+                       
                     </div>
                 @endfor
             </div>
-        </details>
+        </details> -->
+        <!-- YouTube -->
+<details
+    class="group transition-all duration-500 border border-base-300 rounded-box bg-red-700 overflow-hidden w-full sm:w-20 open:sm:w-96 h-full">
+    <summary
+        class="py-3 p-2 flex justify-center h-full sm:justify-center transition-all duration-500 cursor-pointer list-none">
+        <i class="fa-brands fa-youtube text-4xl text-white"></i>
+    </summary>
+    <div class="grid grid-cols-1 transition-all duration-500 my-5">
+        @php
+            // جلب معرف القناة من قاعدة البيانات
+            $channelId = $socialMediaPages[2]->postDetailOne->content;
+            
+            // تحويل المعرف من UC إلى UU برمجياً ليعمل كـ Uploads Playlist
+            if (str_starts_with($channelId, 'UC')) {
+                $playlistId = 'UU' . substr($channelId, 2);
+            } else {
+                $playlistId = $channelId; // إذا كان مدخلاً كـ Playlist جاهزة تبدأ بـ PL أو UU
+            }
+        @endphp
+
+        @for ($i = 1; $i <= 2; $i++)
+            <div class="w-full">
+                <iframe class="w-full h-60 p-5 rounded-4xl"
+                    src="https://www.youtube.com/embed?listType=playlist&list={{ $playlistId }}&index={{ $i }}"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        @endfor
+    </div>
+</details>
 
 
         <!-- Instagram -->
