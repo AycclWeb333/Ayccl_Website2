@@ -26,7 +26,7 @@
                             {{-- Image Container with decorative elements --}}
                             @if($hasMedia)
                                 <div class="w-full lg:w-1/2 relative group">
-                                    <div class="absolute -inset-4 bg-emerald-800/30 rounded-[2rem] transform {{ $isEven ? 'rotate-2' : '-rotate-2' }} group-hover:rotate-0 transition-transform duration-500 -z-10"></div>
+                                    <div class="absolute -inset-4 bg-[#006b36] rounded-[2rem] transform {{ $isEven ? 'rotate-2' : '-rotate-2' }} group-hover:rotate-0 transition-transform duration-500 -z-10"></div>
                                     <div class="relative h-[300px] md:h-[450px] overflow-hidden rounded-[1.5rem] shadow-2xl">
                                         <img src="{{ asset($post->mediaOne->filepath) }}" alt="{{ $post->postDetailOne->title }}" 
                                             class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
