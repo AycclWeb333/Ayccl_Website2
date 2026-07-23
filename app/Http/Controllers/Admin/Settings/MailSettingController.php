@@ -49,7 +49,11 @@ class MailSettingController extends Controller
             'mail_from_name',
             'mail_receive_visit',
             'mail_receive_training',
-            'mail_receive_job'
+            'mail_receive_job',
+            'mail_receive_customer_service',
+            'mail_receive_technical_support',
+            'mail_receive_sales_marketing',
+            'mail_receive_hr'
         ])->get()->keyBy('para');
 
         return view('admin-panel.settings.edit', compact('settings'));
@@ -71,7 +75,11 @@ class MailSettingController extends Controller
             'mail_from_name',
             'mail_receive_visit',
             'mail_receive_training',
-            'mail_receive_job'
+            'mail_receive_job',
+            'mail_receive_customer_service',
+            'mail_receive_technical_support',
+            'mail_receive_sales_marketing',
+            'mail_receive_hr'
         ];
 
         foreach ($keys as $key) {

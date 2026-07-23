@@ -104,6 +104,21 @@
                                     <x-adminlte-input name="mail_receive_job" label="{{ __('adminlte::adminlte.jobRecipient') }}" value="{{ $settings['mail_receive_job']->value ?? '' }}" placeholder="hr@example.com" label-class="text-olive" enable-old-support />
                                 </div>
                             </div>
+                            
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <x-adminlte-input name="mail_receive_customer_service" label="{{ __('adminlte::adminlte.customerServiceRecipient') }}" value="{{ $settings['mail_receive_customer_service']->value ?? '' }}" placeholder="cs@example.com" label-class="text-olive" enable-old-support />
+                                </div>
+                                <div class="col-md-3">
+                                    <x-adminlte-input name="mail_receive_technical_support" label="{{ __('adminlte::adminlte.technicalSupportRecipient') }}" value="{{ $settings['mail_receive_technical_support']->value ?? '' }}" placeholder="support@example.com" label-class="text-olive" enable-old-support />
+                                </div>
+                                <div class="col-md-3">
+                                    <x-adminlte-input name="mail_receive_sales_marketing" label="{{ __('adminlte::adminlte.salesMarketingRecipient') }}" value="{{ $settings['mail_receive_sales_marketing']->value ?? '' }}" placeholder="sales@example.com" label-class="text-olive" enable-old-support />
+                                </div>
+                                <div class="col-md-3">
+                                    <x-adminlte-input name="mail_receive_hr" label="{{ __('adminlte::adminlte.hrRecipient') }}" value="{{ $settings['mail_receive_hr']->value ?? '' }}" placeholder="hr@example.com" label-class="text-olive" enable-old-support />
+                                </div>
+                            </div>
                         </div>
 
                         <div class="card-footer text-center">

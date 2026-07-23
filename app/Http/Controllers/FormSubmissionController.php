@@ -206,4 +206,97 @@ class FormSubmissionController extends Controller
 
         return back()->with('status', __('adminlte::landingpage.emailSentSuccessfully'));
     }
+
+    public function submitCustomerService(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'Full-name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'Phone' => ['required', 'string', 'max:50'],
+            'city' => ['required', 'string', 'max:120'],
+            'service_type' => ['nullable', 'string', 'max:255'],
+            'department' => ['nullable', 'string', 'max:255'],
+            'Reason' => ['required', 'string', 'max:5000'],
+            'g-recaptcha-response' => ['nullable'],
+        ]);
+
+        if ($request->filled('g-recaptcha-response')) {
+            $response = Http::withoutVerifying()->asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => config('services.recaptcha.secret'),
+                'response' => $request->input('g-recaptcha-response'),
+                'remoteip' => $request->ip(),
+            ]);
+
+            if (!$response->json('success') || $response->json('score') < 0.5) {
+                return back()->withErrors(['g-recaptcha-response' => __('adminlte::landingpage.recaptchaFailed')])->withInput();
+            }
+            unset($data['g-recaptcha-response']);
+        }
+
+        $dept = $request->input('department');
+        
+        $deptEmailKey = match ($dept) {
+            'customer_service', __('adminlte::landingpage.customerservice') => 'mail_receive_customer_service',
+            'technical_support', __('adminlte::landingpage.technicalSupport') => 'mail_receive_technical_support',
+            'sales_marketing', __('adminlte::landingpage.salesAndMarketing') => 'mail_receive_sales_marketing',
+            'hr', __('adminlte::landingpage.humanResources') => 'mail_receive_hr',
+            default => null,
+        };
+
+        $officialTo = null;
+        if ($deptEmailKey) {
+            $officialTo = $this->getSetting($deptEmailKey);
+        }
+        if (empty($officialTo)) {
+            $officialTo = $this->getSetting('mail_from_address');
+        }
+
+        $mailAttachments = [];
+
+        // Send confirmation email to user
+        Mail::to($data['email'])->send(new ContactMail(
+            payload: [
+                'title' => __('adminlte::landingpage.directMessage'),
+                'intro' => __('adminlte::landingpage.fillform'),
+                'data' => [
+                    __('adminlte::landingpage.fullName') => $data['Full-name'],
+                    __('adminlte::landingpage.email') => $data['email'],
+                    __('adminlte::landingpage.phoneNo') => $data['Phone'],
+                    __('adminlte::landingpage.city') => $data['city'],
+                    __('adminlte::landingpage.chooseService') => $data['service_type'] ?? '',
+                    __('adminlte::landingpage.department') => $data['department'] ?? '',
+                    __('adminlte::landingpage.message') => $data['Reason'],
+                ],
+            ],
+            viewName: 'emails.visitor-confirmation',
+            mailSubject: __('adminlte::landingpage.emailSentSuccessfully'),
+            replyToEmail: $officialTo,
+            mailAttachments: $mailAttachments,
+        ));
+
+        // Send notification to official department mailbox
+        if (!empty($officialTo)) {
+            Mail::to($officialTo)->send(new ContactMail(
+                payload: [
+                    'title' => 'New Customer Service Message',
+                    'intro' => 'Details of the new message are below:',
+                    'data' => [
+                        __('adminlte::landingpage.fullName') => $data['Full-name'],
+                        __('adminlte::landingpage.email') => $data['email'],
+                        __('adminlte::landingpage.phoneNo') => $data['Phone'],
+                        __('adminlte::landingpage.city') => $data['city'],
+                        __('adminlte::landingpage.chooseService') => $data['service_type'] ?? '',
+                        __('adminlte::landingpage.department') => $data['department'] ?? '',
+                        __('adminlte::landingpage.message') => $data['Reason'],
+                    ],
+                ],
+                viewName: 'emails.admin-notification',
+                mailSubject: 'New Direct Message / Inquiry',
+                replyToEmail: $data['email'],
+                mailAttachments: $mailAttachments,
+            ));
+        }
+
+        return back()->with('status', __('adminlte::landingpage.emailSentSuccessfully'));
+    }
 }

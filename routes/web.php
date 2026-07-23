@@ -298,4 +298,5 @@ Route::group([
     // Public form submissions (emails)
     Route::post('/forms/ask-visit', [FormSubmissionController::class, 'submitVisit'])->name('forms.askVisit');
     Route::post('/forms/ask-training', [FormSubmissionController::class, 'submitTraining'])->name('forms.askTraining');
+    Route::post('/forms/customer-service', [FormSubmissionController::class, 'submitCustomerService'])->name('forms.customerService');
 });

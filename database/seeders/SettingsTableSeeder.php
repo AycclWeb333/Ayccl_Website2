@@ -29,6 +29,10 @@ class SettingsTableSeeder extends Seeder
             ['para' => 'mail_receive_visit', 'para_en' => 'mail_receive_visit', 'value' => ''], 
             ['para' => 'mail_receive_training', 'para_en' => 'mail_receive_training', 'value' => ''],
             ['para' => 'mail_receive_job', 'para_en' => 'mail_receive_job', 'value' => ''],
+            ['para' => 'mail_receive_customer_service', 'para_en' => 'mail_receive_customer_service', 'value' => ''],
+            ['para' => 'mail_receive_technical_support', 'para_en' => 'mail_receive_technical_support', 'value' => ''],
+            ['para' => 'mail_receive_sales_marketing', 'para_en' => 'mail_receive_sales_marketing', 'value' => ''],
+            ['para' => 'mail_receive_hr', 'para_en' => 'mail_receive_hr', 'value' => ''],
         ];
 
         // DB::table('settings')->insert($settings);
