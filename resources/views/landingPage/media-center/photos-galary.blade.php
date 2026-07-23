@@ -65,25 +65,33 @@
                                 </div>
                             </div>
                         @else
-                            <div id="post-carousel-{{ $post->id }}"
-                                class="owl-carousel relative w-full overflow-hidden rounded-t-lg">
-                                @foreach ($post->media as $img)
-                                    <div class="item relative w-full overflow-hidden cursor-grabbing group">
-                                        <!-- Image -->
-                                        <img src="{{ asset($img->filepath) }}" alt="{{ $img->alt ?? '' }}"
-                                            class="h-60 sm:h-60 object-cover w-full" loading="lazy" />
+                            <div class="relative w-full overflow-hidden rounded-t-lg group">
+                                <!-- Multi-image Badge -->
+                                <div class="absolute top-3 end-3 z-20 bg-black/60 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-md backdrop-blur-sm pointer-events-none">
+                                    <i class="fas fa-images text-emerald-400"></i>
+                                    <span>{{ count($post->media) }} {{ app()->getLocale() == 'ar' ? 'صور' : 'photos' }}</span>
+                                </div>
 
-                                        <!-- Resize Icon -->
-                                        <div class="w-fit gallery-trigger-container absolute -bottom-5  sm:-bottom-5 
-                                        {{ app()->getLocale() =='en' ? 'start-7 sm:start-7' : 'start-0 sm:start-0'   }}
-                                            -translate-x-1/2 -translate-y-1/2 text-white rounded-4xl
-                                            opacity-100 md:opacity-0 md:group-hover:opacity-100 
-                                            transition-opacity duration-300 p-3 bg-black/20 hover:cursor-pointer"
-                                            data-post-id="{{ $post->id }}">
-                                            <i class="fas fa-expand resize-icon text-xl"></i>
+                                <div id="post-carousel-{{ $post->id }}"
+                                    class="owl-carousel relative w-full overflow-hidden">
+                                    @foreach ($post->media as $img)
+                                        <div class="item relative w-full overflow-hidden cursor-grabbing">
+                                            <!-- Image -->
+                                            <img src="{{ asset($img->filepath) }}" alt="{{ $img->alt ?? '' }}"
+                                                class="h-60 sm:h-60 object-cover w-full" />
+
+                                            <!-- Resize Icon -->
+                                            <div class="w-fit gallery-trigger-container absolute -bottom-5  sm:-bottom-5 
+                                            {{ app()->getLocale() =='en' ? 'start-7 sm:start-7' : 'start-0 sm:start-0'   }}
+                                                -translate-x-1/2 -translate-y-1/2 text-white rounded-4xl
+                                                opacity-100 md:opacity-0 md:group-hover:opacity-100 
+                                                transition-opacity duration-300 p-3 bg-black/20 hover:cursor-pointer z-10"
+                                                data-post-id="{{ $post->id }}">
+                                                <i class="fas fa-expand resize-icon text-xl"></i>
+                                            </div>
                                         </div>
-                                    </div>
-                                @endforeach
+                                    @endforeach
+                                </div>
                             </div>
                         @endif
                     @endisset
@@ -103,7 +111,7 @@
                             <div class="flex justify-center-safe space-x-2 mt-2 fixed top-1/2 start-1/2">
                                 <!-- View Button -->
                                 {{-- <button class="btn btn-primary w-fit gallery-trigger-container" data-post-id="{{ $post->id }}">
-                                        {{ __('adminlte::landingpage.viewmore') }}<i class="fas fa-expand resize-icon"></i>
+                                         {{ __('adminlte::landingpage.viewmore') }}<i class="fas fa-expand resize-icon"></i>
                                 </button> --}}
                                 <!-- Resize Button (optional functionality) -->
                             </div>
@@ -138,6 +146,14 @@
             },
             animation: {
                 duration: 300
+            },
+            callbacks: {
+                onMixEnd: function() {
+                    $('.owl-carousel').each(function() {
+                        $(this).trigger('refresh.owl.carousel');
+                        $(this).trigger('play.owl.autoplay', [3000]);
+                    });
+                }
             }
         });
 
@@ -157,7 +173,7 @@
         });
 
         // Helper function to reliably wait for images
-        function waitForImagesGallery($imgs, timeoutMs = 5000) {
+        function waitForImagesGallery($imgs, timeoutMs = 3000) {
             return new Promise((resolve) => {
                 if (!$imgs || !$imgs.length) return resolve({ loaded: 0, total: 0 });
                 let total = $imgs.length;
@@ -199,32 +215,30 @@
                     $owl.find('.owl-item').children().unwrap();
                 }
 
-                // Bind events BEFORE initialization
-                $owl.on('initialized.owl.carousel refreshed.owl.carousel', function () {
-                    setTimeout(() => {
-                        waitForImagesGallery($owl.find('img'), 5000).then(() => {
-                            $loader.fadeOut(300);
-                        });
-                    }, 100);
-                });
-
                 $owl.owlCarousel({
                     loop: true,
                     autoplay: true,
-                    autoplayTimeout: 5000,
+                    autoplayTimeout: 3000,
+                    autoplaySpeed: 800,
                     autoplayHoverPause: true,
                     rtl: document.documentElement.getAttribute('dir') === 'rtl',
                     items: 1,
                     nav: true,
-                    dots: false,
-                    smartSpeed: 600,
+                    dots: true,
+                    smartSpeed: 800,
                     autoHeight: false,
                     responsiveRefreshRate: 100,
                     navText: [
-                        '<button class="btn absolute top-1/3 rtl:right-0 ltr:left-0 h-2/6 btn-square btn-lg shadow-2xl bg-black/30 hover:bg-black/50 text-white border-0">❮</button>',
-                        '<button class="btn absolute top-1/3 rtl:left-0 ltr:right-0 h-2/6 btn-square btn-lg shadow-2xl bg-black/30 hover:bg-black/50 text-white border-0">❯</button>'
+                        '<button class="btn absolute top-1/3 rtl:right-0 ltr:left-0 h-2/6 btn-square btn-lg shadow-2xl bg-black/30 hover:bg-black/50 text-white border-0 z-10">❮</button>',
+                        '<button class="btn absolute top-1/3 rtl:left-0 ltr:right-0 h-2/6 btn-square btn-lg shadow-2xl bg-black/30 hover:bg-black/50 text-white border-0 z-10">❯</button>'
                     ]
                 });
+
+                if ($loader && $loader.length) {
+                    waitForImagesGallery($owl.find('img'), 2000).then(() => {
+                        $loader.fadeOut(200);
+                    });
+                }
             }
 
             @foreach ($posts as $post)
@@ -251,8 +265,8 @@
                         const $loader = $('#loader-{{ $post->id }}');
                         const $img = $loader.closest('.card').find('img');
 
-                        waitForImagesGallery($img, 3000).then(() => {
-                            $loader.fadeOut(300);
+                        waitForImagesGallery($img, 2000).then(() => {
+                            $loader.fadeOut(200);
                         });
                     })();
                 @endif
