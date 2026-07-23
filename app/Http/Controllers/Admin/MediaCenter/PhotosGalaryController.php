@@ -58,14 +58,13 @@ class PhotosGalaryController extends Controller
     public function create()
     {
         try{
-            $categories = Category::whereHas('postDetail', function ($query) {
-                $query->whereHas('post', function ($q) {
-                    $q->where('page_id', $this->pageId);
-                });
-            })
-            ->select('id', 'name','name_en')
-            ->distinct()
-            ->get();
+            $categories = Category::where('type', $this->pageId)
+                ->select('id', 'name', 'name_en')
+                ->get();
+            // Fallback: if no categories found with type filter, get all
+            if ($categories->isEmpty()) {
+                $categories = Category::select('id', 'name', 'name_en')->get();
+            }
         }
         catch(\Exception $e){
             return redirect()->back()->with(['error' => $e->getMessage()]);
@@ -97,7 +96,7 @@ class PhotosGalaryController extends Controller
             DB::beginTransaction();
             // 1. Create Post
             $post = new Post();
-            $post->category_id = 1;
+            $post->category_id = $request->category_id ?? 1;
             $post->page_id = $this->pageId; // default page
             if (isset($request->order))
                 $post->order     = $request->order;
@@ -121,8 +120,8 @@ class PhotosGalaryController extends Controller
             $postDetail->active    = $request->active ?? true;
             $postDetail->save();
 
-            // 3) Upload Media using CloudMediaTrait
-            $this->storeCombinedMedia($request, $post->id, $this->route, Post::class);
+            // 3) Upload Multiple Media using CloudMediaTrait
+            $this->storeMultipleMedia($request, $post->id, $this->route, Post::class);
             DB::commit();
 
             return redirect()->route("$this->route.index", app()->getLocale())
@@ -138,14 +137,12 @@ class PhotosGalaryController extends Controller
     {
         try{
             $post = Post::findOrFail($id);
-            $categories = Category::whereHas('postDetail', function ($query) {
-                $query->whereHas('post', function ($q) {
-                    $q->where('page_id', $this->pageId);
-                });
-            })
-            ->select('id', 'name', 'name_en')
-            ->distinct()
-            ->get();
+            $categories = Category::where('type', $this->pageId)
+                ->select('id', 'name', 'name_en')
+                ->get();
+            if ($categories->isEmpty()) {
+                $categories = Category::select('id', 'name', 'name_en')->get();
+            }
         }
         catch(\Exception $e){
             return redirect()->back()->with(['error' => $e->getMessage()]);
@@ -214,18 +211,13 @@ class PhotosGalaryController extends Controller
             $postDetail->active    = $postDetail->active ?? true;
             $postDetail->save();
 
-            // 3. Update Media using CloudMediaTrait
-            $media = Media::where('media_able_id', $post->id)->where('media_able_type', Post::class)->first();
-            if (!$media) {
-                $media = new Media();
-                $media->media_able_id = $post->id;
-                $media->media_able_type = Post::class;
+            // 3. Append any newly uploaded images (keep existing, add new ones)
+            if ($request->hasFile('files')) {
+                $this->storeMultipleMedia($request, $post->id, $this->route, Post::class);
             }
-
-            $this->updateCombinedMedia($request, $media, $post->id, $this->route);
             $media = Media::where('media_able_id', $post->id)->count();
             if ($media == 0) {
-                throw new \Exception(__('adminlte::adminlte.files_required')    );
+                throw new \Exception(__('adminlte::adminlte.files_required'));
             }
             DB::commit();
             
