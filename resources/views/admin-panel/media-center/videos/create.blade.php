@@ -241,8 +241,17 @@
 
         // Function to validate URL and extract video ID
         function getVideoId(url) {
-            const urlParams = new URLSearchParams(new URL(url).search);
-            return urlParams.get('v');
+            if (!url) return null;
+            url = url.trim();
+            const regExp = /^.*(?:youtu\.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[1].length === 11) {
+                return match[1];
+            }
+            if (url.length === 11) {
+                return url;
+            }
+            return null;
         }
 
         try {
@@ -260,7 +269,7 @@
             }
         } catch (error) {
             const thumbnailUrl = `https://img.youtube.com/vi//hqdefault.jpg`;
-                thumbnailImage.src = thumbnailUrl;
+            thumbnailImage.src = thumbnailUrl;
             showMessage('Please enter a complete YouTube video URL.');
         }
     });

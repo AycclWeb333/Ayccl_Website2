@@ -69,7 +69,7 @@ class VideosController extends Controller
             [
                 'title'      => 'required',
                 'title_en'   => 'required',
-                'videoLink'    => 'required|string|unique:media,filepath',
+                'videoLink'  => 'required|string',
                 'date'       => 'required|date',
             ],
             [
@@ -111,18 +111,20 @@ class VideosController extends Controller
             $postDetail->save();
 
 
-            $videoLink = $request->videoLink;
-            $videoID = $request->videoLink;
-            $youtubePattern = '/^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:.+)?$/';
-            // Vimeo pattern
-            $vimeoPattern = '/^(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(\d+)$/';
-            $link = null;
-            $id = null;
+            $videoLink = trim($request->videoLink);
+            $videoID = $videoLink;
+            $videoThumbnail = null;
 
-            // Check for a YouTube video
+            $youtubePattern = '/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|shorts\/|watch\?v=|watch\?.+&v=))([\w-]{11})/';
+
             if (preg_match($youtubePattern, $videoLink, $matches)) {
                 $videoID = $matches[1];
                 $videoThumbnail = "https://img.youtube.com/vi/{$videoID}/hqdefault.jpg";
+            } elseif (preg_match('/^[\w-]{11}$/', $videoLink)) {
+                $videoID = $videoLink;
+                $videoThumbnail = "https://img.youtube.com/vi/{$videoID}/hqdefault.jpg";
+            } else {
+                $videoThumbnail = "https://img.youtube.com/vi//hqdefault.jpg";
             }
 
             // https://img.youtube.com/vi/6LI2GvW15NM/hqdefault.jpg
@@ -171,7 +173,7 @@ class VideosController extends Controller
             [
                 'title'      => 'required',
                 'title_en'   => 'required',
-                'videoLink'    => 'required|string|unique:media,filepath',
+                'videoLink'  => 'required|string',
                 'date'       => 'required|date',
             ],
             [
@@ -203,18 +205,20 @@ class VideosController extends Controller
             $postDetail->save();
 
 
-            $videoLink = $request->videoLink;
-            $videoID = $request->videoLink;
-            $youtubePattern = '/^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:.+)?$/';
-            // Vimeo pattern
-            $vimeoPattern = '/^(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(\d+)$/';
-            $link = null;
-            $id = null;
+            $videoLink = trim($request->videoLink);
+            $videoID = $videoLink;
+            $videoThumbnail = null;
 
-            // Check for a YouTube video
+            $youtubePattern = '/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|shorts\/|watch\?v=|watch\?.+&v=))([\w-]{11})/';
+
             if (preg_match($youtubePattern, $videoLink, $matches)) {
                 $videoID = $matches[1];
                 $videoThumbnail = "https://img.youtube.com/vi/{$videoID}/hqdefault.jpg";
+            } elseif (preg_match('/^[\w-]{11}$/', $videoLink)) {
+                $videoID = $videoLink;
+                $videoThumbnail = "https://img.youtube.com/vi/{$videoID}/hqdefault.jpg";
+            } else {
+                $videoThumbnail = "https://img.youtube.com/vi//hqdefault.jpg";
             }
             // https://img.youtube.com/vi/6LI2GvW15NM/hqdefault.jpg
             // https://img.youtube.com/vi/6LI2GvW15NM/hqdefault.jpg

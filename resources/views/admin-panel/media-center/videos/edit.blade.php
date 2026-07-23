@@ -200,4 +200,57 @@
 @section('plugins.Select2', true)
 
 @section('adminlte_js')
+<script>
+    document.getElementById('get-thumbnail').addEventListener('click', function() {
+        const urlInput = document.getElementById('video-url');
+        const url = urlInput.value;
+        const messageBox = document.getElementById('message-box');
+        const thumbnailContainer = document.getElementById('thumbnail-container');
+        const thumbnailImage = document.getElementById('thumbnail-image');
+
+        // Hide previous messages and images
+        messageBox.style.display = 'none';
+        thumbnailContainer.style.display = 'none';
+
+        // Function to show a message
+        function showMessage(message) {
+            messageBox.textContent = message;
+            messageBox.style.display = 'block';
+        }
+
+        // Function to validate URL and extract video ID
+        function getVideoId(url) {
+            if (!url) return null;
+            url = url.trim();
+            const regExp = /^.*(?:youtu\.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[1].length === 11) {
+                return match[1];
+            }
+            if (url.length === 11) {
+                return url;
+            }
+            return null;
+        }
+
+        try {
+            const videoId = getVideoId(url);
+
+            if (videoId) {
+                const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                thumbnailImage.src = thumbnailUrl;
+                thumbnailImage.alt = 'YouTube Video Thumbnail';
+                thumbnailContainer.style.display = 'block';
+            } else {
+                const thumbnailUrl = `https://img.youtube.com/vi//hqdefault.jpg`;
+                thumbnailImage.src = thumbnailUrl;
+                showMessage('Invalid YouTube URL.');
+            }
+        } catch (error) {
+            const thumbnailUrl = `https://img.youtube.com/vi//hqdefault.jpg`;
+            thumbnailImage.src = thumbnailUrl;
+            showMessage('Please enter a complete YouTube video URL.');
+        }
+    });
+</script>
 @stop
