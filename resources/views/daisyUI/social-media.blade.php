@@ -167,39 +167,39 @@
 
         <!-- Tiktok -->
         <details
-    class="group border border-base-300 rounded-box bg-gray-800 overflow-hidden
-           w-full sm:w-20 open:sm:w-96 h-full transition-[width] duration-500">
+            class="group border border-base-300 rounded-box bg-gray-800 overflow-hidden
+                   w-full sm:w-20 open:sm:w-96 h-full transition-[width] duration-500">
 
-    <summary
-        class="py-3 p-2 flex justify-center h-full cursor-pointer list-none">
-        <i class="fa-brands fa-tiktok text-4xl text-white transition group-hover:scale-110"></i>
-    </summary>
+            <summary
+                class="py-3 p-2 flex justify-center h-full cursor-pointer list-none">
+                <i class="fa-brands fa-tiktok text-4xl text-white transition group-hover:scale-110"></i>
+            </summary>
 
-    <div class="flex justify-center w-full">
-        <div
-            class="mx-3 sm:mx-auto my-5 w-full max-w-[360px]
-                   h-[500px] bg-white rounded-lg shadow-md
-                   border border-gray-200 overflow-hidden">
+            <div class="flex justify-center w-full">
+                <div
+                    class="mx-3 sm:mx-auto my-5 w-full max-w-[360px]
+                           min-h-[500px] max-h-[550px] bg-white rounded-lg shadow-md
+                           border border-gray-200 overflow-y-auto">
 
-            <blockquote
-                class="tiktok-embed"
-                cite="https://www.tiktok.com/@aycclyemen?_r=1&_t=ZS-93pxA8snfy4"
-                data-unique-id="aycclyemen"
-                data-embed-type="creator"
-                style="max-width: 360px; min-width: 288px;">
-                <section>
-                    <a target="_blank"
-                       title="@aycclyemen"
-                       href="https://www.tiktok.com/@aycclyemen?_r=1&_t=ZS-93pxA8snfy4">
-                        @aycclyemen
-                    </a>
-                </section>
-            </blockquote>
+                    <blockquote
+                        class="tiktok-embed"
+                        cite="https://www.tiktok.com/@aycclyemen"
+                        data-unique-id="aycclyemen"
+                        data-embed-type="creator"
+                        style="max-width: 360px; min-width: 288px;">
+                        <section>
+                            <a target="_blank"
+                               title="@aycclyemen"
+                               href="https://www.tiktok.com/@aycclyemen">
+                                @aycclyemen
+                            </a>
+                        </section>
+                    </blockquote>
 
-        </div>
-    </div>
-</details>
-<script async src="https://www.tiktok.com/embed.js" charset="utf-8"></script>
+                </div>
+            </div>
+        </details>
+        <script id="tiktok-embed-script" async src="https://www.tiktok.com/embed.js" charset="utf-8"></script>
 
 
     </div>
@@ -227,24 +227,28 @@
                     if (iframe && !iframe.src) {
                         iframe.src = iframe.dataset.src;
                     }
+
+                    // Reload TikTok embed script when accordion opens
+                    if (this.querySelector('.tiktok-embed')) {
+                        let existingScript = document.getElementById('tiktok-embed-script');
+                        if (existingScript) {
+                            existingScript.remove();
+                        }
+                        let script = document.createElement('script');
+                        script.id = 'tiktok-embed-script';
+                        script.src = 'https://www.tiktok.com/embed.js?v=' + Date.now();
+                        script.async = true;
+                        document.body.appendChild(script);
+                    }
                 } else {
                     // Reset summary height when closed
                     summary.classList.add('h-full'); // default height
-                    // if (iframe) {
-                    //     iframe.src = '';
-                    // }
                 }
             });
         });
 
 
         // Close all when clicking outside
-        // document.addEventListener('click', (e) => {
-        //     if (!accordion.contains(e.target) || !details.contains(e.target)) {
-        //         details.forEach((d) => (d.open = false));
-        //     }
-        // });
-
         document.addEventListener('click', (e) => {
             // Check if the click happened inside any <details>
             const clickedInsideDetails = Array.from(details).some(d => d.contains(e.target));
