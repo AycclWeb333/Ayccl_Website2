@@ -49,7 +49,7 @@
         <a href={{ localizedRoute('customerservice') }}
             class="link link-hover hover:link-primary">{{ __('adminlte::landingpage.customerservice') }}</a>
 
-        <a href="http://ixerpweb.ayccl.com:8189/ixias/F?P=IXCSS"
+        <a href="https://ixerpweb.ayccl.com:8189/ixias/F?P=IXCSS"
             class="link link-hover hover:link-primary">{{ __('adminlte::landingpage.css') }}</a>
 
         {{-- <a href={{ localizedRoute('suggestionsandcomplaints') }}
