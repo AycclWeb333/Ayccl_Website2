@@ -15,7 +15,7 @@
             </p>
         </div> --}}
 
-        <x-divider>{{ $posts[0]->postDetailOne->title }}</x-divider>
+        <x-divider>{{ app()->getLocale() == 'ar' ? $posts[0]->postDetailOne->title : ($posts[0]->postDetailOne->title_en ?? $posts[0]->postDetailOne->title) }}</x-divider>
 
         <section class="max-w-6xl mx-auto px-4 sm:px-8 mt-10">
 
@@ -174,7 +174,7 @@
         {{-- ═══════════════════════════════════════════════════════════
              قسم الرؤية والرسالة
         ═══════════════════════════════════════════════════════════ --}}
-        <x-divider>الرؤية والرسالة</x-divider>
+        <x-divider>{{ __('adminlte::landingpage.visionAndMission') }}</x-divider>
         @if($visionPosts->isNotEmpty())
         <div class="bg-base-100 shadow-lg m-10 lg:w-[90%] mx-auto rounded-3xl overflow-hidden" data-aos="fade-up" data-aos-duration="700">
             <div class="flex flex-col lg:flex-row gap-8 p-6">

@@ -56,6 +56,8 @@ return array (
   'whatsapp' =>   'واتساب',
   'inspectionCertificates' =>   'شهادات الفحص',
   'specifications' =>   'المواصفات',
+  'visionAndMission' => 'الرؤية والرسالة',
+  'moreDetails' => 'مزيد من التفاصيل',
 
 
   // '' => 'Media Center',
