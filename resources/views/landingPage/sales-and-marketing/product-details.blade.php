@@ -20,7 +20,7 @@
             {{-- Right: Product Info --}}
             <div class="w-full md:w-1/2 space-y-4">
                 <h1 class="text-3xl font-bold text-gray-800">{{ $product->pname }}</h1>
-                <p class="text-gray-600 text-lg">{!! $product->description !!}</p>
+                <div class="product-description text-gray-700 text-lg leading-relaxed">{!! $product->description !!}</div>
         
                 {{-- Specifications --}}
                 @if (!empty($product->specs))

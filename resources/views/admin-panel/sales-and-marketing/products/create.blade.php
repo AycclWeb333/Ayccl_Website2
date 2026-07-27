@@ -186,17 +186,39 @@
             <div class="card-body">
                 <div class="row">
                     {{-- content --}}
+                    @php
+                        $config = [
+                            'height' => 250,
+                            'minHeight' => 150,
+                            'maxHeight' => null,
+                            'dialogsInBody' => true,
+                            'disableResizeEditor' => false,
+                            'toolbar' => [
+                                ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
+                                ['fontname', ['fontname']],
+                                ['fontsize', ['fontsize']],
+                                ['color', ['color']],
+                                ['para', ['ul', 'ol', 'paragraph']],
+                                ['height', ['height']],
+                                ['table', ['table']],
+                                ['insert', ['link', 'hr']],
+                                ['view', ['fullscreen', 'codeview']],
+                            ],
+                            'fontNames' => ['Arial', 'Arial Black', 'Cairo', 'Tajawal', 'Amiri', 'Almarai', 'Changa', 'Comic Sans MS', 'Courier New', 'Tahoma', 'Times New Roman', 'Verdana'],
+                            'fontNamesIgnoreCheck' => ['Cairo', 'Tajawal', 'Amiri', 'Almarai', 'Changa'],
+                        ];
+                    @endphp
 
                     <div class="form-group col-12 col-md-6">
                         <x-adminlte-text-editor name="content_ar" label="{{ __('adminlte::adminlte.contentAR') }}"
-                            label-class="text-olive" igroup-size="sm" placeholder="اكتب النص هنا ..." 
+                            label-class="text-olive" igroup-size="sm" placeholder="اكتب النص هنا ..." :config="$config"
                             enable-old-support />
                     </div>
                     {{-- content EN --}}
 
                     <div class="form-group col-12 col-md-6" style="direction: ltr; text-align: left;">
                         <x-adminlte-text-editor name="content_en" label="{{ __('adminlte::adminlte.contentEN') }}"
-                            label-class="text-olive" igroup-size="sm" placeholder="Write some text..." 
+                            label-class="text-olive" igroup-size="sm" placeholder="Write some text..." :config="$config"
                             enable-old-support />
                     </div>
                 </div>

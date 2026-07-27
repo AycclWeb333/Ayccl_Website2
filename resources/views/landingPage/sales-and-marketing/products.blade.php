@@ -30,9 +30,9 @@
                         {{-- <p class="text-md xl:text-lg font-bold space-y-2">
                             {!! html_entity_decode($post->description) !!}
                         </p>     --}}
-                        <ol class="text-md xl:text-lg space-y-4 font-bold">
+                        <div class="product-description text-md xl:text-lg leading-relaxed">
                             {!! html_entity_decode($post->postDetailOne->content) !!}
-                        </ol>
+                        </div>
                         @isset($post->mediaOne->link)
                             <a href="{{ asset($post->mediaOne->link) }}" download
                                 class="btn btn-primary hover:text-white w-min-2/5 w-max-full mx-auto flex ">

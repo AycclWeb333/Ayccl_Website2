@@ -187,20 +187,24 @@
                     {{-- content --}}
                     @php
                         $config = [
-                            'height' => 200,
-                            'minHeight' => 100,
+                            'height' => 250,
+                            'minHeight' => 150,
                             'maxHeight' => null,
                             'dialogsInBody' => true,
                             'disableResizeEditor' => false,
                             'toolbar' => [
-                                ['style', ['bold', 'italic', 'underline', 'clear']],
+                                ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
+                                ['fontname', ['fontname']],
                                 ['fontsize', ['fontsize']],
                                 ['color', ['color']],
                                 ['para', ['ul', 'ol', 'paragraph']],
                                 ['height', ['height']],
-                                ['insert', ['link']],
+                                ['table', ['table']],
+                                ['insert', ['link', 'hr']],
                                 ['view', ['fullscreen', 'codeview']],
                             ],
+                            'fontNames' => ['Arial', 'Arial Black', 'Cairo', 'Tajawal', 'Amiri', 'Almarai', 'Changa', 'Comic Sans MS', 'Courier New', 'Tahoma', 'Times New Roman', 'Verdana'],
+                            'fontNamesIgnoreCheck' => ['Cairo', 'Tajawal', 'Amiri', 'Almarai', 'Changa'],
                         ];
                     @endphp
                     <div class="form-group col-12 col-md-6">

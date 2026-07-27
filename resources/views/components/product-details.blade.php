@@ -7,7 +7,7 @@
     {{-- Right: Product Info --}}
     <div class="space-y-4 ">
         <h1 class="text-3xl font-bold text-gray-800">{{ $title }}</h1>
-        <p class="text-gray-600 text-lg">{{ $description }}</p>
+        <div class="product-description text-gray-700 text-lg leading-relaxed">{!! $description !!}</div>
 
         @if($specs)
         <div class="mt-4">
