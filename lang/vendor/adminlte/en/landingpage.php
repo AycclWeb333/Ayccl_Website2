@@ -8,7 +8,7 @@ return array (
   'aboutus' => 'About Us',
   'contactus' => 'Contact Us',
   'multiMedia' => 'Multi-Media',
-  'copyrights' => 'Copyright ©2025- All right reserved by Ayccl',
+  'copyrights' => 'Copyright © 2026 All right reserved by Ayccl',
   'moredetails' => 'more details',
   'trustedbyothers' => 'trusted by other teams',
   'ourlocation' => 'Our Location',
