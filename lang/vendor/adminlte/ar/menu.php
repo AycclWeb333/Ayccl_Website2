@@ -44,8 +44,8 @@ return [
 'managementBoard' => 'مجلس الإدارة',
 'visionAndMessage' => 'الرؤية والرسالة والأهداف',
 'futurePlans' => 'خطط مستقبلية',
-'socialReponsibility' => 'المسئولية الاجتماعية',
-'prizedAndCertificates' => 'الجوائز والشهائد',
+'socialReponsibility' => 'المسؤولية الإجتماعية',
+'prizedAndCertificates' => 'الجوائز والشهادات',
 'ourProjects' => 'مشاريعنا',
 'environment' => 'البيئة',
 
