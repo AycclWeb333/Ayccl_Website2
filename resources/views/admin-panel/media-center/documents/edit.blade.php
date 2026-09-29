@@ -145,14 +145,17 @@
 
 
 
-                        {{-- <div class="form-group">
-                            <x-adminlte-select2 name="category_id" :config="['minimumResultsForSearch' => 'Infinity']"
-                                label="{{ __('adminlte::adminlte.postType') }}" label-class="text-olive">
+                        <div class="form-group">
+                            <label class="text-olive font-weight-bold">{{ __('adminlte::adminlte.postType') }}</label>
+                            <select name="category_id" class="form-control">
+                                <option value="" {{ empty($post->category_id) ? 'selected' : '' }}>{{ __('adminlte::landingpage.all') }}</option>
                                 @foreach ($categories as $category)
-                                <option {{ $post->postDetailOne->category_id==$category->id?'selected':'' }} value="{{ $category->id }}">{{ $category->name }}</option>
+                                    <option value="{{ $category->id }}" {{ (old('category_id', $post->category_id) == $category->id) ? 'selected' : '' }}>
+                                        {{ app()->getLocale() == 'en' ? ($category->name_en ?? $category->name) : $category->name }}
+                                    </option>
                                 @endforeach
-                            </x-adminlte-select2>
-                        </div> --}}
+                            </select>
+                        </div>
 
                         {{-- <x-adminlte-modal tabindex="-1" id="modalMin" title="{{ __('adminlte::adminlte.slug') }}" theme="olive"
                             icon="fas fa-question" size='lg'>

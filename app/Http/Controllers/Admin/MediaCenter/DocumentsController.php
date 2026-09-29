@@ -61,10 +61,17 @@ class DocumentsController extends Controller
     {
         try {
             $page = Page::findOrFail($this->pageId);
+            $categories = Category::where('type', $this->pageId)->get();
+            if ($categories->isEmpty()) {
+                Category::firstOrCreate(['name' => 'الشهادات', 'type' => $this->pageId], ['name_en' => 'Certificates']);
+                Category::firstOrCreate(['name' => 'المواصفات', 'type' => $this->pageId], ['name_en' => 'Specifications']);
+                Category::firstOrCreate(['name' => 'المجلات', 'type' => $this->pageId], ['name_en' => 'Magazines']);
+                $categories = Category::where('type', $this->pageId)->get();
+            }
         } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view('admin-panel.media-center.documents.create', compact('page'));
+        return view('admin-panel.media-center.documents.create', compact('page', 'categories'));
     }
 
     public function store(Request $request)
@@ -93,7 +100,7 @@ class DocumentsController extends Controller
             DB::beginTransaction();
             // 1. Create Post
             $post = new Post();
-            $post->category_id = $request->category_id;
+            $post->category_id = $request->category_id ?: null;
             $post->page_id = $this->pageId; // default page
             // $post->date = $request->date;
             if (isset($request->order))
@@ -142,10 +149,17 @@ class DocumentsController extends Controller
     {
         try {
             $post = Post::findOrFail($id);
+            $categories = Category::where('type', $this->pageId)->get();
+            if ($categories->isEmpty()) {
+                Category::firstOrCreate(['name' => 'الشهادات', 'type' => $this->pageId], ['name_en' => 'Certificates']);
+                Category::firstOrCreate(['name' => 'المواصفات', 'type' => $this->pageId], ['name_en' => 'Specifications']);
+                Category::firstOrCreate(['name' => 'المجلات', 'type' => $this->pageId], ['name_en' => 'Magazines']);
+                $categories = Category::where('type', $this->pageId)->get();
+            }
         } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        return view('admin-panel.media-center.documents.edit', compact('post'));
+        return view('admin-panel.media-center.documents.edit', compact('post', 'categories'));
     }
 
     public function update(Request $request, $locale, int $id)
@@ -171,7 +185,7 @@ class DocumentsController extends Controller
         try {
             $post = Post::findOrFail($id);
             DB::beginTransaction();
-            $post->category_id = 3;
+            $post->category_id = $request->category_id ?: null;
             $post->page_id = $this->pageId; // default page
             // $post->date = $request->date;
             if (isset($request->order))

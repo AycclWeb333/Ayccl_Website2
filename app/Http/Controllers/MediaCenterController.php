@@ -90,8 +90,17 @@ class MediaCenterController extends Controller
         $posts = Post::where("page_id", $page->id)
             ->where('active', true)
             ->latest()
-            ->with(['postDetail', 'mediaOne'])->get();
-        return view($this->path . "documents", compact('posts', 'page'));
+            ->with(['postDetail', 'mediaOne', 'category'])->get();
+
+        $categories = Category::where('type', $pageId)->get();
+        if ($categories->isEmpty()) {
+            Category::firstOrCreate(['name' => 'الشهادات', 'type' => $pageId], ['name_en' => 'Certificates']);
+            Category::firstOrCreate(['name' => 'المواصفات', 'type' => $pageId], ['name_en' => 'Specifications']);
+            Category::firstOrCreate(['name' => 'المجلات', 'type' => $pageId], ['name_en' => 'Magazines']);
+            $categories = Category::where('type', $pageId)->get();
+        }
+
+        return view($this->path . "documents", compact('posts', 'page', 'categories'));
     }
     public function inspectionCertificatesIndex()
     {
