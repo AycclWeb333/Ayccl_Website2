@@ -13,7 +13,7 @@
             <span id="tooltip-whatsapp"
                   class="absolute bottom-4/12 end-full px-2 py-1 bg-gray-800 text-white text-xs rounded-md whitespace-nowrap
                          opacity-0 -translate-x-4 transition-all duration-500 ease-in-out pointer-events-none">
-                {{ __('adminlte::landingpage.callUS') }}
+                {{ __('adminlte::landingpage.contactus') }}
             </span>
         </a>
         @endif
@@ -29,7 +29,7 @@
             <span id="tooltip-phone"
                   class="absolute bottom-4/12 end-full px-2 py-1 bg-gray-800 text-white text-xs rounded-md whitespace-nowrap
                          opacity-0 -translate-x-4 transition-all duration-500 ease-in-out pointer-events-none">
-                         {{ __('adminlte::landingpage.contactus') }}
+                          {{ __('adminlte::landingpage.callUS') }}
             </span>
         </a>
         @endif

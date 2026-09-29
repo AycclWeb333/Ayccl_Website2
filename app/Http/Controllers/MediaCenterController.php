@@ -33,6 +33,7 @@ class MediaCenterController extends Controller
         $page = Page::findOrFail($pageId);
         $posts = Post::where("page_id", $page->id)
             ->where('active', true)
+            ->latest()
             ->with(['postDetail', 'media'])->get();
 
         // News (7), Activities (2)
@@ -61,7 +62,10 @@ class MediaCenterController extends Controller
     {
         $pageId = 52;
         $page = Page::findOrFail($pageId);
-        $posts = Post::where("page_id", $page->id)->where('active',true)->with(['postDetailOne', 'media'])->get();
+        $posts = Post::where("page_id", $page->id)
+            ->where('active', true)
+            ->latest()
+            ->with(['postDetailOne', 'media'])->get();
         $categories = $posts->pluck('postDetailOne.category_id');
         $categories = Category::whereIn('id', $categories)->get();
         return view($this->path . "photos-galary", compact('posts', 'page', 'categories'));
@@ -71,7 +75,10 @@ class MediaCenterController extends Controller
         $pageId = 53;
         $page = Page::findOrFail($pageId);
 
-        $posts = Post::where("page_id", $page->id)->where('active', true)->with(['postDetailOne', 'mediaOne'])->get();
+        $posts = Post::where("page_id", $page->id)
+            ->where('active', true)
+            ->latest()
+            ->with(['postDetailOne', 'mediaOne'])->get();
         $categories = $posts->pluck('postDetailOne.category_id');
         $categories = Category::whereIn('id', $categories)->get();
         return view($this->path . "videos", compact('posts', 'page', 'categories'));
@@ -80,16 +87,20 @@ class MediaCenterController extends Controller
     {
         $pageId = 54;
         $page = Page::findOrFail($pageId);
-        $posts = Post::where("page_id", $page->id)->where('active', true)->with(['postDetail', 'mediaOne'])->get();
+        $posts = Post::where("page_id", $page->id)
+            ->where('active', true)
+            ->latest()
+            ->with(['postDetail', 'mediaOne'])->get();
         return view($this->path . "documents", compact('posts', 'page'));
     }
     public function inspectionCertificatesIndex()
     {
         $pageId = 55;
-         $page = Page::findOrFail($pageId);
+        $page = Page::findOrFail($pageId);
         $posts = Post::where("page_id", $page->id)
-        ->where('active', true)
-        ->with(['postDetail', 'media'])->get();
+            ->where('active', true)
+            ->latest()
+            ->with(['postDetail', 'media'])->get();
         return view($this->path . "inspection-certificates", compact('posts', 'page'));
     }
 
@@ -98,8 +109,9 @@ class MediaCenterController extends Controller
         $pageId = 56;
         $page = Page::findOrFail($pageId);
         $posts = Post::where("page_id", $page->id)
-        ->where('active', true)
-        ->with(['postDetail', 'media'])->get();
+            ->where('active', true)
+            ->latest()
+            ->with(['postDetail', 'media'])->get();
 
         return view($this->path . "specifications", compact('posts', 'page'));
     }

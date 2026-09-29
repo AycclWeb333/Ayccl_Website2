@@ -56,23 +56,7 @@
         <div class="min-h-screen flex w-full items-center justify-center p-0 sm:p-6">
             <div class="card w-full sm:max-w-4xl shadow-2xl bg-base-100">
                 <div class="card-body py-5 p-0 sm:p-8 text-center sm:text-start">
-                    @if (session('status'))
-                        <div id="success-alert" role="alert" class="alert alert-success relative mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>{{ session('status') }}</span>
-
-                            <!-- Close Button -->
-                            <button type="button"
-                                onclick="document.getElementById('success-alert').classList.add('hidden')"
-                                class="absolute end-2 p-2 cursor-pointer text-gray-800 hover:text-black hover:bg-gray-100 rounded-4xl transition-all duration-300">
-                                ✕
-                            </button>
-                        </div>
-                    @endif
+                    {{-- Session alert removed to use SweetAlert2 popup --}}
                     <h2 class="card-title text-2xl font-bold text-emerald-800">
                         {{ __('adminlte::landingpage.directMessage') }}
                     </h2>
@@ -185,4 +169,24 @@
 
 @endsection
 @section('jsafter')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (session('status'))
+            Swal.fire({
+                title: "{{ __('adminlte::landingpage.emailSentSuccessfully') }}",
+                text: "{{ session('status') }}",
+                icon: 'success',
+                confirmButtonText: "{{ __('adminlte::adminlte.ok') }}",
+                confirmButtonColor: '#065f46', 
+                width: window.innerWidth < 768 ? '90%' : '500px',
+                padding: window.innerWidth < 768 ? '1.5rem' : '2.5rem',
+                customClass: {
+                    popup: 'rounded-3xl shadow-2xl border-0',
+                    confirmButton: 'rounded-xl px-10 py-2 font-bold',
+                    title: 'text-xl md:text-2xl',
+                    htmlContainer: 'text-sm md:text-base'
+                }
+            });
+        @endif
+    </script>
 @endsection

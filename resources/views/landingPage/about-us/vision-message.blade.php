@@ -18,7 +18,9 @@
             {{-- جانب الـ Accordion --}}
             <div class="lg:w-1/2 w-full space-y-4">
                 <h2 class="font-semibold text-3xl lg:text-4xl text-green-900 text-center mb-6">
-                  الشركة العربية اليمنية للإسمنت المحدودة
+                  {{ app()->getLocale() == 'ar'
+                        ? 'الشركة العربية اليمنية للإسمنت المحدودة'
+                        : 'Arabian Yemen Cement Company Limited' }}
                 </h2>
 
                 <div class="accordion-item border border-gray-200 rounded-lg overflow-hidden">
