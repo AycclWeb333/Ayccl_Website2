@@ -98,7 +98,7 @@ return array (
     'nodescription' => 'لا يوجد وصف.',
     'showMore' => 'عرض المزيد',
     'allProducts' => 'جميع المنتجات ...',
-    'isoCertificates' => 'الشهائد',
+    'isoCertificates' => 'الجوائز والشهادات',
     'productSpecs' => 'مواصفات المنتجات ...',
     'callUS' => 'اتصل بنا',
     'choosedate' => 'اختر التاريخ',

@@ -37,7 +37,7 @@ class CementBlogWebController extends Controller
             $page = Page::findOrFail($pageId);
             $cementBlogs = Post::where("page_id", $page->id)->where('active', true)
             ->with(['postDetailOne', 'mediaOne'])
-            ->orderBy('order', 'asc')
+            ->latest()
             ->get();
 
         }catch(Exception $e){

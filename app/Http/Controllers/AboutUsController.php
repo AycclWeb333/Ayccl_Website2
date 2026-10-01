@@ -188,7 +188,7 @@ class AboutUsController extends Controller
          // $pageId = app()->getlocale() =='ar' ? 23 : 123 ;
         $pageId = 24;
         $page = Page::findOrFail($pageId);
-        $posts = Post::where("page_id", $page->id)->where('active', true)->get();
+        $posts = Post::where("page_id", $page->id)->where('active', true)->latest()->get();
          // $posts = Post::where("page_id", $page->id)->where('active', true)->get();
 
          return view($this->path."future-plans", compact('posts', 'page'));
@@ -214,7 +214,7 @@ class AboutUsController extends Controller
             );
         }
 
-        $posts = Post::where("page_id", $pageId)->where('active', true)->orderBy('order')->get();
+        $posts = Post::where("page_id", $pageId)->where('active', true)->latest()->get();
         $categories = \App\Models\Category::where('type', $pageId)->get();
 
         return view($this->path."social-responsibility", compact('posts', 'page', 'categories'));
@@ -234,7 +234,7 @@ class AboutUsController extends Controller
          // $pageId = app()->getlocale() =='ar' ? 23 : 123 ;
         $pageId = 27;
         $page = Page::findOrFail($pageId);
-        $posts = Post::where("page_id", $page->id)->with('postDetail','Media')->where('active', true)->get();
+        $posts = Post::where("page_id", $page->id)->with('postDetail','Media')->where('active', true)->latest()->get();
 
         return view($this->path."our-projects", compact('posts', 'page'));
     }
@@ -244,7 +244,7 @@ class AboutUsController extends Controller
          // $pageId = app()->getlocale() =='ar' ? 23 : 123 ;
         $pageId = 28;
         $page = Page::findOrFail($pageId);
-        $posts = Post::where("page_id", $page->id)->with('postDetail','Media')->where('active', true)->get();
+        $posts = Post::where("page_id", $page->id)->with('postDetail','Media')->where('active', true)->latest()->get();
 
         return view($this->path."environment", compact('posts', 'page'));
     }

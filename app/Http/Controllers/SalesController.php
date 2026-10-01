@@ -38,7 +38,7 @@ class SalesController extends Controller
         try{
             $pageId = 31;
             $page = Page::findOrFail($pageId);
-            $posts = Post::where("page_id", $page->id)->where('active',true)->with(['postDetailOne', 'media'])->get();
+            $posts = Post::where("page_id", $page->id)->where('active',true)->latest()->with(['postDetailOne', 'media'])->get();
         }catch(Exception $e){
             return redirect()->back()->with(['error' => $e->getMessage()]);    
         }

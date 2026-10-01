@@ -34,7 +34,7 @@ class HumanResourcesController extends Controller
          try{
             $pageId = 41;
             $page = Page::findOrFail($pageId);
-            $posts = Post::where("page_id", $page->id)->where('active',true)->with(['postDetail', 'mediaOne'])->get();
+            $posts = Post::where("page_id", $page->id)->where('active',true)->latest()->with(['postDetail', 'mediaOne'])->get();
         }catch(Exception $e){
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
@@ -81,7 +81,7 @@ class HumanResourcesController extends Controller
         try{
             $pageId = 45;
             $page = Page::findOrFail($pageId);
-            $posts = Post::where("page_id", $page->id)->where('active',true)->with(['postDetail', 'mediaOne'])->get();
+            $posts = Post::where("page_id", $page->id)->where('active',true)->latest()->with(['postDetail', 'mediaOne'])->get();
         }catch(Exception $e){
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
@@ -93,7 +93,7 @@ class HumanResourcesController extends Controller
         try{
             $pageId = 46;
             $page = Page::findOrFail($pageId);
-            $posts = Post::where("page_id", $page->id)->where('active',true)->with(['postDetail', 'mediaOne'])->get();
+            $posts = Post::where("page_id", $page->id)->where('active',true)->latest()->with(['postDetail', 'mediaOne'])->get();
         }catch(Exception $e){
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
